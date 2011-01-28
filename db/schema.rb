@@ -10,7 +10,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110112052537) do
+ActiveRecord::Schema.define(:version => 20110128172634) do
+
+  create_table "events", :id => false, :force => true do |t|
+    t.string   "uuid",         :limit => 36
+    t.string   "content"
+    t.string   "phone_number"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "ipAddress"

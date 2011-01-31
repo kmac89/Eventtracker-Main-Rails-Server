@@ -1,5 +1,9 @@
 MainRailsServer::Application.routes.draw do
+
   resources :events
+  scope "events" do
+
+  end
 
   resources :users
 

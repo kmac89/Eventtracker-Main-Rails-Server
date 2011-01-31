@@ -3,9 +3,9 @@
 one:
   uuid: MyString
   content: MyString
-  phone_number: MyString
+  user: 
 
 two:
   uuid: MyString
   content: MyString
-  phone_number: MyString
+  user: 

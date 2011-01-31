@@ -3,8 +3,10 @@
 <title>Test</title>
 </head>
 <body>
-Testing:<br>
-<iframe src="http://192.168.1.4:8080" name="frame1" scrolling="no" frameborder="no" align="center" height = "100%" width = "100%">
-</iframe>
+Testing:<br/>
+<div>
+	Request body: <%= request.raw_post %>
+	Params: <%= params %>
+</div>
 </body>
 </html>

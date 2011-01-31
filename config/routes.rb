@@ -1,4 +1,6 @@
 MainRailsServer::Application.routes.draw do
+  resources :events
+
   resources :users
 
   get "home/index"

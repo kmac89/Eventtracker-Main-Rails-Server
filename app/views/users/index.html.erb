@@ -2,7 +2,8 @@
 
 <table>
   <tr>
-    <th>Ipaddress</th>
+    <th>Uuid</th>
+    <th>Phone number</th>
     <th></th>
     <th></th>
     <th></th>
@@ -10,7 +11,8 @@
 
 <% @users.each do |user| %>
   <tr>
-    <td><%= user.ipAddress %></td>
+    <td><%= user.uuid %></td>
+    <td><%= user.phone_number %></td>
     <td><%= link_to 'Show', user %></td>
     <td><%= link_to 'Edit', edit_user_path(user) %></td>
     <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>

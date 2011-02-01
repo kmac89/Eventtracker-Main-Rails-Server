@@ -81,4 +81,10 @@ class EventsController < ApplicationController
     end
   end
 
+  def upload
+    device_uuid = params[:UUIDOfDevice]
+    event_uuid = params[:UUIDOfEvent]
+    event_body = request.raw_post
+  end
+
 end

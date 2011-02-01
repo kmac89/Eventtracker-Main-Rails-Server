@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  skip_before_filter :verify_authenticity_token
+
   # GET /users
   # GET /users.xml
   def index

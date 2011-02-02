@@ -1,13 +1,15 @@
 MainRailsServer::Application.routes.draw do
 
-  resources :events
+  match "test"      => "users#test"
+
   scope "events" do
     match "upload"  =>  "events#upload"
+    resources :events
   end
 
-  resources :users
   scope "users" do
     match "init"    =>  "users#init"
+    resources :users
   end
 
   get "home/index"

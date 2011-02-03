@@ -83,11 +83,13 @@ class EventsController < ApplicationController
     end
   end
 
+  # POST /event/upload
+  # POST /event/upload.xml
   def upload
     @event = Event.new
     @event.user_uuid = params[:UUIDOfDevice]
     @event.uuid = params[:UUIDOfEvent]
-    @event.content = request.raw_post
+    @event.content = params[:EventData]
 
 
     respond_to do |format|

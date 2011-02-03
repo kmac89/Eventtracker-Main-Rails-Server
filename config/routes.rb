@@ -1,6 +1,6 @@
 MainRailsServer::Application.routes.draw do
 
-  match "test"      => "users#test"
+  match "test"      => "home#test"
 
   scope "events" do
     match "upload"  =>  "events#upload"

@@ -100,8 +100,4 @@ class UsersController < ApplicationController
     end
   end
 
-  def test
-    puts "Parameters: #{params.inspect}"
-    puts "Content: #{request.raw_post}"
-  end
 end

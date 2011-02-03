@@ -1,7 +1,6 @@
 class HomeController < ApplicationController
   skip_before_filter :verify_authenticity_token
   def index
-    @entity = request.raw_post
   end
 
   def update_ip
@@ -23,7 +22,8 @@ class HomeController < ApplicationController
     end
   end
 
-  def handle_post
-    @entity = request.raw_post
+  def test
+    puts "Parameters: #{params.inspect}"
+    puts "Content: #{request.raw_post}"
   end
 end

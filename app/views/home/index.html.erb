@@ -3,10 +3,11 @@
 <title>Test</title>
 </head>
 <body>
-Testing:<br/>
-<div>
-	Request body: <%= request.raw_post %>
-	Params: <%= params %>
-</div>
+Welcome to Activity Tracker<br/>
+<%= link_to 'Display all users', users_path %>
+<br/>
+<%= link_to 'Display all events', events_path %>
+<br/>
+<%= link_to 'Display test page', 'test' %>
 </body>
 </html>

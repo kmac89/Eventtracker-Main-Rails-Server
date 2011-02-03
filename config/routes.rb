@@ -4,13 +4,13 @@ MainRailsServer::Application.routes.draw do
 
   scope "events" do
     match "upload"  =>  "events#upload"
-    resources :events
   end
+  resources :events
 
   scope "users" do
     match "init"    =>  "users#init"
-    resources :users
   end
+  resources :users
 
   get "home/index"
 

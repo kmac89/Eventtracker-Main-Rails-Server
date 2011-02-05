@@ -4,6 +4,7 @@ MainRailsServer::Application.routes.draw do
 
   scope "events" do
     match "upload"  =>  "events#upload"
+    match "delete"  =>  "events#destroy"
   end
   resources :events
 

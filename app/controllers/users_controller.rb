@@ -88,8 +88,8 @@ class UsersController < ApplicationController
   end
   
   def init
-    @user = User.new
-    @user.phone_number = params[:PhoneNumber]
+    # todo authenticate
+    @user = User.find_or_create_by_phone_number(params[:PhoneNumber])
     @user.uuid = params[:UUIDOfDevice]
 
     respond_to do |format|

@@ -15,7 +15,7 @@ class EventsController < ApplicationController
   # GET /events/1
   # GET /events/1.xml
   def show
-    @event = Event.find_by_uuid(params[:id])
+    @event = Event.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -36,7 +36,7 @@ class EventsController < ApplicationController
 
   # GET /events/1/edit
   def edit
-    @event = Event.find_by_uuid(params[:id])
+    @event = Event.find(params[:id])
   end
 
   # POST /events
@@ -58,7 +58,7 @@ class EventsController < ApplicationController
   # PUT /events/1
   # PUT /events/1.xml
   def update
-    @event = Event.find_by_uuid(params[:id])
+    @event = Event.find(params[:id])
 
     respond_to do |format|
       if @event.update_attributes(params[:event])
@@ -74,7 +74,7 @@ class EventsController < ApplicationController
   # DELETE /events/1
   # DELETE /events/1.xml
   def destroy
-    @event = Event.find_by_uuid(params[:id])
+    @event = Event.find(params[:id])
     @event.destroy
 
     respond_to do |format|
@@ -87,7 +87,8 @@ class EventsController < ApplicationController
   # POST /event/upload.xml
   def upload
     @event = Event.new
-    @event.user_uuid = params[:UUIDOfDevice]
+    user = User.find_by_uuid(params[:UUIDOfDevice])
+    @event.user_id = @user.id 
     @event.uuid = params[:UUIDOfEvent]
     @event.content = params[:EventData]
 

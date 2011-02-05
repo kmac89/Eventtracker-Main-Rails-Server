@@ -15,7 +15,11 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = User.find_by_uuid(params[:id])
+    if params[:id] then
+      @user = User.find(params[:id])
+    else
+      @user = User.find_by_phone_number(params[:phone_number])
+    end
 
     respond_to do |format|
       format.html # show.html.erb
@@ -36,7 +40,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    @user = User.find_by_uuid(params[:id])
+    @user = User.find(params[:id])
   end
 
   # POST /users
@@ -58,7 +62,7 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @user = User.find_by_uuid(params[:id])
+    @user = User.find(params[:id])
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
@@ -74,7 +78,7 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.xml
   def destroy
-    @user = User.find_by_uuid(params[:id])
+    @user = User.find(params[:id])
     @user.destroy
 
     respond_to do |format|
@@ -85,7 +89,6 @@ class UsersController < ApplicationController
   
   def init
     @user = User.new
-    puts "Paramaters: #{params.inspect}"
     @user.phone_number = params[:PhoneNumber]
     @user.uuid = params[:UUIDOfDevice]
 

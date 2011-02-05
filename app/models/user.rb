@@ -4,8 +4,8 @@ class User < ActiveRecord::Base
   validates :uuid, :presence => true
   validates :phone_number, :presence => true
 
-  def to_param
-    uuid
-  end
+#  def to_param
+#    phone_number
+#  end
 
 end

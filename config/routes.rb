@@ -9,6 +9,7 @@ MainRailsServer::Application.routes.draw do
 
   scope "users" do
     match "init"    =>  "users#init"
+    match "phone/:phone_number" =>  "users#show"
   end
   resources :users
 

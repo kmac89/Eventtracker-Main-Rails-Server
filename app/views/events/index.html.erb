@@ -4,7 +4,7 @@
   <tr>
     <th>Uuid</th>
     <th>Content</th>
-    <th>User</th>
+    <th>User ID</th>
     <th></th>
     <th></th>
     <th></th>
@@ -14,7 +14,7 @@
   <tr>
     <td><%= event.uuid %></td>
     <td><%= event.content %></td>
-    <td><%= event.user %></td>
+    <td><%= event.user_id %></td>
     <td><%= link_to 'Show', event %></td>
     <td><%= link_to 'Edit', edit_event_path(event) %></td>
     <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>

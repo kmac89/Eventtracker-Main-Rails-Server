@@ -10,6 +10,11 @@
   <%= @user.phone_number %>
 </p>
 
+<p>
+  <b><%= link_to 'Display Events', events_path(:phone_number => @user.phone_number) %>
+  </b>
+</p>
+
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>

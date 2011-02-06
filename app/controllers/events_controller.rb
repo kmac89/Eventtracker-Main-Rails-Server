@@ -4,7 +4,14 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
-    @events = Event.all
+    @events =
+      if params[:phone_number] then
+        user = User.find_by_phone_number(params[:phone_number])
+        Event.find_all_by_user_id(user.id) unless user.nil?
+      else
+        Event.all 
+      end
+   
 
     respond_to do |format|
       format.html # index.html.erb

@@ -1,0 +1,32 @@
+<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => nil, :class => "last"},] %>
+<%= raw datatable(columns, {:sort_by => "[2, 'desc']", :processing => image_tag("spinner.gif") }) %>
+<h2>
+  Showing all events for user with phone number '<%= @user.phone_number %>'
+</h2>
+
+<table id='events' class='datatable'>
+  <thead>
+    <tr>
+      <th>Events Name</th>
+      <th>Notes</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @event_content_pairs.each do |event, content| %>
+      <tr>
+	<td><%= content['name'] %></td>
+	<td><%= content['notes'] %></td>
+	<td><%= content['startTime'] %></td>
+	<td><%= content['endTime'] %></td>
+	<td><%= link_to 'Show', event %></td>
+	<td><%= link_to 'Edit', edit_event_path(event) %></td>
+	<td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

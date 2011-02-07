@@ -1,23 +1,29 @@
+<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => nil, :class => "last"}, {:type => 'html'}] %>
+<%= raw datatable(columns, {:sort_by => "[0, 'desc']", :processing => image_tag("spinner.gif") }) %>
+
 <h1>Listing users</h1>
 
-<table>
-  <tr>
-    <th>Uuid</th>
-    <th>Phone number</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @users.each do |user| %>
-  <tr>
-    <td><%= user.uuid %></td>
-    <td><%= user.phone_number %></td>
-    <td><%= link_to 'Show', user %></td>
-    <td><%= link_to 'Edit', edit_user_path(user) %></td>
-    <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+<table id='users' class='datatable'>
+  <thead>
+    <tr>
+      <th>Uuid</th>
+      <th>Phone number</th>
+      <th>User Details</th>
+      <th>Edit User</th>
+      <th>Delete User</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+	<td><%= user.uuid %></td>
+	<td><%= user.phone_number %></td>
+	<td><%= link_to 'Show', user %></td>
+	<td><%= link_to 'Edit', edit_user_path(user) %></td>
+	<td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
 
 <br />

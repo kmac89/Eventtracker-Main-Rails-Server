@@ -4,14 +4,7 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
-    @events =
-      if params[:phone_number] then
-        user = User.find_by_phone_number(params[:phone_number])
-        Event.find_all_by_user_id(user.id) unless user.nil?
-      else
-        Event.all 
-      end
-   
+    @events = Event.all 
 
     respond_to do |format|
       format.html # index.html.erb
@@ -19,10 +12,36 @@ class EventsController < ApplicationController
     end
   end
 
+  # GET /events/phone/:phone_number
+  def user
+    @user = User.find_by_phone_number(params[:phone_number])
+    @events = Event.find_all_by_user_id(@user.id) unless @user.nil?
+
+    @event_content_pairs = 
+      @events.collect {|event|
+        json_data = ActiveSupport::JSON.decode(event.content)
+        ['startTime', 'endTime'].each do |time|
+          if json_data[time]
+            epoch_time = Time.at(json_data[time] / 1000)
+            json_data[time] = epoch_time.strftime('%I:%M%p %m-%d-%y')
+          end
+        end
+        [event, json_data]
+    }
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @events }
+    end
+
+  end
+
   # GET /events/1
   # GET /events/1.xml
   def show
     @event = Event.find(params[:id])
+
+    @content = ActiveSupport::JSON.decode(@event.content)
 
     respond_to do |format|
       format.html # show.html.erb

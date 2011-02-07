@@ -11,8 +11,7 @@
 </p>
 
 <p>
-  <b><%= link_to 'Display Events', events_path(:phone_number => @user.phone_number) %>
-  </b>
+<b><%= link_to 'Display Events', "/events/phone/#{@user.phone_number}" %></b>
 </p>
 
 

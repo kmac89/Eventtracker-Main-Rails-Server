@@ -10,6 +10,9 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # UUID Tools
 gem 'uuidtools'
 
+#jQuery
+gem 'jquery-rails'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

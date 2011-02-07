@@ -11,8 +11,7 @@
 </p>
 
 <p>
-  <b>User:</b>
-  <%= @event.user %>
+  <%= link_to 'Show User', user_path(@event.user) %>
 </p>
 
 <%= link_to 'Edit', edit_event_path(@event) %> |

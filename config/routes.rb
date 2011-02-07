@@ -4,7 +4,7 @@ MainRailsServer::Application.routes.draw do
 
   scope "events" do
     match "upload"  =>  "events#upload"
-    match "delete"  =>  "events#destroy"
+    match "delete"  =>  "events#delete"
     match "phone/:phone_number"   =>  "events#user"
   end
   resources :events

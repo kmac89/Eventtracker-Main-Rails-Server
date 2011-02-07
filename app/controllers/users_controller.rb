@@ -92,15 +92,13 @@ class UsersController < ApplicationController
     @user = User.find_or_create_by_phone_number(params[:PhoneNumber])
     @user.uuid = params[:UUIDOfDevice]
 
-    respond_to do |format|
+    #respond_to do |format|
       if @user.save
-        format.html { redirect_to(@user, :notice => 'User was successfully created.') }
-        format.xml  { render :xml => @user, :status => :created, :location => @user }
+        render :text => 'OK', :status => 201
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
+        render :text => @user.errors, :status => 400
       end
-    end
+    #end
   end
 
 end

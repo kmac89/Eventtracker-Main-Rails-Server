@@ -33,7 +33,6 @@ class EventsController < ApplicationController
       format.html # index.html.erb
       format.xml  { render :xml => @events }
     end
-
   end
 
   # GET /events/1
@@ -100,52 +99,49 @@ class EventsController < ApplicationController
   # DELETE /events/1
   # DELETE /events/1.xml
   def destroy
-    errors = false
-    if params[:id] then
-      @event = Event.find(params[:id])
-    else 
-      # delete by uuid and device uuid
-      uuid = params[:UUIDOfEvent]
-      user_uuid = params[:UUIDOfDevice]
-      if uuid and user_uuid then
-        @event = Event.find_by_uuid(uuid)
-        # user_uuid must match
-        errors = @event.user_id == User.find_by_uuid(user_uuid)
-      else
-        # must pass uuid and device uuid
-        errors = true
-      end
-    end
-    @event.destroy unless errors
+    event = Event.find(params[:id])
+    user = User.find(event.user_id)
+    event.destroy
 
     respond_to do |format|
-      if !errors then
-        format.html { redirect_to(events_url) }
-        format.xml  { head :ok }
-      else
-        format.html { redirect_to(events_url, :notice => 'Could not destroy event') }
-        format.xml  { head :ok }
-      end
+      format.html { redirect_to("/events/phone/#{user.phone_number}") }
+      format.xml  { head :ok }
+    end
+  end
+
+  # DELETE /events/delete
+  # user from phone for non-html response
+  def delete
+    uuid = params[:UUIDOfEvent]
+    user_uuid = params[:UUIDOfDevice]
+    errors = false
+    if uuid and user_uuid then
+      @event = Event.find_by_uuid(uuid)
+      # user_uuid must match
+      errors = @event.user_id == User.find_by_uuid(user_uuid)
+    else
+      # must pass uuid and device uuid
+      errors = true
+    end
+
+    if errors
+      render :text => 'Could not delete', :status => 400
+    else
+      render :text => 'OK', :status => 200
     end
   end
 
   # POST /events/upload
-  # POST /events/upload.xml
   def upload
     @event = Event.find_or_create_by_uuid(params[:UUIDOfEvent])
     user = User.find_by_uuid(params[:UUIDOfDevice])
     @event.user_id = user.id unless user.nil?
-    @event.uuid = params[:UUIDOfEvent]
     @event.content = params[:EventData]
 
-    respond_to do |format|
-      if @event.save
-        format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
-        format.xml  { render :xml => @event, :status => :created, :location => @event }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
-      end
+    if @event.save
+      render :text => 'OK', :status => 200
+    else
+      render :text => @event.errors.to_s, :status => 400
     end
   end
 

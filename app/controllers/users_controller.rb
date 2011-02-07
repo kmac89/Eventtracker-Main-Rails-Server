@@ -91,6 +91,7 @@ class UsersController < ApplicationController
     # todo authenticate
     @user = User.find_or_create_by_phone_number(params[:PhoneNumber])
     @user.uuid = params[:UUIDOfDevice]
+    @user.password_hash = params[:HashedPasswd]
 
     #respond_to do |format|
       if @user.save

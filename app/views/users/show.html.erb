@@ -11,6 +11,11 @@
 </p>
 
 <p>
+  <b>Hashed Password:</b>
+  <%= @user.password_hash %>
+</p>
+
+<p>
 <b><%= link_to 'Display Events', "/events/phone/#{@user.phone_number}" %></b>
 </p>
 

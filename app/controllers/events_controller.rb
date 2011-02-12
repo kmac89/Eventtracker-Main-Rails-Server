@@ -98,8 +98,8 @@ class EventsController < ApplicationController
   # PUT /events/1
   # PUT /events/1.xml
   def update
-    @event = Event.find(params[:id])
-    content = ActiveSupport::JSON.decode(@event.content)
+    event = Event.find(params[:id])
+    content = ActiveSupport::JSON.decode(event.content)
     params['content'].each do |key, value|
       if ['startTime', 'endTime'].include?(key)
         puts "Old: (#{key}, #{content[key]})"
@@ -112,20 +112,18 @@ class EventsController < ApplicationController
         content[key] = value
       end
     end unless params['content'].nil?
-    @event.content = ActiveSupport::JSON.encode(content)
+    event.content = ActiveSupport::JSON.encode(content)
 
+    user = User.find(event.user_id)
 
-    start_time = content['startTime']
-    end_time = content['endTime']
-    #@event.check_start_time_before_end(start_time, end_time)
 
     respond_to do |format|
-      if @event.save
-        format.html { redirect_to(@event, :notice => 'Event was successfully updated.' + params.inspect) }
+      if event.save
+        format.html { redirect_to("/events/phone/#{user.phone_number}", :notice => 'Event was successfully updated.' + params.inspect) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        format.xml  { render :xml => event.errors, :status => :unprocessable_entity }
       end
     end
   end

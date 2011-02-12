@@ -6,6 +6,7 @@ MainRailsServer::Application.routes.draw do
     match "upload"  =>  "events#upload"
     match "delete"  =>  "events#delete"
     match "phone/:phone_number"   =>  "events#user"
+    match "map/:id"     =>  "events#map"
   end
   resources :events
 

@@ -23,7 +23,7 @@ class EventsController < ApplicationController
         ['startTime', 'endTime'].each do |time|
           if json_data[time]
             epoch_time = Time.at(json_data[time] / 1000)
-            json_data[time] = epoch_time.strftime('%I:%M%p %m-%d-%y')
+            json_data[time+'R'] = epoch_time.strftime('%I:%M%p %m-%d-%y')
           end
         end
         [event, json_data]
@@ -33,6 +33,16 @@ class EventsController < ApplicationController
       format.html # index.html.erb
       format.xml  { render :xml => @events }
     end
+  end
+
+  # GET /events/map/:phone_number
+  def map
+    @event = Event.find(params[:id])
+    @contents = ActiveSupport::JSON.decode(@event.content)
+    @gps_coords = @contents['gpsCoordinates']
+#    if @gps_coords.nil? then
+#      @gps_coords = []
+#    end
   end
 
   # GET /events/1
@@ -62,6 +72,7 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   def edit
     @event = Event.find(params[:id])
+    @content = ActiveSupport::JSON.decode(@event.content)
   end
 
   # POST /events
@@ -87,7 +98,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.update_attributes(params[:event])
-        format.html { redirect_to(@event, :notice => 'Event was successfully updated.') }
+        format.html { redirect_to(@event, :notice => 'Event was successfully updated.' + params.inspect) }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

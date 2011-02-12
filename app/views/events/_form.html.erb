@@ -11,6 +11,10 @@
     </div>
   <% end %>
 
+  <%= fields_for @content do |content_form| %>
+    <%= content_form.label :name %>
+    <%= content_form.text_field :name %>
+  <% end %>
   <div class="field">
     <%= f.label :uuid %><br />
     <%= f.text_field :uuid %>
@@ -18,10 +22,6 @@
   <div class="field">
     <%= f.label :content %><br />
     <%= f.text_field :content %>
-  </div>
-  <div class="field">
-    <%= f.label :user_id %><br />
-    <%= f.text_field :user_id %>
   </div>
   <div class="actions">
     <%= f.submit %>

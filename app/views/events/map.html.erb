@@ -1,0 +1,10 @@
+Map for event: <%= @contents['name'] %>
+<br/>
+GPS Coordinates: <%= @gps_coordinates %>
+
+<% @gps_coords.each do |gps_coord| %>
+  Longitude: <%= gps_coord['longitude'] %>
+  Latitude: <%= gps_coord['latitude'] %>
+  Time: <%= gps_coord['time'] %>
+<% end %>
+	

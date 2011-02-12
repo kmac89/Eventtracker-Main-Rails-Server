@@ -1,3 +1,4 @@
+
 <%= form_for(@event) do |f| %>
   <% if @event.errors.any? %>
     <div id="error_explanation">
@@ -11,19 +12,19 @@
     </div>
   <% end %>
 
-  <%= fields_for @content do |content_form| %>
-    <%= content_form.label :name %>
-    <%= content_form.text_field :name %>
+  <% @edit_fields.each do |field, name| %>
+    <div class="field">
+      <%= label :content, name %>
+      <%= text_field :content, field, :id => field, :value => @content[field] %>
+    </div>
   <% end %>
-  <div class="field">
-    <%= f.label :uuid %><br />
-    <%= f.text_field :uuid %>
-  </div>
-  <div class="field">
-    <%= f.label :content %><br />
-    <%= f.text_field :content %>
-  </div>
   <div class="actions">
     <%= f.submit %>
   </div>
 <% end %>
+<script type="text/javascript">
+  <% ['startTime', 'endTime'].each do |time| %>
+    AnyTime.picker( "<%= time %>",
+	 	    { format: "%I:%i%p %b %d, %Y", firstDOW: 1 } );
+  <% end %>
+</script>

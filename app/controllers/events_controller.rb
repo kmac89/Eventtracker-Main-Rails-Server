@@ -21,9 +21,9 @@ class EventsController < ApplicationController
       @events.collect {|event|
         json_data = ActiveSupport::JSON.decode(event.content)
         ['startTime', 'endTime'].each do |time|
-          if json_data[time]
-            epoch_time = Time.at(json_data[time] / 1000)
-            json_data[time+'R'] = epoch_time.strftime('%I:%M%p %m-%d-%y')
+          long_time = json_data[time]
+          if long_time
+            json_data[time] = Event.time_long_to_s(long_time)
           end
         end
         [event, json_data]
@@ -73,6 +73,10 @@ class EventsController < ApplicationController
   def edit
     @event = Event.find(params[:id])
     @content = ActiveSupport::JSON.decode(@event.content)
+    ['startTime', 'endTime'].each do |time_key|
+      @content[time_key] = Event.time_long_to_s(@content[time_key])
+    end
+    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
   end
 
   # POST /events
@@ -95,9 +99,28 @@ class EventsController < ApplicationController
   # PUT /events/1.xml
   def update
     @event = Event.find(params[:id])
+    content = ActiveSupport::JSON.decode(@event.content)
+    params['content'].each do |key, value|
+      if ['startTime', 'endTime'].include?(key)
+        puts "Old: (#{key}, #{content[key]})"
+        puts "Old: #{Event.time_long_to_s(content[key])}"
+        puts "Translation: #{Event.time_s_to_long(value)}"
+        content[key] = Event.time_s_to_long(value)
+        puts "New: (#{key}, #{content[key]})"
+        puts "New: #{Event.time_long_to_s(content[key])}"
+      else
+        content[key] = value
+      end
+    end unless params['content'].nil?
+    @event.content = ActiveSupport::JSON.encode(content)
+
+
+    start_time = content['startTime']
+    end_time = content['endTime']
+    #@event.check_start_time_before_end(start_time, end_time)
 
     respond_to do |format|
-      if @event.update_attributes(params[:event])
+      if @event.save
         format.html { redirect_to(@event, :notice => 'Event was successfully updated.' + params.inspect) }
         format.xml  { head :ok }
       else

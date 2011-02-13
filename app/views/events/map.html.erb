@@ -15,8 +15,8 @@
   var marker;
   var mapbounds;
   var mapmarkers=new Array();
-  
-  
+  var tooltips=new Array();
+  var previous=null;
   function initialize() {
    //bogus options. the function autoZoomCenter will fix this
     var myOptions = {
@@ -27,12 +27,15 @@
 	
       map = new google.maps.Map(document.getElementById("map_canvas"),
         myOptions);
+	 	
 	  initializeGPSData();
 	  autoZoomCenter();
-	  infowindowStart = new google.maps.InfoWindow();   
-	  infowindowEnd = new google.maps.InfoWindow();   
+	
 	  if(mapmarkers.length > 0){
-		highlightMarker(mapmarkers[0]);
+		mapmarkers[0].setIcon("http://eventtracker.dyndns-at-home.com:3001/images/green_flag.png");
+		mapmarkers[mapmarkers.length-1].setIcon("http://eventtracker.dyndns-at-home.com:3001/images/red_flag.png");
+	
+		/*
 		var nameOfEvent= '<%= @contents['name'] %>';
 		var startTime= mapmarkers[0].title;
 		var endTime= mapmarkers[mapmarkers.length-1].title;
@@ -43,28 +46,51 @@
 		infowindowEnd.setPosition(mapmarkers[mapmarkers.length-1].position);
 		infowindowEnd.setContent('Event: '+nameOfEvent+ '<\BR>End Time: ' + endTime);
 		infowindowEnd.open(map);
+		*/
 	  }
 
-	  
-	  
-		
-	  
+	
   }
   function initializeGPSData(){
-   
+	
 	<% @gps_coords.each do |gps_coord| %>
 		var latlng = new google.maps.LatLng(<%= gps_coord['latitude'] %>, <%= gps_coord['longitude'] %>);
 		var timeOfGPSData=formatDateTime(<%= gps_coord['time'] %>);
-		marker = new google.maps.Marker({
-			position: latlng, 
-			title: timeOfGPSData
-		}); 
+		
+		var marker =createMarker(latlng,timeOfGPSData);
+		
+	   
 		mapmarkers.push(marker);
 		marker.setMap(map);
-		
-	<% end %>
-  }
-  function autoZoomCenter(){
+	<% end %>	
+}
+
+ function createMarker(latlong, time)
+ {
+	
+	var marker=new google.maps.Marker({
+			position: latlong, 
+			title: time
+		});
+	  var tooltip = new google.maps.InfoWindow({
+		   content: marker.title
+       }); 
+	   tooltips.push(tooltip);
+	  google.maps.event.addListener(marker, 'click', function() {
+		if(previous != null){
+			previous.close();
+		}
+		tooltip.open(map, marker);
+		previous=tooltip;
+    });	
+ 
+	return marker;
+ 
+ }
+
+
+  function autoZoomCenter()
+  {
   mapbounds = new google.maps.LatLngBounds();
   for(var i=0; i<mapmarkers.length; i++){ 
      mapbounds.extend(mapmarkers[i].position ); 
@@ -89,15 +115,12 @@
 	min = (min < 10) ? '0' + min : min;
 	return dateTime = month + '/' + day + '/' + dateTime.getFullYear() + ' ' + hour + ':' + min + ' ' + am_pm;
 }
-  function highlightMarker(marker){
-  //marker.setIcon("http://maps.google.com/mapfiles/ms/icons/yellow-dot.png");
-  }
 
 
 </script>
 </head>
 <body onload="initialize()">
   <h3>Map for event: <%= @contents['name'] %></h3>
-  <div id="map_canvas" style="width:50%; height:50%; border: 2px solid rgb(0, 0, 0)" ></div>
+  <div id="map_canvas" style="width:50%; height:50%; border: 1px solid rgb(0, 0, 0)" ></div>
 </body>
 </html>

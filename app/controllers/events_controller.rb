@@ -35,6 +35,29 @@ class EventsController < ApplicationController
     end
   end
 
+  def poll
+    if params['PollTime']
+      previous_poll_time = DateTime.parse(params['PollTime'])
+      puts previous_poll_time
+    end
+    user = User.find_by_uuid(params['UUIDOfDevice'])
+    if previous_poll_time then
+      events = Event.find(:all, :conditions => ['updated_at > ? AND user_id = ?', previous_poll_time, user.id])
+    else
+      events = Event.where(:user_id => user.id)
+    end
+    events_to_send = events.collect do |event|
+      event_contents = ActiveSupport::JSON.decode(event.content)
+      event_contents['uuid'] = event.uuid
+      event_contents['updated_at'] = event.updated_at
+      event_contents
+    end
+
+    response = {'pollTime' => DateTime.now, 'events' => events_to_send }
+
+    render :json => response, :status => 200
+  end
+
   # GET /events/map/:phone_number
   def map
     @event = Event.find(params[:id])

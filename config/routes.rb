@@ -5,6 +5,7 @@ MainRailsServer::Application.routes.draw do
   scope "events" do
     match "upload"  =>  "events#upload"
     match "delete"  =>  "events#delete"
+    match "poll"    =>  "events#poll"
     match "phone/:phone_number"   =>  "events#user"
     match "map/:id"     =>  "events#map"
   end

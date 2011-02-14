@@ -8,6 +8,7 @@ MainRailsServer::Application.routes.draw do
     match "poll"    =>  "events#poll"
     match "phone/:phone_number"   =>  "events#user"
     match "map/:id"     =>  "events#map"
+    match "new/:phone_number"     => "events#new"
   end
   resources :events
 

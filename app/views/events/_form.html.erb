@@ -18,10 +18,12 @@
       <%= text_field :content, field, :id => field, :value => @content[field] %>
     </div>
   <% end %>
+  <%= hidden_field(:user, :id, :value => @event.user_id) %>
   <div class="actions">
     <%= f.submit %>
   </div>
 <% end %>
+
 <script type="text/javascript">
   <% ['startTime', 'endTime'].each do |time| %>
     AnyTime.picker( "<%= time %>",

@@ -3,6 +3,7 @@
 <h2>
   Showing all events for user with phone number '<%= @user.phone_number %>'
 </h2>
+<%= link_to 'Create a new Event', "/events/new/#{@user.phone_number}" %>
 
 <table id='events' class='datatable'>
   <thead>

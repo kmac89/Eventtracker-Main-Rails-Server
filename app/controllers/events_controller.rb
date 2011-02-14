@@ -85,6 +85,10 @@ class EventsController < ApplicationController
   # GET /events/new.xml
   def new
     @event = Event.new
+    user = User.find_by_phone_number(params[:phone_number])
+    @event.user_id = user.id
+    @content = {}
+    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
 
     respond_to do |format|
       format.html # new.html.erb
@@ -105,15 +109,39 @@ class EventsController < ApplicationController
   # POST /events
   # POST /events.xml
   def create
-    @event = Event.new(params[:event])
+    if params[:event]
+      @event = Event.find(params[:event])
+    else
+      @event = Event.new
+      @event.user_id = params[:user][:id]
+    end
+    if @event.content
+      @content = ActiveSupport::JSON.decode(@event.content)
+    else
+      @content = {}
+    end
+    params['content'].each do |key, value|
+      if ['startTime', 'endTime'].include?(key)
+        @content[key] = Event.time_s_to_long(value)
+      else
+        @content[key] = value
+      end
+    end unless params['content'].nil?
+    @event.content = ActiveSupport::JSON.encode(@content)
+
+    user = User.find(@event.user_id)
+    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
+
 
     respond_to do |format|
       if @event.save
-        format.html { redirect_to(@event, :notice => 'Event was successfully created.') }
-        format.xml  { render :xml => @event, :status => :created, :location => @event }
+        format.html { redirect_to("/events/phone/#{user.phone_number}", :notice => 'Event was successfully created.') }
+        format.xml  { head :ok }
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @event.errors, :status => :unprocessable_entity }
+        @content['startTime'] = params['content']['startTime']
+        @content['endTime'] = params['content']['endTime']
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => event.errors, :status => :unprocessable_entity }
       end
     end
   end

@@ -49,7 +49,7 @@ class EventsController < ApplicationController
     events_to_send = events.collect do |event|
       event_contents = ActiveSupport::JSON.decode(event.content)
       event_contents['uuid'] = event.uuid
-      event_contents['updated_at'] = event.updated_at
+      event_contents['updated_at'] = event.updated_at.to_s
       event_contents['deleted'] = event.deleted
       event_contents
     end
@@ -223,9 +223,13 @@ class EventsController < ApplicationController
     @event.user_id = user.id unless user.nil?
     @event.content = params[:EventData]
     @event.deleted = params[:Deleted]
-    #TODO add update comparison?
+    phone_updated_at = DateTime.parse(params[:UpdatedAt])
 
-    if @event.save
+    if @event.persisted?
+      event_older = phone_updated_at < @event.updated_at
+    end
+
+    if event_older or @event.save
       render :text => 'OK', :status => 200
     else
       puts @event.errors

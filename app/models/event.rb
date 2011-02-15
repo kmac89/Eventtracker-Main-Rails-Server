@@ -2,9 +2,9 @@ require 'uuidtools'
 
 class Event < ActiveRecord::Base
   belongs_to :user
+  before_create :init_defaults
   DATE_TIME_FORMAT = '%I:%M%p %b %d, %Y'
 
- # validates :uuid, :presence => true
   validates :user_id, :presence => true
 
   def Event.time_long_to_s(long_time)
@@ -21,8 +21,9 @@ class Event < ActiveRecord::Base
     errors.add_to_base('Start time must be before end time.') if start_time > end_time
   end
 
-  def before_create
+  def init_defaults
     self.uuid = UUIDTools::UUID.timestamp_create().to_s unless !self.uuid.nil?
     self.content = '{}' unless !self.content.nil?
+    self.deleted = false unless !self.deleted.nil?
   end
 end

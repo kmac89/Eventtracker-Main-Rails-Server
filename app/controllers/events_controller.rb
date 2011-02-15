@@ -15,7 +15,7 @@ class EventsController < ApplicationController
   # GET /events/phone/:phone_number
   def user
     @user = User.find_by_phone_number(params[:phone_number])
-    @events = Event.find_all_by_user_id(@user.id) unless @user.nil?
+    @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
 
     @event_content_pairs = 
       @events.collect {|event|
@@ -42,7 +42,7 @@ class EventsController < ApplicationController
     end
     user = User.find_by_uuid(params['UUIDOfDevice'])
     if previous_poll_time then
-      events = Event.find(:all, :conditions => ['updated_at > ? AND user_id = ?', previous_poll_time, user.id])
+      events = Event.find( :all, :conditions => ["updated_at > ? AND user_id = ?", previous_poll_time, user.id] )
     else
       events = Event.where(:user_id => user.id)
     end
@@ -50,6 +50,7 @@ class EventsController < ApplicationController
       event_contents = ActiveSupport::JSON.decode(event.content)
       event_contents['uuid'] = event.uuid
       event_contents['updated_at'] = event.updated_at
+      event_contents['deleted'] = event.deleted
       event_contents
     end
 
@@ -135,7 +136,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.save
-        format.html { redirect_to("/events/phone/#{user.phone_number}", :notice => 'Event was successfully created.') }
+        format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully created.') }
         format.xml  { head :ok }
       else
         @content['startTime'] = params['content']['startTime']
@@ -153,12 +154,7 @@ class EventsController < ApplicationController
     content = ActiveSupport::JSON.decode(event.content)
     params['content'].each do |key, value|
       if ['startTime', 'endTime'].include?(key)
-        puts "Old: (#{key}, #{content[key]})"
-        puts "Old: #{Event.time_long_to_s(content[key])}"
-        puts "Translation: #{Event.time_s_to_long(value)}"
         content[key] = Event.time_s_to_long(value)
-        puts "New: (#{key}, #{content[key]})"
-        puts "New: #{Event.time_long_to_s(content[key])}"
       else
         content[key] = value
       end
@@ -170,7 +166,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if event.save
-        format.html { redirect_to("/events/phone/#{user.phone_number}", :notice => 'Event was successfully updated.' + params.inspect) }
+        format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -184,10 +180,11 @@ class EventsController < ApplicationController
   def destroy
     event = Event.find(params[:id])
     user = User.find(event.user_id)
-    event.destroy
+    event.deleted = true
+    event.save
 
     respond_to do |format|
-      format.html { redirect_to("/events/phone/#{user.phone_number}") }
+      format.html { redirect_to("/#{user.phone_number}") }
       format.xml  { head :ok }
     end
   end
@@ -201,13 +198,18 @@ class EventsController < ApplicationController
     if uuid and user_uuid then
       @event = Event.find_by_uuid(uuid)
       # user_uuid must match
-      errors = @event.user_id == User.find_by_uuid(user_uuid)
+      if @event
+        errors = @event.user_id == User.find_by_uuid(user_uuid)
+      else
+        errors = true
+      end
     else
       # must pass uuid and device uuid
       errors = true
     end
+    @event.deleted = true
 
-    if errors
+    if errors or !@event.save
       render :text => 'Could not delete', :status => 400
     else
       render :text => 'OK', :status => 200
@@ -220,10 +222,13 @@ class EventsController < ApplicationController
     user = User.find_by_uuid(params[:UUIDOfDevice])
     @event.user_id = user.id unless user.nil?
     @event.content = params[:EventData]
+    @event.deleted = params[:Deleted]
+    #TODO add update comparison?
 
     if @event.save
       render :text => 'OK', :status => 200
     else
+      puts @event.errors
       render :text => @event.errors.to_s, :status => 400
     end
   end

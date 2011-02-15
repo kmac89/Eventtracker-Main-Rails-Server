@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110207063214) do
+ActiveRecord::Schema.define(:version => 20110214093354) do
 
   create_table "events", :force => true do |t|
     t.string   "uuid",       :limit => 36
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(:version => 20110207063214) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "deleted",                  :default => false
   end
 
   create_table "users", :force => true do |t|

@@ -19,7 +19,7 @@
       <tr>
 	<td><%= user.uuid %></td>
 	<td><%= user.phone_number %></td>
-	<td><%= link_to 'Events', "/events/phone/#{user.phone_number}" %></td>
+	<td><%= link_to 'Events', "/#{user.phone_number}" %></td>
 	<td><%= link_to 'Show', user %></td>
 	<td><%= link_to 'Edit', edit_user_path(user) %></td>
 	<td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>

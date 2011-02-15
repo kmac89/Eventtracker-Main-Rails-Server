@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  has_many :events
+  has_many :events, :dependent => :destroy
 
   validates :uuid, :presence => true
   validates :phone_number, :presence => true

@@ -6,9 +6,6 @@ MainRailsServer::Application.routes.draw do
     match "upload"  =>  "events#upload"
     match "delete"  =>  "events#delete"
     match "poll"    =>  "events#poll"
-    match "phone/:phone_number"   =>  "events#user"
-    match "map/:id"     =>  "events#map"
-    match "new/:phone_number"     => "events#new"
   end
   resources :events
 
@@ -18,7 +15,13 @@ MainRailsServer::Application.routes.draw do
   end
   resources :users
 
-  get "home/index"
+  constraints :phone_number => /\d+/ do
+    match ":phone_number"  => "events#user"
+    match ":phone_number/map/:id"     => "events#map"
+    match ":phone_number/new"     => "events#new"
+  end
+
+  get "users/index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

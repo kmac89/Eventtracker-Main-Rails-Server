@@ -3,7 +3,7 @@
 <h2>
   Showing all events for user with phone number '<%= @user.phone_number %>'
 </h2>
-<%= link_to 'Create a new Event', "/events/new/#{@user.phone_number}" %>
+<%= link_to 'Create a new Event', "/#{@user.phone_number}/new" %>
 
 <table id='events' class='datatable'>
   <thead>
@@ -24,7 +24,7 @@
 	<td><%= content['notes'] %></td>
 	<td><%= content['startTime'] %></td>
 	<td><%= content['endTime'] %></td>
-	<td><%= link_to 'Map', "/events/map/#{event.id}" %></td>
+	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}" %></td>
 	<td><%= link_to 'Edit', edit_event_path(event) %></td>
 	<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
       </tr>

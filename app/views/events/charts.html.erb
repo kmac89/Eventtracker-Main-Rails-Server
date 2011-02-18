@@ -1,0 +1,10 @@
+<h2>
+  Display chat for user with phone number '<%= @user.phone_number %>'
+</h2>
+
+<% @tag_times.each do |tag, time| %>
+  You spent <%= time %> hours on: <%= tag %>
+  <br/>
+<% end %>
+
+<%= link_to 'Back', "/#{@user.phone_number}" %>

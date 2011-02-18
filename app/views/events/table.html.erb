@@ -1,15 +1,17 @@
-<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => nil, :class => "last"},] %>
+<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => nil, :class => "last"},] %>
 <%= raw datatable(columns, {:sort_by => "[2, 'desc']", :processing => image_tag("spinner.gif") }) %>
 <h2>
   Showing all events for user with phone number '<%= @user.phone_number %>'
 </h2>
 <%= link_to 'Create a new Event', "/#{@user.phone_number}/new" %>
+<%= link_to 'View charts', "/#{@user.phone_number}/charts" %>
 
 <table id='events' class='datatable'>
   <thead>
     <tr>
       <th>Events Name</th>
       <th>Notes</th>
+      <th>Category</th>
       <th>Start Time</th>
       <th>End Time</th>
       <th></th>
@@ -22,6 +24,7 @@
       <tr>
 	<td><%= content['name'] %></td>
 	<td><%= content['notes'] %></td>
+	<td><%= content['tag'] %></td>
 	<td><%= content['startTime'] %></td>
 	<td><%= content['endTime'] %></td>
 	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}" %></td>

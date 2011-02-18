@@ -16,9 +16,10 @@ MainRailsServer::Application.routes.draw do
   resources :users
 
   constraints :phone_number => /\d+/ do
-    match ":phone_number"  => "events#user"
+    match ":phone_number"  => "events#table"
     match ":phone_number/map/:id"     => "events#map"
     match ":phone_number/new"     => "events#new"
+    match ":phone_number/charts"     => "events#charts"
   end
 
   get "users/index"

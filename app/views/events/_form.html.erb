@@ -1,4 +1,6 @@
-
+<script type="text/javascript">
+  event_contents = <%= @event.content %>
+</script>
 <%= form_for(@event) do |f| %>
   <% if @event.errors.any? %>
     <div id="error_explanation">

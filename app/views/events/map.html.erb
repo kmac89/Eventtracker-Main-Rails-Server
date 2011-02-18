@@ -122,5 +122,6 @@
 <body onload="initialize()">
   <h3>Map for event: <%= @contents['name'] %></h3>
   <div id="map_canvas" style="width:50%; height:50%; border: 1px solid rgb(0, 0, 0)" ></div>
+<%= link_to 'Back', "/#{@user.phone_number}" %>
 </body>
 </html>

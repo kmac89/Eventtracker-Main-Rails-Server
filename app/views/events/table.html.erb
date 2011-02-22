@@ -26,12 +26,12 @@
 	<td><%= content['name'] %></td>
 	<td><%= content['notes'] %></td>
 	<td><%= content['tag'] %></td>
-	<td><%= content['startTime'] %></td>
-	<td><%= content['endTime'] %></td>
+	<td><%= content['startTimeR'] %></td>
+	<td><%= content['endTimeR'] %></td>
 	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}" %></td>
 	<td><%= link_to 'Edit', edit_event_path(event) %></td>
 	<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
-	<td style="display:none;"><%= content['startTimeR'] %></td>
+	<td style="display:none;"><%= content['startTime'] %></td>
       </tr>
     <% end %>
   </tbody>

@@ -1,5 +1,5 @@
-<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => nil, :class => "last"},] %>
-<%= raw datatable(columns, {:sort_by => "[2, 'desc']", :processing => image_tag("spinner.gif") }) %>
+<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => nil, :class => "last"},] %>
+<%= raw datatable(columns, {:sort_by => "[8, 'desc']", :processing => image_tag("spinner.gif") }) %>
 <h2>
   Showing all events for user with phone number '<%= @user.phone_number %>'
 </h2>
@@ -14,9 +14,10 @@
       <th>Category</th>
       <th>Start Time</th>
       <th>End Time</th>
-      <th></th>
-      <th></th>
-      <th></th>
+      <th/>
+      <th/>
+      <th/>
+      <th style="display:none;"/>
     </tr>
   </thead>
   <tbody>
@@ -30,6 +31,7 @@
 	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}" %></td>
 	<td><%= link_to 'Edit', edit_event_path(event) %></td>
 	<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
+	<td style="display:none;"><%= content['startTimeR'] %></td>
       </tr>
     <% end %>
   </tbody>

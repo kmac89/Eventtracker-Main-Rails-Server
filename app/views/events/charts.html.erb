@@ -1,10 +1,44 @@
 <h2>
-  Display chat for user with phone number '<%= @user.phone_number %>'
+  Display chart for user with phone number '<%= @user.phone_number %>' 
 </h2>
 
-<% @tag_times.each do |tag, time| %>
-  You spent <%= time %> hours on: <%= tag %>
-  <br/>
-<% end %>
+
+
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+
+
+
+      function drawChart() {
+        var data = new google.visualization.DataTable();
+
+	data.addColumn('string', 'Event');
+        data.addColumn('number', 'Hours');
+	
+	<% @tag_times.each do |tag, time| %>
+	   if('<%= tag %>' == '')
+		data.addRow(['Unspecified',  <%= time %>]);
+	   else
+		 data.addRow([' <%= tag %>',  <%= time %>]);	
+  	  // You spent <%= time %> hours on: <%= tag %>
+  	 //  <br/>	
+	  
+	<% end %>
+      
+
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, {width: 550, height: 400, title: 'My Events (in hours)'});
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="chart_div"></div>
+  </body>
+</html>
 
 <%= link_to 'Back', "/#{@user.phone_number}" %>

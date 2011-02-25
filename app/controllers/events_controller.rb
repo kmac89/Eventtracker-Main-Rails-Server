@@ -23,7 +23,7 @@ class EventsController < ApplicationController
         ['startTime', 'endTime'].each do |time|
           long_time = json_data[time]
           if long_time
-            json_data[time] = Event.time_long_to_s(long_time)
+            json_data[time+'R'] = Event.time_long_to_s(long_time)
           end
         end
         [event, json_data]

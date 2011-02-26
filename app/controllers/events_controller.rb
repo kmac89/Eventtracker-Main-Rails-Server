@@ -17,17 +17,10 @@ class EventsController < ApplicationController
     @user = User.find_by_phone_number(params[:phone_number])
     @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
 
-    @event_content_pairs = 
-      @events.collect {|event|
-        json_data = ActiveSupport::JSON.decode(event.content)
-        ['startTime', 'endTime'].each do |time|
-          long_time = json_data[time]
-          if long_time
-            json_data[time+'R'] = Event.time_long_to_s(long_time)
-          end
-        end
-        [event, json_data]
+    @contents = @events.collect {|event|
+	event.content
     }
+    @contents = @contents.to_json
 
     respond_to do |format|
       format.html # index.html.erb

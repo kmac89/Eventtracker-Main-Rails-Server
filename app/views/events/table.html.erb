@@ -1,4 +1,4 @@
-<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => nil, :class => "last"},] %>
+<% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :class => "last"}] %>
 <%= raw datatable(columns, {:sort_by => "[8, 'desc']", :processing => image_tag("spinner.gif") }) %>
 <h2>
   Showing all events for user with phone number '<%= @user.phone_number %>'
@@ -21,18 +21,44 @@
     </tr>
   </thead>
   <tbody>
-    <% @event_content_pairs.each do |event, content| %>
-      <tr>
-	<td><%= content['name'] %></td>
-	<td><%= content['notes'] %></td>
-	<td><%= content['tag'] %></td>
-	<td><%= content['startTimeR'] %></td>
-	<td><%= content['endTimeR'] %></td>
+    <% @events.each do |event| %>
+      <tr class='event_row'>
+	<td id='name'></td>
+	<td id='notes'></td>
+	<td id='tag'></td>
+	<td id='startTimeR'></td>
+	<td id='endTimeR'></td>
 	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}" %></td>
 	<td><%= link_to 'Edit', edit_event_path(event) %></td>
 	<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
-	<td style="display:none;"><%= content['startTime'] %></td>
+	<td style="display:none;" id='startTime'></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<script type="text/javascript">
+  var encryptedData=<%= raw @contents %>;
+  var unencryptedData=encryptionHelpers.unencryptAll(encryptedData);
+  var unencryptedEvents=new Array();
+  for(var i=0; i < unencryptedData.length;i++){
+    unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
+  }
+  var row_elements = ['name', 'notes', 'tag', 'startTime'];
+  var index=0;
+  $('.event_row').each(function () {
+    var event_data = unencryptedEvents[index];
+
+    for (var i=0; i<row_elements.length; i++) {
+      var param_name = row_elements[i];
+      $(this).find('#' + param_name).html(event_data[param_name]);
+    }
+
+    var startTime = new Date(event_data['startTime']);
+    var endTime = new Date(event_data['endTime']);
+    $(this).find('#startTimeR').text(startTime.toLocaleString());
+    $(this).find('#endTimeR').html(endTime.toLocaleString());
+
+    index++;
+  });
+</script>

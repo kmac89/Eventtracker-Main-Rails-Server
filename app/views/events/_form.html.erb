@@ -1,6 +1,10 @@
-<script type="text/javascript">
-  event_contents = <%= @event.content %>
-</script>
+<% @edit_fields.each do |field, name| %>
+    <div>
+      <%= label :content, name %>
+      <%= text_field :content, field, :id => field, :value => "" %>
+    </div>
+<% end %>
+
 <%= form_for(@event) do |f| %>
   <% if @event.errors.any? %>
     <div id="error_explanation">
@@ -16,19 +20,49 @@
 
   <% @edit_fields.each do |field, name| %>
     <div class="field">
-      <%= label :content, name %>
-      <%= text_field :content, field, :id => field, :value => @content[field] %>
+      <%= hidden_field :content, field, :id => 'encrypted_' + field, :value => "" %>
     </div>
   <% end %>
   <%= hidden_field(:user, :id, :value => @event.user_id) %>
-  <div class="actions">
+  <div class="actions" style='display:none;'>
     <%= f.submit %>
   </div>
-<% end %>
 
+<% end %>
+  <INPUT TYPE="button" NAME="myButton" VALUE="Update Event" onClick="submitButton()" > 
 <script type="text/javascript">
   <% ['startTime', 'endTime'].each do |time| %>
     AnyTime.picker( "<%= time %>",
 	 	    { format: "%I:%i%p %b %d, %Y", firstDOW: 1 } );
   <% end %>
+ 
 </script>
+
+<script type="text/javascript">
+  var encryptedData=<%= raw @contents %>;
+  if(encryptedData != null){
+  	var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
+  	var unencryptedEvent=jQuery.parseJSON(unencryptedData);
+  	var startTime=new Date(unencryptedEvent['startTime']);
+  	var endTime= new Date(unencryptedEvent['endTime']);
+ 	 unencryptedEvent['startTime']=startTime.toLocaleString();
+  	unencryptedEvent['endTime']=endTime.toLocaleString();
+  	$('#startTime').attr('value', startTime); 
+  	$('#endTime').attr('value', endTime);
+  	$('#name').attr('value', unencryptedEvent['name']);
+  	$('#notes').attr('value', unencryptedEvent['notes']); 		
+  }
+   function submitButton(){
+    alert('hello');
+    var startDate=new Date($('#startTime').attr('value'));
+    var endDate=new Date($('#endTime').attr('value'));
+    $('#encrypted_startTime').attr('value',GibberishAES.enc(startDate.getTime(),"hello"));
+    $('#encrypted_endTime').attr('value',GibberishAES.enc(endDate.getTime(),"hello"));
+    $('#encrypted_name').attr('value' ,GibberishAES.enc($('#name').attr('value'), "hello"));
+    $('#encrypted_notes').attr('value',GibberishAES.enc($('#notes').attr('value'), "hello"));
+    document.forms[0].submit();
+  } 	
+
+
+</script>
+

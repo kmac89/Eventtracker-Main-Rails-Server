@@ -39,20 +39,12 @@ class EventsController < ApplicationController
   def charts
     @user = User.find_by_phone_number(params[:phone_number])
     @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
+    @contents = @events.collect {|event|
+     # ActiveSupport::JSON.decode(event.content)
+	event.content
+    }
+    @contents = @contents.to_json
 
-    @tag_times = {}
-    @events.each do |event|
-      json_data = ActiveSupport::JSON.decode(event.content)
-      start_time = json_data['startTime']
-      end_time = json_data['endTime']
-      # total time in hours
-      total_time = (end_time - start_time) * 1.0 / (1000 * 60 * 60)
-      tag = json_data['tag']
-      tag = 'Other' unless tag
-      prev_value = @tag_times[tag]
-      prev_value = 0 unless prev_value
-      @tag_times[tag] = prev_value + total_time
-    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -87,9 +79,10 @@ class EventsController < ApplicationController
   # GET /events/map/:phone_number
   def map
     @event = Event.find(params[:id])
+    @contents = @event.content.to_json	
     @user = User.find(@event.user_id)
-    @contents = ActiveSupport::JSON.decode(@event.content)
-    @gps_coords = @contents['gpsCoordinates']
+   # @contents = ActiveSupport::JSON.decode(@event.content)
+  #  @gps_coords = @contents['gpsCoordinates']
 #    if @gps_coords.nil? then
 #      @gps_coords = []
 #    end
@@ -115,6 +108,7 @@ class EventsController < ApplicationController
     @user = User.find_by_phone_number(params[:phone_number])
     @event.user_id = @user.id
     @content = {}
+    @contents = @event.content.to_json		
     @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
 
     respond_to do |format|
@@ -127,10 +121,11 @@ class EventsController < ApplicationController
   def edit
     @event = Event.find(params[:id])
     @user = User.find(@event.user_id)
-    @content = ActiveSupport::JSON.decode(@event.content)
-    ['startTime', 'endTime'].each do |time_key|
-      @content[time_key] = Event.time_long_to_s(@content[time_key])
-    end
+    @contents = @event.content.to_json	
+    # @content = ActiveSupport::JSON.decode(@event.content)
+    # ['startTime', 'endTime'].each do |time_key|
+    # @content[time_key] = Event.time_long_to_s(@content[time_key])
+    #end
     @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
   end
 

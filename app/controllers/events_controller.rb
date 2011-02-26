@@ -166,18 +166,9 @@ class EventsController < ApplicationController
   # PUT /events/1.xml
   def update
     event = Event.find(params[:id])
-    content = ActiveSupport::JSON.decode(event.content)
-    params['content'].each do |key, value|
-      if ['startTime', 'endTime'].include?(key)
-        content[key] = Event.time_s_to_long(value)
-      else
-        content[key] = value
-      end
-    end unless params['content'].nil?
-    event.content = ActiveSupport::JSON.encode(content)
+    event.content = params['content']['b'] # the b part is a temp hack- I think this should work given the params that are passed....
 
     user = User.find(event.user_id)
-
 
     respond_to do |format|
       if event.save

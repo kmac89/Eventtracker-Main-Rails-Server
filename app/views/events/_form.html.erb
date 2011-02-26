@@ -55,12 +55,14 @@
     var passwd = "hello";
     var startDate=new Date($('#startTime').attr('value'));
     var endDate=new Date($('#endTime').attr('value'));
-    var content = new Array();
+    var content = {};
     content['startTime'] = startDate.getTime();
     content['endTime'] = endDate.getTime();
     content['name'] = $('#name').attr('value');
     content['notes'] = $('#notes').attr('value');
     content['tag'] = $('#tag').attr('value');
+    var to_encrypt = JSON.stringify(content);
+    alert(to_encrypt);
     var encrypted_content = GibberishAES.enc(JSON.stringify(content), passwd);
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();

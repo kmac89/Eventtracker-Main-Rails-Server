@@ -167,9 +167,8 @@ class EventsController < ApplicationController
   def update
     event = Event.find(params[:id])
     new_content = params['content']['b']
-    event.content =  ActiveSupport::JSON.decode(new_content) # the b part is a temp hack- I think this should work given the params that are passed....
-    params['new_content'] = event.content
-    raise Exception
+    event.content = new_content
+    #event.content =  ActiveSupport::JSON.decode(new_content) # the b part is a temp hack- I think this should work given the params that are passed....
 
     user = User.find(event.user_id)
 

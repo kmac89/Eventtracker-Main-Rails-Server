@@ -45,10 +45,11 @@
   	var endTime= new Date(unencryptedEvent['endTime']);
  	unencryptedEvent['startTime']=startTime.toLocaleString();
   	unencryptedEvent['endTime']=endTime.toLocaleString();
-  	$('#startTime').attr('value', startTime); 
+  	$('#startTime').attr('value', startTime);
   	$('#endTime').attr('value', endTime);
   	$('#name').attr('value', unencryptedEvent['name']);
-  	$('#notes').attr('value', unencryptedEvent['notes']); 		
+  	$('#notes').attr('value', unencryptedEvent['notes']);
+  	$('#tag').attr('value', unencryptedEvent['tag']);
   }
    function submitButton(){
     var passwd = "hello";
@@ -59,7 +60,7 @@
     content['endTime'] = endDate.getTime();
     content['name'] = $('#name').attr('value');
     content['notes'] = $('#notes').attr('value');
-    content['tag'] = $('#tag').attr('bla');
+    content['tag'] = $('#tag').attr('value');
     var encrypted_content = GibberishAES.enc(JSON.stringify(content), passwd);
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();

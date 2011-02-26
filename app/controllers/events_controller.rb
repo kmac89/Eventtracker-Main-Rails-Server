@@ -72,7 +72,7 @@ class EventsController < ApplicationController
   # GET /events/map/:phone_number
   def map
     @event = Event.find(params[:id])
-    @contents = @event.content.to_json	
+    @contents = @event.content.to_json
     @user = User.find(@event.user_id)
    # @contents = ActiveSupport::JSON.decode(@event.content)
   #  @gps_coords = @contents['gpsCoordinates']
@@ -114,12 +114,12 @@ class EventsController < ApplicationController
   def edit
     @event = Event.find(params[:id])
     @user = User.find(@event.user_id)
-    @contents = @event.content.to_json	
+    @contents = @event.content.to_json
     # @content = ActiveSupport::JSON.decode(@event.content)
     # ['startTime', 'endTime'].each do |time_key|
     # @content[time_key] = Event.time_long_to_s(@content[time_key])
     #end
-    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
+    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes', 'tag' => 'Category'}
   end
 
   # POST /events
@@ -166,7 +166,10 @@ class EventsController < ApplicationController
   # PUT /events/1.xml
   def update
     event = Event.find(params[:id])
-    event.content = params['content']['b'] # the b part is a temp hack- I think this should work given the params that are passed....
+    new_content = params['content']['b']
+    event.content =  ActiveSupport::JSON.decode(new_content) # the b part is a temp hack- I think this should work given the params that are passed....
+    params['new_content'] = event.content
+    raise Exception
 
     user = User.find(event.user_id)
 

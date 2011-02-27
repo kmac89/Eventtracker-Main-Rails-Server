@@ -8,7 +8,6 @@
 	  encryptedData[i] = encryptedData[i].replace(/[ \r\n]+/g,'')
 	}
 	var unencryptedData=encryptionHelpers.unencryptAll(encryptedData);
-	alert(unencryptedData);
 	var unencryptedEvents=new Array();
 	for(var i=0; i < unencryptedData.length;i++){
 		unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);

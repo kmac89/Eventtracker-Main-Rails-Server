@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+
+<script type="text/javascript">
+  var encryptedData=<%= raw @contents %>;
+  encryptedData = encryptedData.replace(/[ \r\n]+/g,'')
+  var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
+  var unencryptedEvent=jQuery.parseJSON(unencryptedData);
+  var gpsCoords=unencryptedEvent['gpsCoordinates'];
+  alert("Your name is: " + sessionStorage.getItem('fullname')); 
+</script>	
+
+
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
@@ -35,34 +45,21 @@
 		mapmarkers[0].setIcon("http://eventtracker.dyndns-at-home.com:3001/images/green_flag.png");
 		mapmarkers[mapmarkers.length-1].setIcon("http://eventtracker.dyndns-at-home.com:3001/images/red_flag.png");
 	
-		/*
-		var nameOfEvent= '<%= @contents['name'] %>';
-		var startTime= mapmarkers[0].title;
-		var endTime= mapmarkers[mapmarkers.length-1].title;
-		infowindowStart.setPosition(mapmarkers[0].position);
-		infowindowStart.setContent('Event: '+nameOfEvent+ '<\BR>Start Time: ' + startTime);
-		infowindowStart.open(map);
-		
-		infowindowEnd.setPosition(mapmarkers[mapmarkers.length-1].position);
-		infowindowEnd.setContent('Event: '+nameOfEvent+ '<\BR>End Time: ' + endTime);
-		infowindowEnd.open(map);
-		*/
 	  }
 
 	
   }
   function initializeGPSData(){
 	
-	<% @gps_coords.each do |gps_coord| %>
-		var latlng = new google.maps.LatLng(<%= gps_coord['latitude'] %>, <%= gps_coord['longitude'] %>);
-		var timeOfGPSData=formatDateTime(<%= gps_coord['time'] %>);
-		
-		var marker =createMarker(latlng,timeOfGPSData);
-		
-	   
-		mapmarkers.push(marker);
-		marker.setMap(map);
-	<% end %>	
+	for(var i=0; i < gpsCoords.length; i++){
+	     var gpsCoord=gpsCoords[i];	
+	     var latlng = new google.maps.LatLng(gpsCoord['latitude'], gpsCoord['longitude'] );
+	     var timeOfGPSData=formatDateTime(gpsCoord['time']);
+             var marker =createMarker(latlng,timeOfGPSData);	
+             mapmarkers.push(marker);
+	     marker.setMap(map);	
+	}
+	
 }
 
  function createMarker(latlong, time)
@@ -120,7 +117,7 @@
 </script>
 </head>
 <body onload="initialize()">
-  <h3>Map for event: <%= @contents['name'] %></h3>
+  <h3>Map for event: <script type="text/javascript">document.write(unencryptedEvent['name']) </script></h3>
   <div id="map_canvas" style="width:50%; height:50%; border: 1px solid rgb(0, 0, 0)" ></div>
 <%= link_to 'Back', "/#{@user.phone_number}" %>
 </body>

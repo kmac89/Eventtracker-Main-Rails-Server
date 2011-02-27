@@ -2,34 +2,59 @@
   Display chart for user with phone number '<%= @user.phone_number %>' 
 </h2>
 
+ <script type="text/javascript">
+	var encryptedData=<%= raw @contents %>;
+	for (var i=0; i<encryptedData.length; i++) {
+	  encryptedData[i] = encryptedData[i].replace(/[ \r\n]+/g,'')
+	}
+	var unencryptedData=encryptionHelpers.unencryptAll(encryptedData);
+	var unencryptedEvents=new Array();
+	for(var i=0; i < unencryptedData.length;i++){
+		unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
+	}
+	//testing session storage
+	sessionStorage.setItem('fullname', 'John Paul');  
+	
+  </script>	
 
-
-<html>
+<html>	
   <head>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
-
-
-
+	
+      var tagTimes=new Array();	
+      function computeTagTimes(){
+          for(var i=0; i< unencryptedEvents.length; i++){
+		var event=unencryptedEvents[i];
+		var startTime=event['startTime'];
+		var endTime=event['endTime'];
+		var totalTime=(endTime - startTime) * 1.0 / (1000 * 60 * 60);
+		var tag=event['tag'];
+		if(tag==null || tag=='Select a tag')
+		    tag='Other';	
+		var prevValue=tagTimes['tag'];
+		if(prevValue==null)
+		     prevValue=0;
+		tagTimes[tag]=prevValue+totalTime;	
+          }
+      }
       function drawChart() {
         var data = new google.visualization.DataTable();
-
+	
 	data.addColumn('string', 'Event');
         data.addColumn('number', 'Hours');
 	
-	<% @tag_times.each do |tag, time| %>
-	   if('<%= tag %>' == '')
-		data.addRow(['Unspecified',  <%= time %>]);
-	   else
-		 data.addRow([' <%= tag %>',  <%= time %>]);	
-  	  // You spent <%= time %> hours on: <%= tag %>
-  	 //  <br/>	
-	  
-	<% end %>
-      
+	computeTagTimes();
 
+	for(var tag in tagTimes){
+	   if(tag == '')
+	       data.addRow(['Other',  tagTimes[tag]]);
+	   else
+	       data.addRow([tag,  tagTimes[tag]]);	 	
+	 }
+	
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, {width: 550, height: 400, title: 'My Events (in hours)'});
       }

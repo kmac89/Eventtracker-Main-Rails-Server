@@ -1,6 +1,14 @@
-<script type="text/javascript">
-  event_contents = <%= @event.content %>
-</script>
+<% @edit_fields.each do |field, name| %>
+  <div>
+    <%= label :content, name %>
+    <%= text_field :content, field, :id => field, :value => "" %>
+  </div>
+<% end %>
+  <div>
+    <%= label :content, 'End time' %>
+    <%= text_field :content, 'endTime', :id => 'endTime', :value => "" %>
+  </div>
+
 <%= form_for(@event) do |f| %>
   <% if @event.errors.any? %>
     <div id="error_explanation">
@@ -14,21 +22,57 @@
     </div>
   <% end %>
 
-  <% @edit_fields.each do |field, name| %>
-    <div class="field">
-      <%= label :content, name %>
-      <%= text_field :content, field, :id => field, :value => @content[field] %>
-    </div>
-  <% end %>
+  <div class="field">
+    <%= hidden_field :content, 'b', :id => 'encrypted_content', :value => "" %>
+  </div>
   <%= hidden_field(:user, :id, :value => @event.user_id) %>
-  <div class="actions">
+  <div class="actions" style='display:none;'>
     <%= f.submit %>
   </div>
-<% end %>
 
+<% end %>
+  <INPUT TYPE="button" NAME="myButton" VALUE="Update Event" onClick="submitButton()" > 
 <script type="text/javascript">
   <% ['startTime', 'endTime'].each do |time| %>
     AnyTime.picker( "<%= time %>",
-	 	    { format: "%I:%i%p %b %d, %Y", firstDOW: 1 } );
+	{ format: "%I:%i %p %b %d, %Y", firstDOW: 1 } );
   <% end %>
+ 
+</script>
+
+<script type="text/javascript">
+  <% if @contents %>
+    var encryptedData=<%= raw @contents %>;
+    encryptedData = encryptedData.replace(/[ \r\n]+/g,'');
+    var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
+
+    var unencryptedEvent=jQuery.parseJSON(unencryptedData);
+    var startTime=new Date(unencryptedEvent['startTime']);
+    var endTime= new Date(unencryptedEvent['endTime']);
+    unencryptedEvent['startTime']=dateHelpers.formatDateTime(unencryptedEvent['startTime']);
+    unencryptedEvent['endTime']=dateHelpers.formatDateTime(unencryptedEvent['endTime']);
+    $('#startTime').attr('value', unencryptedEvent['startTime']);
+    $('#endTime').attr('value', unencryptedEvent['endTime']);
+    $('#name').attr('value', unencryptedEvent['name']);
+    $('#notes').attr('value', unencryptedEvent['notes']);
+    $('#tag').attr('value', unencryptedEvent['tag']);
+  <% end %>
+
+   function submitButton(){
+    var passwd = "hello";
+    var startTimeString = $('#startTime').attr('value');
+    var endTimeString = $('#endTime').attr('value');
+
+    var content = {};
+    content['startTime'] = Date.parse(startTimeString); 
+    content['endTime'] = Date.parse(endTimeString);
+    content['name'] = $('#name').attr('value');
+    content['notes'] = $('#notes').attr('value');
+    content['tag'] = $('#tag').attr('value');
+    var encrypted_content = GibberishAES.enc(JSON.stringify(content), passwd);
+    $('#encrypted_content').attr('value', encrypted_content);
+    document.forms[0].submit();
+  } 	
+
+
 </script>

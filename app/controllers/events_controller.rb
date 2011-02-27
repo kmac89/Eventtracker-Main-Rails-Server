@@ -17,17 +17,10 @@ class EventsController < ApplicationController
     @user = User.find_by_phone_number(params[:phone_number])
     @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
 
-    @event_content_pairs = 
-      @events.collect {|event|
-        json_data = ActiveSupport::JSON.decode(event.content)
-        ['startTime', 'endTime'].each do |time|
-          long_time = json_data[time]
-          if long_time
-            json_data[time+'R'] = Event.time_long_to_s(long_time)
-          end
-        end
-        [event, json_data]
+    @contents = @events.collect {|event|
+	event.content
     }
+    @contents = @contents.to_json
 
     respond_to do |format|
       format.html # index.html.erb
@@ -39,20 +32,12 @@ class EventsController < ApplicationController
   def charts
     @user = User.find_by_phone_number(params[:phone_number])
     @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
+    @contents = @events.collect {|event|
+     # ActiveSupport::JSON.decode(event.content)
+	event.content
+    }
+    @contents = @contents.to_json
 
-    @tag_times = {}
-    @events.each do |event|
-      json_data = ActiveSupport::JSON.decode(event.content)
-      start_time = json_data['startTime']
-      end_time = json_data['endTime']
-      # total time in hours
-      total_time = (end_time - start_time) * 1.0 / (1000 * 60 * 60)
-      tag = json_data['tag']
-      tag = 'Other' unless tag
-      prev_value = @tag_times[tag]
-      prev_value = 0 unless prev_value
-      @tag_times[tag] = prev_value + total_time
-    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -87,9 +72,10 @@ class EventsController < ApplicationController
   # GET /events/map/:phone_number
   def map
     @event = Event.find(params[:id])
+    @contents = @event.content.to_json
     @user = User.find(@event.user_id)
-    @contents = ActiveSupport::JSON.decode(@event.content)
-    @gps_coords = @contents['gpsCoordinates']
+   # @contents = ActiveSupport::JSON.decode(@event.content)
+  #  @gps_coords = @contents['gpsCoordinates']
 #    if @gps_coords.nil? then
 #      @gps_coords = []
 #    end
@@ -114,8 +100,7 @@ class EventsController < ApplicationController
     @event = Event.new
     @user = User.find_by_phone_number(params[:phone_number])
     @event.user_id = @user.id
-    @content = {}
-    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
+    @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'startTime' => 'Start Time', 'notes' => 'Notes'}
 
     respond_to do |format|
       format.html # new.html.erb
@@ -127,35 +112,27 @@ class EventsController < ApplicationController
   def edit
     @event = Event.find(params[:id])
     @user = User.find(@event.user_id)
-    @content = ActiveSupport::JSON.decode(@event.content)
-    ['startTime', 'endTime'].each do |time_key|
-      @content[time_key] = Event.time_long_to_s(@content[time_key])
-    end
-    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
+    @contents = @event.content.to_json
+    # @content = ActiveSupport::JSON.decode(@event.content)
+    # ['startTime', 'endTime'].each do |time_key|
+    # @content[time_key] = Event.time_long_to_s(@content[time_key])
+    #end
+    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'notes' => 'Notes', 'tag' => 'Category'}
   end
 
   # POST /events
   # POST /events.xml
   def create
     if params[:event]
-      @event = Event.find(params[:event])
+      raise Exception
+      #@event = Event.find(params[:event])
     else
       @event = Event.new
       @event.user_id = params[:user][:id]
     end
-    if @event.content
-      @content = ActiveSupport::JSON.decode(@event.content)
-    else
-      @content = {}
+    if params[:content][:b]
+      @event.content = params[:content][:b]
     end
-    params['content'].each do |key, value|
-      if ['startTime', 'endTime'].include?(key)
-        @content[key] = Event.time_s_to_long(value)
-      else
-        @content[key] = value
-      end
-    end unless params['content'].nil?
-    @event.content = ActiveSupport::JSON.encode(@content)
 
     user = User.find(@event.user_id)
     @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
@@ -166,8 +143,7 @@ class EventsController < ApplicationController
         format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully created.') }
         format.xml  { head :ok }
       else
-        @content['startTime'] = params['content']['startTime']
-        @content['endTime'] = params['content']['endTime']
+        @contents = contents.to_json
         format.html { render :action => "edit" }
         format.xml  { render :xml => event.errors, :status => :unprocessable_entity }
       end
@@ -178,18 +154,12 @@ class EventsController < ApplicationController
   # PUT /events/1.xml
   def update
     event = Event.find(params[:id])
-    content = ActiveSupport::JSON.decode(event.content)
-    params['content'].each do |key, value|
-      if ['startTime', 'endTime'].include?(key)
-        content[key] = Event.time_s_to_long(value)
-      else
-        content[key] = value
-      end
-    end unless params['content'].nil?
-    event.content = ActiveSupport::JSON.encode(content)
+    new_content = params['content']['b']
+    params['new_content'] = new_content
+    event.content =  new_content #ActiveSupport::JSON.encode(new_content)# the b part is a temp hack- I think this should work given the params that are passed....
+#    raise Exception
 
     user = User.find(event.user_id)
-
 
     respond_to do |format|
       if event.save

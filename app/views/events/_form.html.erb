@@ -1,9 +1,13 @@
 <% @edit_fields.each do |field, name| %>
-    <div>
-      <%= label :content, name %>
-      <%= text_field :content, field, :id => field, :value => "" %>
-    </div>
+  <div>
+    <%= label :content, name %>
+    <%= text_field :content, field, :id => field, :value => "" %>
+  </div>
 <% end %>
+  <div>
+    <%= label :content, 'End time' %>
+    <%= text_field :content, 'endTime', :id => 'endTime', :value => "" %>
+  </div>
 
 <%= form_for(@event) do |f| %>
   <% if @event.errors.any? %>
@@ -19,7 +23,7 @@
   <% end %>
 
   <div class="field">
-    <%= text_field :content, 'b', :id => 'encrypted_content', :value => "" %>
+    <%= hidden_field :content, 'b', :id => 'encrypted_content', :value => "" %>
   </div>
   <%= hidden_field(:user, :id, :value => @event.user_id) %>
   <div class="actions" style='display:none;'>
@@ -37,21 +41,23 @@
 </script>
 
 <script type="text/javascript">
-  var encryptedData=<%= raw @contents %>;
-  encryptedData = encryptedData.replace(/[ \r\n]+/g,'')
-  if(encryptedData != null){
-  	var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
-  	var unencryptedEvent=jQuery.parseJSON(unencryptedData);
-  	var startTime=new Date(unencryptedEvent['startTime']);
-  	var endTime= new Date(unencryptedEvent['endTime']);
- 	unencryptedEvent['startTime']=dateHelpers.formatDateTime(unencryptedEvent['startTime']);
-  	unencryptedEvent['endTime']=dateHelpers.formatDateTime(unencryptedEvent['endTime']);
-  	$('#startTime').attr('value', unencryptedEvent['startTime']);
-  	$('#endTime').attr('value', unencryptedEvent['endTime']);
-  	$('#name').attr('value', unencryptedEvent['name']);
-  	$('#notes').attr('value', unencryptedEvent['notes']);
-  	$('#tag').attr('value', unencryptedEvent['tag']);
-  }
+  <% if @contents %>
+    var encryptedData=<%= raw @contents %>;
+    encryptedData = encryptedData.replace(/[ \r\n]+/g,'');
+    var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
+
+    var unencryptedEvent=jQuery.parseJSON(unencryptedData);
+    var startTime=new Date(unencryptedEvent['startTime']);
+    var endTime= new Date(unencryptedEvent['endTime']);
+    unencryptedEvent['startTime']=dateHelpers.formatDateTime(unencryptedEvent['startTime']);
+    unencryptedEvent['endTime']=dateHelpers.formatDateTime(unencryptedEvent['endTime']);
+    $('#startTime').attr('value', unencryptedEvent['startTime']);
+    $('#endTime').attr('value', unencryptedEvent['endTime']);
+    $('#name').attr('value', unencryptedEvent['name']);
+    $('#notes').attr('value', unencryptedEvent['notes']);
+    $('#tag').attr('value', unencryptedEvent['tag']);
+  <% end %>
+
    function submitButton(){
     var passwd = "hello";
     var startTimeString = $('#startTime').attr('value');

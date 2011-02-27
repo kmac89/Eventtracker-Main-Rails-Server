@@ -100,9 +100,7 @@ class EventsController < ApplicationController
     @event = Event.new
     @user = User.find_by_phone_number(params[:phone_number])
     @event.user_id = @user.id
-    @content = {}
-    @contents = @event.content.to_json		
-    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
+    @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'startTime' => 'Start Time', 'notes' => 'Notes'}
 
     respond_to do |format|
       format.html # new.html.erb
@@ -119,31 +117,22 @@ class EventsController < ApplicationController
     # ['startTime', 'endTime'].each do |time_key|
     # @content[time_key] = Event.time_long_to_s(@content[time_key])
     #end
-    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes', 'tag' => 'Category'}
+    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'notes' => 'Notes', 'tag' => 'Category'}
   end
 
   # POST /events
   # POST /events.xml
   def create
     if params[:event]
-      @event = Event.find(params[:event])
+      raise Exception
+      #@event = Event.find(params[:event])
     else
       @event = Event.new
       @event.user_id = params[:user][:id]
     end
-    if @event.content
-      @content = ActiveSupport::JSON.decode(@event.content)
-    else
-      @content = {}
+    if params[:content][:b]
+      @event.content = params[:content][:b]
     end
-    params['content'].each do |key, value|
-      if ['startTime', 'endTime'].include?(key)
-        @content[key] = Event.time_s_to_long(value)
-      else
-        @content[key] = value
-      end
-    end unless params['content'].nil?
-    @event.content = ActiveSupport::JSON.encode(@content)
 
     user = User.find(@event.user_id)
     @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
@@ -154,8 +143,7 @@ class EventsController < ApplicationController
         format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully created.') }
         format.xml  { head :ok }
       else
-        @content['startTime'] = params['content']['startTime']
-        @content['endTime'] = params['content']['endTime']
+        @contents = contents.to_json
         format.html { render :action => "edit" }
         format.xml  { render :xml => event.errors, :status => :unprocessable_entity }
       end

@@ -57,11 +57,12 @@ class EventsController < ApplicationController
       events = Event.where(:user_id => user.id)
     end
     events_to_send = events.collect do |event|
-      event_contents = ActiveSupport::JSON.decode(event.content)
-      event_contents['uuid'] = event.uuid
-      event_contents['updated_at'] = event.updated_at.to_s
-      event_contents['deleted'] = event.deleted
-      event_contents
+	   event_data = {}
+       event_data['content'] = event.content
+       event_data['uuid'] = event.uuid
+       event_data['updated_at'] = event.updated_at.to_s
+       event_data['deleted'] = event.deleted
+       event_data
     end
 
     response = {'pollTime' => DateTime.now, 'events' => events_to_send }

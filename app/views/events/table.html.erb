@@ -39,6 +39,10 @@
 
 <script type="text/javascript">
   var encryptedData=<%= raw @contents %>;
+  
+  for (var i=0; i<encryptedData.length; i++) {
+    encryptedData[i] = encryptedData[i].replace(/[ \r\n]+/g,'')
+  }
   var unencryptedData=encryptionHelpers.unencryptAll(encryptedData);
   var unencryptedEvents=new Array();
   for(var i=0; i < unencryptedData.length;i++){

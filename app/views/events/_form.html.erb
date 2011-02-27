@@ -19,7 +19,7 @@
   <% end %>
 
   <div class="field">
-    <%= hidden_field :content, 'b', :id => 'encrypted_content', :value => "" %>
+    <%= text_field :content, 'b', :id => 'encrypted_content', :value => "" %>
   </div>
   <%= hidden_field(:user, :id, :value => @event.user_id) %>
   <div class="actions" style='display:none;'>
@@ -31,13 +31,14 @@
 <script type="text/javascript">
   <% ['startTime', 'endTime'].each do |time| %>
     AnyTime.picker( "<%= time %>",
-	 	    { format: "%I:%i%p %b %d, %Y", firstDOW: 1 } );
+	{ format: "%I:%i %p %b %d, %Y", firstDOW: 1 } );
   <% end %>
  
 </script>
 
 <script type="text/javascript">
   var encryptedData=<%= raw @contents %>;
+  encryptedData = encryptedData.replace(/[ \r\n]+/g,'')
   if(encryptedData != null){
   	var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
   	var unencryptedEvent=jQuery.parseJSON(unencryptedData);
@@ -53,16 +54,15 @@
   }
    function submitButton(){
     var passwd = "hello";
-    var startDate=new Date($('#startTime').attr('value'));
-    var endDate=new Date($('#endTime').attr('value'));
+    var startTimeString = $('#startTime').attr('value');
+    var endTimeString = $('#endTime').attr('value');
+
     var content = {};
-    content['startTime'] = startDate.getTime();
-    content['endTime'] = endDate.getTime();
+    content['startTime'] = Date.parse(startTimeString); 
+    content['endTime'] = Date.parse(endTimeString);
     content['name'] = $('#name').attr('value');
     content['notes'] = $('#notes').attr('value');
     content['tag'] = $('#tag').attr('value');
-    var to_encrypt = JSON.stringify(content);
-    alert(to_encrypt);
     var encrypted_content = GibberishAES.enc(JSON.stringify(content), passwd);
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();
@@ -70,4 +70,3 @@
 
 
 </script>
-

@@ -1,11 +1,12 @@
 
 <script type="text/javascript">
-	
-	var encryptedData=<%= raw @contents %>;
-	var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
-	var unencryptedEvent=jQuery.parseJSON(unencryptedData);
-	var gpsCoords=unencryptedEvent['gpsCoordinates'];
-	alert("Your name is: " + sessionStorage.getItem('fullname')); 
+  var encryptedData=<%= raw @contents %>;
+  encryptedData = encryptedData.replace(/[ \r\n]+/g,'')
+  var unencryptedData=encryptionHelpers.unencrypt(encryptedData);
+  alert(unencryptedData);
+  var unencryptedEvent=jQuery.parseJSON(unencryptedData);
+  var gpsCoords=unencryptedEvent['gpsCoordinates'];
+  alert("Your name is: " + sessionStorage.getItem('fullname')); 
 </script>	
 
 

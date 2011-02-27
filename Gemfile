@@ -13,6 +13,9 @@ gem 'uuidtools'
 #jQuery
 gem 'jquery-rails'
 
+# AuthLogic
+gem 'authlogic'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

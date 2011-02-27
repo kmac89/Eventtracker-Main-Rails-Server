@@ -60,8 +60,8 @@
 
     var startTime = new Date(event_data['startTime']);
     var endTime = new Date(event_data['endTime']);
-    $(this).find('#startTimeR').text(startTime.toLocaleString());
-    $(this).find('#endTimeR').html(endTime.toLocaleString());
+    $(this).find('#startTimeR').text(dateHelpers.formatDateTime(event_data['startTime']));
+    $(this).find('#endTimeR').html(dateHelpers.formatDateTime(event_data['endTime']));
 
     index++;
   });

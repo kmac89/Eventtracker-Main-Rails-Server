@@ -15,6 +15,9 @@ class EventsController < ApplicationController
   # GET /:phone_number
   def table
     @user = User.find_by_phone_number(params[:phone_number])
+    if !verify_user(@user)
+      return
+    end
     @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
 
     @contents = @events.collect {|event|
@@ -31,6 +34,9 @@ class EventsController < ApplicationController
   # GET /:phone_number/charts
   def charts
     @user = User.find_by_phone_number(params[:phone_number])
+    if !verify_user(@user)
+      return
+    end
     @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
     @contents = @events.collect {|event|
      # ActiveSupport::JSON.decode(event.content)
@@ -75,6 +81,9 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     @contents = @event.content.to_json
     @user = User.find(@event.user_id)
+    if !verify_user(@user)
+      return
+    end
   end
 
   # GET /events/1
@@ -95,6 +104,9 @@ class EventsController < ApplicationController
   def new
     @event = Event.new
     @user = User.find_by_phone_number(params[:phone_number])
+    if !verify_user(@user)
+      return
+    end
     @event.user_id = @user.id
     @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'startTime' => 'Start Time', 'notes' => 'Notes'}
 
@@ -108,6 +120,9 @@ class EventsController < ApplicationController
   def edit
     @event = Event.find(params[:id])
     @user = User.find(@event.user_id)
+    if !verify_user(@user)
+      return
+    end
     @contents = @event.content.to_json
     @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'notes' => 'Notes', 'tag' => 'Category'}
   end
@@ -148,7 +163,10 @@ class EventsController < ApplicationController
     event = Event.find(params[:id])
     event.content = params['content']['b']
 
-    user = User.find(event.user_id)
+    user = User.find_by_id(params['user']['id'])
+    if !verify_user(user)
+      return
+    end
 
     respond_to do |format|
       if event.save
@@ -166,6 +184,9 @@ class EventsController < ApplicationController
   def destroy
     event = Event.find(params[:id])
     user = User.find(event.user_id)
+    if !verify_user(user)
+      return
+    end
     event.deleted = true
     event.save
 
@@ -221,6 +242,17 @@ class EventsController < ApplicationController
       puts @event.errors
       render :text => @event.errors.to_s, :status => 400
     end
+  end
+
+
+  private
+
+  def verify_user(user)
+    if !current_user || current_user.phone_number != user.phone_number
+      redirect_to "/"
+      return false
+    end
+    return true
   end
 
 end

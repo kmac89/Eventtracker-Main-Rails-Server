@@ -50,7 +50,7 @@ class EventsController < ApplicationController
       previous_poll_time = DateTime.parse(params['PollTime'])
       puts previous_poll_time
     end
-    user = User.find_by_uuid(params['UUIDOfDevice'])
+    user = User.find_by_uuid(params['uuid'])
     if previous_poll_time then
       events = Event.find( :all, :conditions => ["updated_at > ? AND user_id = ?", previous_poll_time, user.id] )
     else
@@ -75,11 +75,6 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     @contents = @event.content.to_json
     @user = User.find(@event.user_id)
-   # @contents = ActiveSupport::JSON.decode(@event.content)
-  #  @gps_coords = @contents['gpsCoordinates']
-#    if @gps_coords.nil? then
-#      @gps_coords = []
-#    end
   end
 
   # GET /events/1
@@ -114,10 +109,6 @@ class EventsController < ApplicationController
     @event = Event.find(params[:id])
     @user = User.find(@event.user_id)
     @contents = @event.content.to_json
-    # @content = ActiveSupport::JSON.decode(@event.content)
-    # ['startTime', 'endTime'].each do |time_key|
-    # @content[time_key] = Event.time_long_to_s(@content[time_key])
-    #end
     @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'notes' => 'Notes', 'tag' => 'Category'}
   end
 
@@ -155,10 +146,7 @@ class EventsController < ApplicationController
   # PUT /events/1.xml
   def update
     event = Event.find(params[:id])
-    new_content = params['content']['b']
-    params['new_content'] = new_content
-    event.content =  new_content #ActiveSupport::JSON.encode(new_content)# the b part is a temp hack- I think this should work given the params that are passed....
-#    raise Exception
+    event.content = params['content']['b']
 
     user = User.find(event.user_id)
 
@@ -191,7 +179,7 @@ class EventsController < ApplicationController
   # user from phone for non-html response
   def delete
     uuid = params[:UUIDOfEvent]
-    user_uuid = params[:UUIDOfDevice]
+    user_uuid = params[:uuid]
     errors = false
     if uuid and user_uuid then
       @event = Event.find_by_uuid(uuid)
@@ -217,7 +205,7 @@ class EventsController < ApplicationController
   # POST /events/upload
   def upload
     @event = Event.find_or_create_by_uuid(params[:UUIDOfEvent])
-    user = User.find_by_uuid(params[:UUIDOfDevice])
+    user = User.find_by_uuid(params[:uuid])
     @event.user_id = user.id unless user.nil?
     @event.content = params[:EventData]
     @event.deleted = params[:Deleted]

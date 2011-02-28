@@ -2,7 +2,7 @@
 <%= raw datatable(columns, {:sort_by => "[0, 'desc']", :processing => image_tag("spinner.gif") }) %>
 
 <h1>Listing users</h1>
-
+<p id="notice"><%= notice %></p>
 <table id='users' class='datatable'>
   <thead>
     <tr>

@@ -11,8 +11,18 @@
 </p>
 
 <p>
-  <b>Hashed Password:</b>
-  <%= @user.password_hash %>
+  <b>Crypted Password:</b>
+  <%= @user.crypted_password %>
+</p>
+
+<p>
+  <b>Password Salt:</b>
+  <%= @user.password_salt %>
+</p>
+
+<p>
+  <b>Persistence Token:</b>
+  <%= @user.persistence_token %>
 </p>
 
 <p>

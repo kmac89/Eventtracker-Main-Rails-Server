@@ -13,7 +13,10 @@ MainRailsServer::Application.routes.draw do
     match "init"    =>  "users#init"
     match "phone/:phone_number" =>  "users#show"
   end
-  resources :users
+
+  resources :users, :user_sessions
+  match 'login' => 'user_sessions#new', :as => :login
+  match 'logout' => 'user_sessions#destroy', :as => :logout
 
   constraints :phone_number => /\d+/ do
     match ":phone_number"  => "events#table"

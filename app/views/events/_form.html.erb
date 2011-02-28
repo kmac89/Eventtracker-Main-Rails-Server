@@ -31,16 +31,13 @@
   </div>
 
 <% end %>
-  <INPUT TYPE="button" NAME="myButton" VALUE="Update Event" onClick="submitButton()" > 
+
 <script type="text/javascript">
   <% ['startTime', 'endTime'].each do |time| %>
     AnyTime.picker( "<%= time %>",
 	{ format: "%I:%i %p %b %d, %Y", firstDOW: 1 } );
   <% end %>
  
-</script>
-
-<script type="text/javascript">
   <% if @contents %>
     var encryptedData=<%= raw @contents %>;
     encryptedData = encryptedData.replace(/[ \r\n]+/g,'');
@@ -59,7 +56,7 @@
   <% end %>
 
    function submitButton(){
-    var passwd = "hello";
+    var passwd = sessionStorage.pwd;
     var startTimeString = $('#startTime').attr('value');
     var endTimeString = $('#endTime').attr('value');
 
@@ -73,6 +70,4 @@
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();
   } 	
-
-
 </script>

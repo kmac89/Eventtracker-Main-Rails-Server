@@ -1,6 +1,10 @@
 <h1>Editing event</h1>
 
 <%= render 'form' %>
-<BR>
-<%= link_to 'Show', @event %> 
+
+<INPUT TYPE="button" NAME="myButton" VALUE="Update Event" onClick="submitButton()" > 
+
+<br />
+<br />
+
 <%= link_to 'Back', "/#{@user.phone_number}" %>

@@ -5,14 +5,13 @@
 var encryptionHelpers ={
 
 	unencrypt:function(encryptedText) {
-
-	  return GibberishAES.dec(encryptedText,"hello");
+	  return GibberishAES.dec(encryptedText,sessionStorage.pwd);
         },
 	
 	unencryptAll:function(encryptedArray) {
 	var unencryptedArray=new Array(); 
 	for(var i=0; i < encryptedArray.length; i++){
-		unencryptedArray[i]=GibberishAES.dec(encryptedArray[i],"hello");
+		unencryptedArray[i]=GibberishAES.dec(encryptedArray[i],sessionStorage.pwd);
 	}
 	return unencryptedArray;
    }

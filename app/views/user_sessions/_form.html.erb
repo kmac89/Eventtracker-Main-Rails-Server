@@ -15,9 +15,8 @@
     <%= f.label :phone_number %><br />
     <%= f.text_field :phone_number %>
   </div>
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password %>
+  <div "field">
+    <%= f.password_field :password, :style => "display:none;" %>
   </div>
   <div class="actions">
     <%= f.submit :value => 'Log in', :style => "display:none;"%>
@@ -26,13 +25,19 @@
 
 <script type="text/javascript">
   function storePassAndSubmit() {
-    var pw = $('#user_session_password').attr('value');
+    var pw = $('#password').attr('value');
     sessionStorage.setItem('pwd', pw);
     var b64_password = b64_md5(pw);
     $('#user_session_password').attr('value', b64_password);
     $('#new_user_session').submit();
   }
 </script>
+
+<div class="field">
+  <%= label :password, 'Password' %>
+  <br />
+  <%= password_field :content, 'password', :id => 'password', :value => "" %>
+</div>
 
 <button type="button" onClick="storePassAndSubmit();">Log in</button>
 <br/>

@@ -6,6 +6,12 @@
 <%= link_to 'Create a new Event', "/#{@user.phone_number}/new" %>
 <%= link_to 'View charts', "/#{@user.phone_number}/charts" %>
 
+<script type="text/javascript">
+
+</script>
+
+
+
 <table id='events' class='datatable'>
   <thead>
     <tr>
@@ -21,23 +27,26 @@
     </tr>
   </thead>
   <tbody>
-    <% @events.each do |event| %>
+ 
+    <% @events.each_with_index do |event,indexOfEvent| %>
       <tr class='event_row'>
 	<td id='name'></td>
 	<td id='notes'></td>
 	<td id='tag'></td>
 	<td id='startTimeR'></td>
 	<td id='endTimeR'></td>
-	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}" %></td>
+	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData(#{indexOfEvent});", :id => 'map_link' %></td>
 	<td><%= link_to 'Edit', edit_event_path(event) %></td>
 	<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
 	<td style="display:none;" id='startTime'></td>
       </tr>
+	
     <% end %>
   </tbody>
 </table>
 
 <script type="text/javascript">
+
   var encryptedData=<%= raw @contents %>;
   alert(sessionStorage.pwd);
   
@@ -49,6 +58,7 @@
   for(var i=0; i < unencryptedData.length;i++){
     unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
   }
+  	
   var row_elements = ['name', 'notes', 'tag', 'startTime'];
   var index=0;
   $('.event_row').each(function () {
@@ -63,7 +73,19 @@
     var endTime = new Date(event_data['endTime']);
     $(this).find('#startTimeR').text(dateHelpers.formatDateTime(event_data['startTime']));
     $(this).find('#endTimeR').html(dateHelpers.formatDateTime(event_data['endTime']));
-
+		
+    if(event_data['gpsCoordinates'].length < 1){
+		var newLink="<% @user.phone_number %>#";
+		$('#map_link').attr('href',newLink);
+	}	
+	
     index++;
+	
+	
+	
   });
+  function checkForGPSData(indexOfEvent){
+		if(unencryptedEvents[indexOfEvent]['gpsCoordinates'].length < 1)
+			alert('No GPS data available');
+	}
 </script>

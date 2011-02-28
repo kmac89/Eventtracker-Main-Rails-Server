@@ -30,15 +30,15 @@
  
     <% @events.each_with_index do |event,indexOfEvent| %>
       <tr class='event_row'>
-	<td id='name'></td>
-	<td id='notes'></td>
-	<td id='tag'></td>
-	<td id='startTimeR'></td>
-	<td id='endTimeR'></td>
-	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData(#{indexOfEvent});", :id => 'map_link' %></td>
-	<td><%= link_to 'Edit', edit_event_path(event) %></td>
-	<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
-	<td style="display:none;" id='startTime'></td>
+		<td id='name'></td>
+		<td id='notes'></td>
+		<td id='tag'></td>
+		<td id='startTimeR'></td>
+		<td id='endTimeR'></td>
+		<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData(#{indexOfEvent});", :id => 'map_link' %></td>
+		<td><%= link_to 'Edit', edit_event_path(event) %></td>
+		<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
+		<td style="display:none;" id='startTime'></td>
       </tr>
 	
     <% end %>
@@ -73,11 +73,12 @@
     var endTime = new Date(event_data['endTime']);
     $(this).find('#startTimeR').text(dateHelpers.formatDateTime(event_data['startTime']));
     $(this).find('#endTimeR').html(dateHelpers.formatDateTime(event_data['endTime']));
-		
-    if(event_data['gpsCoordinates'].length < 1){
+	
+	if(event_data['gpsCoordinates'].length < 1){
 		var newLink="<% @user.phone_number %>#";
-		$('#map_link').attr('href',newLink);
-	}	
+		$(this).find('#map_link').attr('href',newLink);
+	}
+	
 	
     index++;
 	

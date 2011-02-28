@@ -3,7 +3,12 @@ class UserSessionsController < ApplicationController
   # GET /user_sessions/new
   # GET /user_sessions/new.xml
   def new
-    @user_session = UserSession.new
+    if current_user
+      redirect_to "/#{current_user.phone_number}"
+      return
+    else
+      @user_session = UserSession.new
+    end
 
     respond_to do |format|
       format.html # new.html.erb

@@ -39,6 +39,7 @@
 
 <script type="text/javascript">
   var encryptedData=<%= raw @contents %>;
+  alert(sessionStorage.pwd);
   
   for (var i=0; i<encryptedData.length; i++) {
     encryptedData[i] = encryptedData[i].replace(/[ \r\n]+/g,'')

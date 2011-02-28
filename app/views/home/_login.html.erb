@@ -20,6 +20,17 @@
     <%= f.password_field :password %>
   </div>
   <div class="actions">
-    <%= f.submit :value => 'Log in' %>
+    <%= f.submit :value => 'Log in', :style => "display:none;"%>
   </div>
 <% end %>
+
+<script type="text/javascript">
+  function storePassAndSubmit() {
+    var pw = $('#user_session_password').attr('value');
+    sessionStorage.setItem('pwd', pw);
+    $('#new_user_session').submit();
+  }
+</script>
+
+<button type="button" onClick="storePassAndSubmit();">Log in</button>
+<br/>

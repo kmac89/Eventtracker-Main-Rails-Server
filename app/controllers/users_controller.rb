@@ -47,6 +47,7 @@ class UsersController < ApplicationController
   # POST /users.xml
   def create
     @user = User.new(params[:user])
+    debugger
 
     respond_to do |format|
       if @user.save
@@ -89,9 +90,9 @@ class UsersController < ApplicationController
   
   def init
     # todo authenticate
-    @user = User.find_or_create_by_phone_number(params[:PhoneNumber])
-    @user.uuid = params[:UUIDOfDevice]
-    @user.password_hash = params[:HashedPasswd]
+    @user = User.find_or_create_by_phone_number(params[:phone_number])
+    @user.uuid = params[:uuid]
+    @user.password = params[:password]
 
     #respond_to do |format|
       if @user.save

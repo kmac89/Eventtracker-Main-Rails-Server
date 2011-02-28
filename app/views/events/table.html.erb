@@ -6,6 +6,15 @@
 <%= link_to 'Create a new Event', "/#{@user.phone_number}/new" %>
 <%= link_to 'View charts', "/#{@user.phone_number}/charts" %>
 
+<script type="text/javascript">
+function checkForGPSData(){
+	alert('Yay!!');
+}
+
+</script>
+
+
+
 <table id='events' class='datatable'>
   <thead>
     <tr>
@@ -28,7 +37,7 @@
 	<td id='tag'></td>
 	<td id='startTimeR'></td>
 	<td id='endTimeR'></td>
-	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}" %></td>
+	<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData();"%></td>
 	<td><%= link_to 'Edit', edit_event_path(event) %></td>
 	<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
 	<td style="display:none;" id='startTime'></td>

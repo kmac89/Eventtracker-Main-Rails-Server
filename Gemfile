@@ -26,7 +26,6 @@ gem 'authlogic'
 
 #gem 'ruby-debug'
 
-#gem 'ruby-debug'
 #gem 'ruby-debug19'
 
 # Bundle the extra gems:

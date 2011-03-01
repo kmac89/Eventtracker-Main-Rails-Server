@@ -19,6 +19,18 @@ class UserSessionsController < ApplicationController
   # POST /user_sessions
   # POST /user_sessions.xml
   def create
+    phone_number = params[:user_session][:phone_number]
+    user = User.find_by_phone_number(phone_number)
+    if !user
+      user = User.find_by_phone_number(get_modified_phone_number(phone_number))
+      if user
+        phone_number = user.phone_number
+      end
+    end
+
+    # Fix variable phone format
+    params[:user_session][:phone_number] = phone_number
+
     @user_session = UserSession.new(params[:user_session])
 
     respond_to do |format|
@@ -44,5 +56,15 @@ class UserSessionsController < ApplicationController
       format.html { redirect_to('/', :notice => 'Goodbye!') }
       format.xml  { head :ok }
     end
+  end
+end
+
+private
+
+def get_modified_phone_number(phone_number)
+  if phone_number[0,1] == 1
+    return phone_number[1..-1]
+  else
+    return '1' + phone_number
   end
 end

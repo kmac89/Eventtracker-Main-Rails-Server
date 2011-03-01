@@ -15,7 +15,10 @@ class EventsController < ApplicationController
   # GET /:phone_number
   def table
     @user = User.find_by_phone_number(params[:phone_number])
-    if !verify_user(@user)
+    if !@user
+      redirect_to '/', :notice => "Please log in with your phone number."
+      return
+    elsif !verify_user(@user)
       return
     end
     @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?

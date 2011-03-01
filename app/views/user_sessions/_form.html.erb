@@ -41,3 +41,11 @@
 
 <button type="button" onClick="storePassAndSubmit();">Log in</button>
 <br/>
+
+<script type="text/javascript">
+  $('#password').keypress(function() {
+    if(event.keyCode==13) {
+      storePassAndSubmit();
+    }
+  });
+</script>

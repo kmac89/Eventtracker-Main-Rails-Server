@@ -14,7 +14,9 @@ class EventsController < ApplicationController
 
   # GET /:phone_number
   def table
-    @user = User.find_by_phone_number(params[:phone_number])
+    phone_number = params[:phone_number]
+    @user = User.find_by_phone_number(phone_number)
+    @user = User.find_by_phone_number(get_modified_phone_number(phone_number)) unless @user
     if !@user
       redirect_to '/', :notice => "Please log in with your phone number."
       return
@@ -258,4 +260,11 @@ class EventsController < ApplicationController
     return true
   end
 
+  def get_modified_phone_number(phone_number)
+    if phone_number[0,1] == 1
+      return phone_number[1..-1]
+    else
+      return '1' + phone_number
+    end
+  end
 end

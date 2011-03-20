@@ -4,7 +4,25 @@
   Showing all events for user with phone number '<%= @user.phone_number %>'
 </h2>
 <%= link_to 'Create a new Event', "/#{@user.phone_number}/new" %>
-<%= link_to 'View charts', "/#{@user.phone_number}/charts" %>
+<%= link_to 'View pi chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
+<%= link_to 'View timeline', "/#{@user.phone_number}/timeline" %>
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<script>
+$(document).ready(function(){
+	    $(".pi_chart").fancybox({
+	         'width' : '60%',
+	         'height' : '70%',
+	         'autoScale' : false,
+	         'transitionIn' : 'none',
+	         'transitionOut' : 'none',
+	         'type' : 'iframe'
+	     });
+	 
+	     });
+
+</script>
 
 <script type="text/javascript">
 

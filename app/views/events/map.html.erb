@@ -41,8 +41,8 @@
 	  autoZoomCenter();
 	
 	  if(mapmarkers.length > 0){
-		mapmarkers[0].setIcon("http://eventtracker.dyndns-at-home.com:3001/images/green_flag.png");
-		mapmarkers[mapmarkers.length-1].setIcon("http://eventtracker.dyndns-at-home.com:3001/images/red_flag.png");
+		mapmarkers[0].setIcon("http://127.0.0.1:3001/images/green_flag.png");
+		mapmarkers[mapmarkers.length-1].setIcon("http://127.0.0.1:3001/images/red_flag.png");
 	
 	  }
 
@@ -116,8 +116,7 @@
 </script>
 </head>
 <body onload="initialize()">
-  <h3>Map for event: <script type="text/javascript">document.write(unencryptedEvent['name']) </script></h3>
-  <div id="map_canvas" style="width:50%; height:50%; border: 1px solid rgb(0, 0, 0)" ></div>
-<%= link_to 'Back', "/#{@user.phone_number}" %>
+  <div id="map_canvas" style="width:100%; height:100%; border: 1px solid rgb(0, 0, 0)" ></div>
+
 </body>
 </html>

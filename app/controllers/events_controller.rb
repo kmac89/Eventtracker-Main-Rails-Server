@@ -56,6 +56,26 @@ class EventsController < ApplicationController
     end
   end
 
+# GET /:phone_number/timeline
+  def timeline
+    @user = User.find_by_phone_number(params[:phone_number])
+    if !verify_user(@user)
+      return
+    end
+    @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
+    @contents = @events.collect {|event|
+     # ActiveSupport::JSON.decode(event.content)
+	event
+    }
+    @contents = @contents.to_json
+
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @events }
+    end
+  end
+
   def poll
     if params['PollTime']
       previous_poll_time = DateTime.parse(params['PollTime'])

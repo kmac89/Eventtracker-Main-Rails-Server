@@ -23,6 +23,7 @@ MainRailsServer::Application.routes.draw do
     match ":phone_number/map/:id"     => "events#map"
     match ":phone_number/new"     => "events#new"
     match ":phone_number/charts"     => "events#charts"
+	match ":phone_number/timeline"     => "events#timeline"
   end
 
   get "users/index"

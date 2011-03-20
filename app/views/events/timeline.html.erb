@@ -1,0 +1,155 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<h2>
+  Display chart for user with phone number '<%= @user.phone_number %>' 
+</h2>
+<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+
+ <script type="text/javascript">
+	var encryptedData=<%= raw @contents %>;
+	var encryptedContent= new Array();
+	for (var i=0; i<encryptedData.length; i++) {
+	  encryptedContent[i]=encryptedData[i]['event']['content'];
+	}
+	
+	for (var i=0; i<encryptedData.length; i++) {
+	  encryptedContent[i] = encryptedContent[i].replace(/[ \r\n]+/g,'')
+	}
+	var unencryptedData=encryptionHelpers.unencryptAll(encryptedContent);
+	var unencryptedEvents=new Array();
+	for(var i=0; i < unencryptedData.length;i++){
+		unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
+		unencryptedEvents[i]['id']=encryptedData[i]['event']['id'];
+	}
+  </script>	
+
+ <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <script>Timeline_urlPrefix = "http://static.simile.mit.edu/timeline/api-2.3.0/";;</script>
+        <script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true" type="text/javascript"></script>
+        <script>
+        var tl;
+		var evt;
+		var eventSource;
+		var eventObject;
+		
+        function onLoad() {
+		if(Timeline.DateTime==null){
+			window.location.reload();
+		}
+        eventSource = new Timeline.DefaultEventSource();
+		initializeEvents();
+        var bandInfos = [
+        Timeline.createBandInfo({
+             eventSource:    eventSource,
+			
+
+            width:          "70%", 
+            intervalUnit:   Timeline.DateTime.DAY, 
+            intervalPixels: 300,
+                  eventSource:    eventSource,
+                  
+                 
+              }),
+         Timeline.createBandInfo({
+         overview:       true,
+         eventSource:    eventSource,
+         width:          "30%", 
+         intervalUnit:   Timeline.DateTime.WEEK,
+         intervalPixels: 200
+     })
+   ];
+        bandInfos[1].syncWith = 0;
+        bandInfos[1].highlight = true;
+		
+		
+		var oldFillInfoBubble = Timeline.DefaultEventSource.Event.prototype.fillInfoBubble;
+        Timeline.DefaultEventSource.Event.prototype.fillInfoBubble = function(elmt, theme, labeller) {
+            //oldFillInfoBubble.call(this, elmt, theme, labeller);
+			testing=elmt;
+            eventObject = this;
+            var div = document.createElement("div");
+            div.innerHTML = "<b>"+eventObject._text+"</b><hr>";
+			var div2 = document.createElement("div");
+			div2.innerHTML = "Start Time: " + dateHelpers.formatDateTime(eventObject._start);
+			var div3 = document.createElement("div");
+			div3.innerHTML = "End Time: " + dateHelpers.formatDateTime(eventObject._end);
+			var div4 = document.createElement("div");
+			div4.innerHTML = "Tag: " + eventObject._description;
+			var div5 = document.createElement("div");
+			div5.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
+			
+			
+			$(div5).find('a').fancybox({
+	         'width' : '75%',
+	         'height' : '75%',
+	         'autoScale' : false,
+	         'transitionIn' : 'none',
+	         'transitionOut' : 'none',
+	         'type' : 'iframe'
+			});
+			
+			elmt.appendChild(div5);
+            elmt.appendChild(div);
+			elmt.appendChild(div2);
+			elmt.appendChild(div3);
+			elmt.appendChild(div4);
+			
+			//if size of gpsCoordinates is greater than 0
+			//eventObject._id contains the size of gpsCoordinates
+			
+			if(eventObject._id > 0){
+				elmt.appendChild(div5);
+				div5.children[0].href=div5.children[0].href+eventObject._eventID;
+			}
+			
+        }
+		
+        tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+        
+        }
+
+        var resizeTimerID = null;
+        function onResize() {
+            if (resizeTimerID == null) {
+                resizeTimerID = window.setTimeout(function() {
+                    resizeTimerID = null;
+                    tl.layout();
+                }, 500);
+            }
+        }
+		
+		function initializeEvents(){
+		
+		for(var i=0; i < unencryptedEvents.length; i++){
+			var event=unencryptedEvents[i];
+			var myhash = new Object();
+			var startDate=new Date(event['startTime']);
+			var endDate=new Date(event['endTime']);
+			myhash.start=startDate;
+			myhash.end=endDate;
+			myhash.eventID=event['id']+'';
+			myhash.text=event['name'];
+			myhash.description=event['tag'];
+			myhash.id=myhash.gps=event['gpsCoordinates'].length + '';
+			//myhash.trackNum=i%10;
+			var evt = new Timeline.DefaultEventSource.Event(myhash);
+			eventSource.add(evt);
+		}
+		}
+		
+        </script>       
+    </head>
+
+  
+    <body onload="onLoad();" onresize="onResize();">
+        <div id="my-timeline" style="height: 300px; border: 1px solid #aaa"></div>
+        <noscript>
+        This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
+        </noscript>
+    </body>
+
+ </html>
+
+<%= link_to 'Back', "/#{@user.phone_number}" %>

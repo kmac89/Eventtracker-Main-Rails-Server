@@ -9,7 +9,7 @@
 <body>
 
   <div id="nav">
-    <% if current_user %>
+    <% if current_user && params[:action] != 'map' && params[:action] != 'charts' %>
       <%= link_to "Logout", :logout %>
     <% else %>
     <% end %>

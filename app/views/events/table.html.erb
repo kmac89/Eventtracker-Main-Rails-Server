@@ -3,7 +3,7 @@
 <h2>
   Showing all events for user with phone number '<%= @user.phone_number %>'
 </h2>
-<%= link_to 'Create a new Event', "/#{@user.phone_number}/new" %>
+<%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
 <%= link_to 'View pi chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
 <%= link_to 'View timeline', "/#{@user.phone_number}/timeline" %>
 
@@ -12,8 +12,8 @@
 <script>
 $(document).ready(function(){
 	    $(".pi_chart").fancybox({
-	         'width' : '60%',
-	         'height' : '70%',
+	         'width' : '40%',
+	         'height' : '48%',
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',
@@ -21,7 +21,17 @@ $(document).ready(function(){
 	     });
 	 
 	     });
-
+$(document).ready(function(){
+	    $(".create_event").fancybox({
+	         'width' : '40%',
+	         'height' : '48%',
+	         'autoScale' : false,
+	         'transitionIn' : 'none',
+	         'transitionOut' : 'none',
+	         'type' : 'iframe'
+	     });
+	 
+	     });
 </script>
 
 <script type="text/javascript">
@@ -53,7 +63,7 @@ $(document).ready(function(){
 		<td id='tag'></td>
 		<td id='startTimeR'></td>
 		<td id='endTimeR'></td>
-		<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData(#{indexOfEvent});", :id => 'map_link' %></td>
+		<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData(#{indexOfEvent});", :id => 'map_link', :class => 'mapping' %></td>
 		<td><%= link_to 'Edit', edit_event_path(event) %></td>
 		<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
 		<td style="display:none;" id='startTime'></td>
@@ -94,6 +104,18 @@ $(document).ready(function(){
 	if(typeof event_data['gpsCoordinates'] == "undefined" || event_data['gpsCoordinates'].length < 1){
 		var newLink="<% @user.phone_number %>#";
 		$(this).find('#map_link').attr('href',newLink);
+		$(document).ready(function(){
+	    $(".mapping").fancybox({
+	         'width' : '75%',
+	         'height' : '75%',
+	         'autoScale' : false,
+	         'transitionIn' : 'none',
+	         'transitionOut' : 'none',
+	         'type' : 'iframe'
+	     });
+	 
+	     });
+		
 	}
 	
 	

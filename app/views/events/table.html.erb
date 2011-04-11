@@ -4,12 +4,24 @@
   Showing all events for user with phone number '<%= @user.phone_number %>'
 </h2>
 <%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
-<%= link_to 'View pi chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
-<%= link_to 'View timeline', "/#{@user.phone_number}/timeline" %>
+<%= link_to 'View pie chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
+<%= link_to 'View timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
 
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 <script>
+
+$(document).ready(function(){
+	    $(".timeline").fancybox({
+	         'width' : '100%',
+	         'height' : '60%',
+	         'autoScale' : false,
+	         'transitionIn' : 'none',
+	         'transitionOut' : 'none',
+	         'type' : 'iframe'
+	     });
+	});
+
 $(document).ready(function(){
 	    $(".pi_chart").fancybox({
 	         'width' : '40%',
@@ -64,7 +76,7 @@ $(document).ready(function(){
 		<td id='startTimeR'></td>
 		<td id='endTimeR'></td>
 		<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData(#{indexOfEvent});", :id => 'map_link', :class => 'mapping' %></td>
-		<td><%= link_to 'Edit', edit_event_path(event) %></td>
+		<td><%= link_to 'Edit', edit_event_path(event), :class => 'editingEvent' %></td>
 		<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
 		<td style="display:none;" id='startTime'></td>
       </tr>
@@ -101,13 +113,10 @@ $(document).ready(function(){
     $(this).find('#startTimeR').text(dateHelpers.formatDateTime(event_data['startTime']));
     $(this).find('#endTimeR').html(dateHelpers.formatDateTime(event_data['endTime']));
 	
-	if(typeof event_data['gpsCoordinates'] == "undefined" || event_data['gpsCoordinates'].length < 1){
-		var newLink="<% @user.phone_number %>#";
-		$(this).find('#map_link').attr('href',newLink);
-		$(document).ready(function(){
-	    $(".mapping").fancybox({
-	         'width' : '75%',
-	         'height' : '75%',
+	$(document).ready(function(){
+	    $(".editingEvent").fancybox({
+	         'width' : '40%',
+	         'height' : '48%',
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',
@@ -116,8 +125,22 @@ $(document).ready(function(){
 	 
 	     });
 		
-	}
+	if(typeof event_data['gpsCoordinates'] == "undefined" || event_data['gpsCoordinates'].length < 1){
+		var newLink="<% @user.phone_number %>#";
+		$(this).find('#map_link').attr('href',newLink);
+	}else{
+			
+			$(this).find('#map_link').fancybox({
+				 'width' : '75%',
+				 'height' : '75%',
+				 'autoScale' : false,
+				 'transitionIn' : 'none',
+				 'transitionOut' : 'none',
+				 'type' : 'iframe'
+		 });
+	 
 	
+	}
 	
     index++;
 	

@@ -40,7 +40,10 @@ $(document).ready(function(){
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',
-	         'type' : 'iframe'
+	         'type' : 'iframe',
+			 'onClosed': function() {
+				parent.location.reload(true); ;
+			}
 	     });
 	 
 	     });

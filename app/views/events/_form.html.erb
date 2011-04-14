@@ -66,6 +66,11 @@
     content['name'] = $('#name').attr('value');
     content['notes'] = $('#notes').attr('value');
     content['tag'] = $('#tag').attr('value');
+    <% if @contents %>
+      content['gpsCoordinates'] = unencryptedEvent['gpsCoordinates'];
+    <% else %>
+      content['gpsCoordinates'] = [];
+    <% end %>
     var encrypted_content = GibberishAES.enc(JSON.stringify(content), passwd);
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();

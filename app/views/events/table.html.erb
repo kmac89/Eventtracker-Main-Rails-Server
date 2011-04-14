@@ -130,7 +130,8 @@ $(document).ready(function(){
 		
 	if(typeof event_data['gpsCoordinates'] == "undefined" || event_data['gpsCoordinates'].length < 1){
 		var newLink="<% @user.phone_number %>#";
-		$(this).find('#map_link').attr('href',newLink);
+		//$(this).find('#map_link').attr('href',newLink);
+		$(this).find('#map_link').remove();
 	}else{
 			
 			$(this).find('#map_link').fancybox({

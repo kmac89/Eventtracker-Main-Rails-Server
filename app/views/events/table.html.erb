@@ -12,6 +12,16 @@
 <script>
 
 
+$(document).ready(function(){
+	    $(".timeline").fancybox({
+	         'width' : '100%',
+	         'height' : '60%',
+	         'autoScale' : false,
+	         'transitionIn' : 'none',
+	         'transitionOut' : 'none',
+	         'type' : 'iframe'
+	     });
+	});
 
 $(document).ready(function(){
 	    $(".pi_chart").fancybox({
@@ -114,7 +124,10 @@ $(document).ready(function(){
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',
-	         'type' : 'iframe'
+	         'type' : 'iframe',
+			 'onClosed': function() {
+				parent.location.reload(true); ;
+			}
 	     });
 	 
 	     });

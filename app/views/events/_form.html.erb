@@ -74,6 +74,5 @@
     var encrypted_content = GibberishAES.enc(JSON.stringify(content), passwd);
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();
-	parent.$.fancybox.close();
   } 	
 </script>

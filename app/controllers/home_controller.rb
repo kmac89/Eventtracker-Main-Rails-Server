@@ -31,4 +31,7 @@ class HomeController < ApplicationController
     puts "Parameters: #{params.inspect}"
     puts "Content: #{request.raw_post}"
   end
+
+  def close
+  end
 end

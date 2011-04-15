@@ -172,7 +172,8 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if @event.save
-        format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully created.') }
+#        format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully created.') }
+        format.html { redirect_to "/close_fancybox" }
         format.xml  { head :ok }
       else
         @contents = contents.to_json
@@ -195,7 +196,8 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       if event.save
-        format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully updated.') }
+        #format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully updated.') }
+        format.html { redirect_to '/close_fancybox' }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

@@ -1,6 +1,7 @@
 MainRailsServer::Application.routes.draw do
 
   match "test"      => "home#test"
+  match "close_fancybox" =>  "home#close_fancybox"
 
   scope "events" do
     match "upload"  =>  "events#upload"

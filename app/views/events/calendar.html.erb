@@ -1,8 +1,9 @@
 <link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
-<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen, projection" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
   
 
 <head>
@@ -23,6 +24,7 @@
 		unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
 		unencryptedEvents[i]['id']=encryptedData[i]['event']['id'];
 	}
+	var divMap;
   </script>	
 
 <script type="text/javascript">
@@ -41,13 +43,45 @@ $(document).ready(function() {
 			 height: 650,
 			 events:[],
 		eventClick: function(calEvent, jsEvent, view) {
-			  $("#dialog").dialog({ modal: true });
+			  $("#dialog").dialog({ modal: true, autoOpen:false });
+			  $("#dialog").dialog('open');
+			  //clearing the div. This is done because we are reusing the same dialog so we have to clear the previous contents of the div
+			  $("#dialog").empty();
+			  var startTime=$.fullCalendar.parseDate(calEvent['start']);
+			  var endTime=$.fullCalendar.parseDate(calEvent['end']);
+			  $("#dialog").append("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")+"<br>");
+			  $("#dialog").append("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")+"<br>");
 			  
+			  if(calEvent['tag']){
+				$("#dialog").append("Tag: " + calEvent['tag']+"<br>");
+			  }
+			  divMap=document.createElement("div");
+			  divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
+			  
+			
+			  divMap.children[0].href=divMap.children[0].href+calEvent['id'];
+			  
+			  if(calEvent['numGPSCoords'] > 0){
+			  
+			  
+				$("#dialog").append(divMap.innerHTML);
+
+			  }
+			  
+			  $("#dialog").dialog( "option", "title", calEvent['title'] );
 			  $('.ui-widget-overlay').click(function() { $("#dialog").dialog("close"); });
 
+		
         // change the border color just for fun
         $(this).css('border-color', 'red');
-
+		$(".mapping").fancybox({
+				 'width' : '70%',
+				 'height' : '100%',
+				 'autoScale' : false,
+				 'transitionIn' : 'none',
+				 'transitionOut' : 'none',
+				 'type' : 'iframe'
+			  });
     }
 			
     })
@@ -64,6 +98,9 @@ function initializeEvents(){
 
 		eventDict['start']= $.fullCalendar.formatDate(new Date(event['startTime']), "yyyy-MM-dd HH:mm:ss");
 		eventDict['end']= $.fullCalendar.formatDate(new Date(event['endTime']), "yyyy-MM-dd HH:mm:ss");
+		eventDict['tag']=event['tag'];
+		eventDict['id']=event['id'];
+		eventDict['numGPSCoords']=event['gpsCoordinates'].length
 		eventDict['allDay']=false // will make the time show
 		events[i]=eventDict;
 	}

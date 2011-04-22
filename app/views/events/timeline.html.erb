@@ -89,11 +89,15 @@
 	         'type' : 'iframe'
 			});
 			
-			elmt.appendChild(div5);
+			
             elmt.appendChild(div);
 			elmt.appendChild(div2);
 			elmt.appendChild(div3);
-			elmt.appendChild(div4);
+			
+			//adds a tag if one exists
+			if(eventObject._description){
+				elmt.appendChild(div4);
+			}
 			
 			//if size of gpsCoordinates is greater than 0
 			//eventObject._id contains the size of gpsCoordinates

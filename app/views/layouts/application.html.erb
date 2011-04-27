@@ -8,12 +8,7 @@
 </head>
 <body>
 
-  <div id="nav">
-    <% if current_user && params[:action] != 'map' && params[:action] != 'charts' && params[:action] != 'new' && params[:action] != 'edit' && params[:action] != 'timeline'&& params[:action] != 'calendar'%>
-      <%= link_to "Logout", :logout %>
-    <% else %>
-    <% end %>
-  </div>
+  
 
 <%= yield %>
 

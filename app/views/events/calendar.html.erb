@@ -77,6 +77,18 @@ $(document).ready(function(){
 		unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
 		unencryptedEvents[i]['id']=encryptedData[i]['event']['id'];
 	}
+	
+	//Preparing the delete links.
+	var deleteLinkArray=new Array();
+	 <% @events.each_with_index do |event,indexOfEvent| %>
+		var index='<%= event.id %>'
+		deleteLinkArray[index]='<%= link_to 'Delete', event ,:confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %>';	
+    <% end %>
+	
+	
+	
+	
+	
 	var divMap;
   </script>	
 
@@ -115,11 +127,17 @@ $(document).ready(function() {
 			  divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'lala' %>';			  
 			  divMap.children[0].href=divMap.children[0].href+calEvent['id'];
 			  divEdit.children[0].href=divEdit.children[0].href+calEvent['id']+'/edit';
+			  divDelete=document.createElement("div");
+			  divDelete.innerHTML =	deleteLinkArray[calEvent['id']];			  
+			
+			  
+			  $("#dialog").append(divEdit.innerHTML+ " ");
+			   $("#dialog").append(divDelete.innerHTML);
 			  if(calEvent['numGPSCoords'] > 0){
 			  
 			  
 				$("#dialog").append(divMap.innerHTML+"<br>");
-				$("#dialog").append(divEdit.innerHTML);
+				
 			  }
 			  
 			  $("#dialog").dialog( "option", "title", calEvent['title'] );

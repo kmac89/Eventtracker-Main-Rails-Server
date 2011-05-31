@@ -294,6 +294,32 @@ class EventsController < ApplicationController
   end
 
 
+  # POST /events/upload_bulk
+  def upload_bulk
+    event_data = params[:EventData]
+
+    phone_updated_at = DateTime.parse(params[:UpdatedAt])
+    user = User.find_by_uuid(params[:uuid])
+
+    event_data.each do |event_datum|
+      event = Event.find_or_create_by_uuid(event_datum[:UUIDOfEvent])
+      event.user_id = user.id unless user.nil?
+      event.content = event_datum[:EventData]
+      event.deleted = event_datum[:Deleted]
+
+      if event.persisted?
+        event_older = phone_updated_at < event.updated_at
+      end
+
+      if !(event_older or event.save)
+        render :text => event.errors.to_s, :status => 400
+        return
+      end
+    end
+
+    render :text => 'OK', :status => 200
+  end
+
   private
 
   def verify_user(user)

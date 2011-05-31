@@ -21,12 +21,12 @@ MainRailsServer::Application.routes.draw do
   match 'logout' => 'user_sessions#destroy', :as => :logout
 
   constraints :phone_number => /\d+/ do
-    match ":phone_number"  => "events#table"
+    match ":phone_number"  => "events#calendar"
     match ":phone_number/map/:id"     => "events#map"
     match ":phone_number/new"     => "events#new"
     match ":phone_number/charts"     => "events#charts"
 	match ":phone_number/timeline"     => "events#timeline"
-	match ":phone_number/calendar"     => "events#calendar"
+	match ":phone_number/table"     => "events#table"
   end
 
   get "users/index"

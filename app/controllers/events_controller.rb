@@ -279,10 +279,10 @@ class EventsController < ApplicationController
     @event.user_id = user.id unless user.nil?
     @event.content = params[:EventData]
     @event.deleted = params[:Deleted]
-    phone_updated_at = DateTime.parse(params[:UpdatedAt])
+    phone_event_updated_at = DateTime.parse(params[:UpdatedAt])
 
     if @event.persisted?
-      event_older = phone_updated_at < @event.updated_at
+      event_older = phone_event_updated_at < @event.updated_at
     end
 
     if event_older or @event.save
@@ -306,9 +306,10 @@ class EventsController < ApplicationController
       event.user_id = user.id unless user.nil?
       event.content = event_datum[:EventData]
       event.deleted = event_datum[:Deleted]
+      phone_event_updated_at = DateTime.parse(params[:UpdatedAt])
 
       if event.persisted?
-        event_older = phone_updated_at < event.updated_at
+        event_older = phone_event_updated_at < event.updated_at
       end
 
       if !(event_older or event.save)

@@ -2,7 +2,6 @@
 <link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
 <script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen, projection" />
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 <script>
@@ -47,8 +46,9 @@ $(document).ready(function(){
 	     });
 $(document).ready(function(){
 	    $(".create_event").fancybox({
-	         'width' : '30%',
-	         'height' : '48%',
+	         'width' : '35%',
+			 'padding': 0,
+	         'height' : '60%',
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',
@@ -108,7 +108,6 @@ $(document).ready(function() {
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
-			 eventColor: '#8C8B8B',
 			 height: 600,
 			 theme:true,
 			 events:[],
@@ -128,7 +127,7 @@ $(document).ready(function() {
 			  divMap=document.createElement("div");
 			  divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
 			  divEdit=document.createElement("div");		
-			  divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'lala' %>';			  
+			  divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'editing' %>';			  
 			  divMap.children[0].href=divMap.children[0].href+calEvent['id'];
 			  divEdit.children[0].href=divEdit.children[0].href+calEvent['id']+'/edit';
 			  divDelete=document.createElement("div");
@@ -158,9 +157,10 @@ $(document).ready(function() {
 				 'transitionOut' : 'none',
 				 'type' : 'iframe'
 			  });
-		$('#lala').fancybox({
-				'width' : '40%' ,
-				'height': '48%',
+		$('#editing').fancybox({
+				'width' : '35%' ,
+			    'padding': 0,
+				'height': '60%',
 				'autoScale' : false,
 				'transitionIn' : 'none',
 				'transitionOut' : 'none',

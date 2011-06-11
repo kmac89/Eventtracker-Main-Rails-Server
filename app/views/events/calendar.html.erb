@@ -96,10 +96,22 @@ $(document).ready(function(){
   </script>	
 
 <script type="text/javascript">
+  var currentYear=sessionStorage.getItem('year');
+  var currentDate= new Date();
+  if(currentYear == null){
+    currentYear = currentDate.getFullYear();
+  }
+  var currentMonth = sessionStorage.getItem('month');
+  if(currentMonth == null){
+    currentMonth = currentDate.getMonth();
+  }
 $(document).ready(function() {
 
+
+ 
+
+
     // page is now ready, initialize the calendar...
-	
     $('#calendar').fullCalendar({
 	
         // put your options and callbacks here
@@ -108,9 +120,16 @@ $(document).ready(function() {
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
+			 year: currentYear,
+			 month: currentMonth,
 			 height: 600,
 			 theme:true,
 			 events:[],
+			 viewDisplay: function(view) {
+			                                var calendarDate=$('#calendar').fullCalendar('getDate');
+											sessionStorage.setItem('year', calendarDate.getFullYear());
+											sessionStorage.setItem('month', calendarDate.getMonth());
+										 },
 		eventClick: function(calEvent, jsEvent, view) {
 			  $("#dialog").dialog({ modal: true, autoOpen:false });
 			  $("#dialog").dialog('open');

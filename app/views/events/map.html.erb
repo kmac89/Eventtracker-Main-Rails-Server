@@ -1,4 +1,3 @@
-
 <script type="text/javascript">
   var encryptedData=<%= raw @contents %>;
   encryptedData = encryptedData.replace(/[ \r\n]+/g,'')
@@ -41,8 +40,8 @@
 	  autoZoomCenter();
 	
 	  if(mapmarkers.length > 0){
-		mapmarkers[0].setIcon("http://127.0.0.1:3001/images/green_flag.png");
-		mapmarkers[mapmarkers.length-1].setIcon("http://127.0.0.1:3001/images/red_flag.png");
+		mapmarkers[0].setIcon("/images/green_flag.png");
+		mapmarkers[mapmarkers.length-1].setIcon("/images/red_flag.png");
 	
 	  }
 

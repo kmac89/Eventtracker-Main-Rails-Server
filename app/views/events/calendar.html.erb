@@ -84,11 +84,6 @@ $(document).ready(function(){
 		var index='<%= event.id %>'
 		deleteLinkArray[index]='<%= link_to 'Delete', event ,:confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %>';	
     <% end %>
-	
-	
-	
-	
-	
 	var divMap;
   </script>	
 
@@ -132,7 +127,7 @@ $(document).ready(function() {
 			
 			  
 			  $("#dialog").append(divEdit.innerHTML+ " ");
-			   $("#dialog").append(divDelete.innerHTML);
+			   $("#dialog").append(divDelete.innerHTML + " ");
 			  if(calEvent['numGPSCoords'] > 0){
 			  
 			  

@@ -233,14 +233,15 @@ class EventsController < ApplicationController
   def destroy
     event = Event.find(params[:id])
     user = User.find(event.user_id)
+
     if !verify_user(user)
       return
     end
     event.deleted = true
     event.save
-
+	
     respond_to do |format|
-      format.html { redirect_to("/#{user.phone_number}") }
+      format.html { redirect_to(:back) }
       format.xml  { head :ok }
     end
   end

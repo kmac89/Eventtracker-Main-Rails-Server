@@ -14,7 +14,7 @@
 	<%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
 	<%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
 	<%= link_to 'View Timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
-	<%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'calendar' %>
+	<%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'table' %>
 	 <%= link_to "Logout", :logout, :style => "float:right;" %>
 </ul>
 <br /> <br />
@@ -60,7 +60,7 @@ $(document).ready(function(){
 	 
 	     });
  $(document).ready(function(){
-	    $(".calendar").fancybox({
+	    $(".table").fancybox({
 	         'width' : '54%',
 	         'height' : '79%',
 	         'autoScale' : false,

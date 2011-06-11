@@ -27,8 +27,8 @@
 <script type="text/javascript">
   function storePassAndSubmit() {
     var pw = $('#user_session_password').attr('value');
-    localStorage.setItem('pwd', pw);
     var b64_password = b64_md5(pw);
+	localStorage.setItem('pwd', b64_password);
     $('#user_session_password').attr('value', b64_password);
     $('#new_user_session').submit();
   }

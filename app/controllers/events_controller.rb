@@ -155,7 +155,7 @@ class EventsController < ApplicationController
       return
     end
     @event.user_id = @user.id
-    @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'startTime' => 'Start Time', 'notes' => 'Notes'}
+    @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'notes' => 'Notes', 'startTime' => 'Start Time'}
 
     respond_to do |format|
       format.html # new.html.erb
@@ -171,7 +171,7 @@ class EventsController < ApplicationController
       return
     end
     @contents = @event.content.to_json
-    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'notes' => 'Notes', 'tag' => 'Category'}
+    @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'notes' => 'Notes', 'startTime' => 'Start Time'}
   end
 
   # POST /events

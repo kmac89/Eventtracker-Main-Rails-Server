@@ -1,13 +1,12 @@
 <% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :class => "last"}] %>
-<%= raw datatable(columns, {:sort_by => "[8, 'desc']", :processing => image_tag("spinner.gif") }) %>
-<h2>
-  Showing all events for user with phone number '<%= @user.phone_number %>'
-</h2>
+<%= raw datatable(columns, {:jquery_ui => "true", :sort_by => "[8, 'desc']", :processing => image_tag("spinner.gif")}) %>
 
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
+<link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
+
+<script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
+
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-
-
 
 <table id='events' class='datatable'>
   <thead>

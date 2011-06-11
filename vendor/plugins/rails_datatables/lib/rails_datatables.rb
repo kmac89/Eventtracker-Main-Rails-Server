@@ -16,7 +16,9 @@ module RailsDatatables
 
     ajax_source = opts[:ajax_source] || nil
     server_side = opts[:ajax_source].present?
-
+    jquery_ui = opts[:jquery_ui] || nil
+    dom = opts[:dom] || nil
+    
     additional_data_string = ""
     additional_data.each_pair do |name,value|
       additional_data_string = additional_data_string + ", " if !additional_data_string.blank? && value
@@ -24,38 +26,40 @@ module RailsDatatables
     end
 
     %Q{
-    <script type="text/javascript">
-    $(function() {
-        $('#{table_dom_id}').dataTable({
-          "oLanguage": {
-            "sSearch": "#{search_label}",
-            #{"'sZeroRecords': '#{no_records_message}'," if no_records_message}
-            "sProcessing": '#{processing}'
-          },
-          "sPaginationType": "full_numbers",
-          "iDisplayLength": #{per_page},
-          "bProcessing": true,
-          "bServerSide": #{server_side},
-          "bLengthChange": false,
-          "bStateSave": #{persist_state},
-          "bFilter": #{search},
-          "bAutoWidth": #{auto_width},
-          #{"'aaSorting': [#{sort_by}]," if sort_by}
-          #{"'sAjaxSource': '#{ajax_source}'," if ajax_source}
-          "aoColumns": [
-      			#{formatted_columns(columns)}
-      				],
-      		#{"'fnRowCallback': function( nRow, aData, iDisplayIndex ) { #{row_callback} }," if row_callback}
-          "fnServerData": function ( sSource, aoData, fnCallback ) {
-            aoData.push( #{additional_data_string} );
-            $.getJSON( sSource, aoData, function (json) {
-      				fnCallback(json);
-      			} );
-          }
-        })#{append};
-    });
-    </script>
-    }
+<script type="text/javascript">
+jQuery(document).ready(function () {
+jQuery('#{table_dom_id}').dataTable({
+"oLanguage": {
+"sSearch": "#{search_label}",
+#{"'sZeroRecords': '#{no_records_message}'," if no_records_message}
+"sProcessing": '#{processing}'
+},
+"sPaginationType": "full_numbers",
+"iDisplayLength": #{per_page},
+"bProcessing": true,
+"bServerSide": #{server_side},
+"bLengthChange": false,
+"bStateSave": #{persist_state},
+"bFilter": #{search},
+"bAutoWidth": #{auto_width},
+#{"'sDom': '#{dom}'," if dom}
+#{"'aaSorting': [#{sort_by}]," if sort_by}
+#{"'sAjaxSource': '#{ajax_source}'," if ajax_source}
+#{"'bJQueryUI': #{jquery_ui}," if jquery_ui}
+"aoColumns": [
+#{formatted_columns(columns)}
+],
+#{"'fnRowCallback': function( nRow, aData, iDisplayIndex ) { #{row_callback} }," if row_callback}
+"fnServerData": function ( sSource, aoData, fnCallback ) {
+aoData.push( #{additional_data_string} );
+jQuery.getJSON( sSource, aoData, function (json) {
+fnCallback(json);
+} );
+}
+})#{append};
+});
+</script>
+}
   end
 
   private
@@ -68,13 +72,15 @@ module RailsDatatables
         else
           searchable = c[:searchable].to_s.present? ? c[:searchable].to_s : "true"
           sortable = c[:sortable].to_s.present? ? c[:sortable].to_s : "true"
-
           "{
-          'sType': '#{c[:type] || "string"}',
-          'bSortable':#{sortable},
-          'bSearchable':#{searchable}
-          #{",'sClass':'#{c[:class]}'" if c[:class]}
-          }"
+'sType': '#{c[:type] || "string"}',
+'bSortable':#{sortable},
+'bSearchable':#{searchable},
+#{"'asSorting':#{c[:sorting].inspect}," if c[:sorting]}
+#{"'bVisible':'#{c[:visible]}'," if c[:visible]}
+#{"'iDataSort':#{c[:datasort]}," if c[:datasort]}
+#{"'sClass':'#{c[:class]}'" if c[:class]}
+}"
         end
       }.join(",")
     end

@@ -1,17 +1,25 @@
 <link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
-<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+<link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
+<script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen, projection" />
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+<script>
+	$(function() {
+		$("#toolbar a").button();
+	});
+	</script>
 
-<%= link_to "Logout", :logout %>
-<%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
-<%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
-<%= link_to 'View Timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
-<%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'calendar' %>
+<ul id="toolbar" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+	<%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
+	<%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
+	<%= link_to 'View Timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
+	<%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'calendar' %>
+	 <%= link_to "Logout", :logout, :style => "float:right;" %>
+</ul>
+<br /> <br />
 
-<head>
 
  <script type="text/javascript">
 	
@@ -28,8 +36,8 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 	    $(".pi_chart").fancybox({
-	         'width' : '40%',
-	         'height' : '48%',
+	         'width' : '37%', //37
+	         'height' : '51%', //51
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',
@@ -53,8 +61,8 @@ $(document).ready(function(){
 	     });
  $(document).ready(function(){
 	    $(".calendar").fancybox({
-	         'width' : '60%',
-	         'height' : '100%',
+	         'width' : '54%',
+	         'height' : '79%',
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',
@@ -100,8 +108,9 @@ $(document).ready(function() {
 				center: 'title',
 				right: 'month,agendaWeek,agendaDay'
 			},
+			 eventColor: '#8C8B8B',
 			 height: 600,
-			 
+			 theme:true,
 			 events:[],
 		eventClick: function(calEvent, jsEvent, view) {
 			  $("#dialog").dialog({ modal: true, autoOpen:false });

@@ -296,17 +296,16 @@ class EventsController < ApplicationController
 
   # POST /events/upload_bulk
   def upload_bulk
-    event_data = params[:EventData]
+    event_data = ActiveSupport::JSON.decode(params[:EventData])
 
-    phone_updated_at = DateTime.parse(params[:UpdatedAt])
     user = User.find_by_uuid(params[:uuid])
 
     event_data.each do |event_datum|
-      event = Event.find_or_create_by_uuid(event_datum[:UUIDOfEvent])
+      event = Event.find_or_create_by_uuid(event_datum["UUIDOfEvent"])
       event.user_id = user.id unless user.nil?
-      event.content = event_datum[:EventData]
-      event.deleted = event_datum[:Deleted]
-      phone_event_updated_at = DateTime.parse(params[:UpdatedAt])
+      event.content = event_datum["EventData"]
+      event.deleted = event_datum["Deleted"]
+      phone_event_updated_at = DateTime.parse(event_datum["UpdatedAt"])
 
       if event.persisted?
         event_older = phone_event_updated_at < event.updated_at

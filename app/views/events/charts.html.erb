@@ -1,52 +1,79 @@
- <script type="text/javascript">
-        unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
-  </script>	
+<script type="text/javascript">
+  unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
 
-<html>	
-  <head>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-	
-      var tagTimes=new Array();	
-      function computeTagTimes(){
-          for(var i=0; i< unencryptedEvents.length; i++){
-		var event=unencryptedEvents[i];
-		var startTime=event['startTime'];
-		var endTime=event['endTime'];
-		var totalTime=(endTime - startTime) * 1.0 / (1000 * 60 * 60);
-		var tag=event['tag'];
-		if(tag==null || tag=='Select a tag')
-		    tag='Other';	
-		var prevValue=tagTimes['tag'];
-		if(prevValue==null)
-		     prevValue=0;
-		tagTimes[tag]=prevValue+totalTime;	
-          }
+  // Returns a dictionary mapping tags to aggregated times.
+  function computeTagTimes(activities) {
+    var tagTimes = new Object();
+    for (var i = 0; i < activities.length; i++) {
+      var activity = activities[i];
+      var startTime = activity['startTime'];
+      var endTime = activity['endTime'];
+      var totalTime = (endTime - startTime) * 1.0 / (1000 * 60 * 60);
+      var tag = activity['tag'];
+      if (tag == null || tag == 'Select a tag') {
+        tag = 'Other';
       }
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-	
-	data.addColumn('string', 'Event');
-        data.addColumn('number', 'Hours');
-	
-	computeTagTimes();
+      var prevValue = tagTimes['tag'];
+      if (prevValue == null) {
+        prevValue = 0;
+      }
+      tagTimes[tag] = prevValue + totalTime;
+    }
+    return tagTimes;
+  }
 
-	for(var tag in tagTimes){
-	   if(tag == '')
-	       data.addRow(['Other',  tagTimes[tag]]);
-	   else
-	       data.addRow([tag,  tagTimes[tag]]);	 	
-	 }
-	//chartArea:{left:0,top:0,width:"100%",height:"100%"}});
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, { chartArea:{width:"80%",height:"80%"}, width: 550, height: 400, title: 'My Events (in hours)', titleTextStyle: {color: "Black", fontName: "Arial", fontSize: 20}});}
-    </script>
-  </head>
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Event');
+    data.addColumn('number', 'Hours');
+    var tagTimes = computeTagTimes(unencryptedEvents);
+    for(var tag in tagTimes) {
+      if(tag == '') {
+        data.addRow(['Other',  tagTimes[tag]]);
+      } else {
+        data.addRow([tag,  tagTimes[tag]]);
+      }
+    }
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    chart.draw(
+      data,
+      {
+        chartArea: { width:"80%",height:"80%" },
+        width: 550,
+        height: 400,
+        title: 'My Events (in hours)',
+        titleTextStyle: { color: "Black", fontName: "Arial", fontSize: 20 }
+      }
+    );
+  }
 
-  <body>
-    <div id="chart_div"></div>
-  </body>
-</html>
+</script>
+
+<div id="chart_div">
+  <script type="text/javascript+protovis">
+    var RADIUS = 250;
+    new pv.Panel()
+        .width(RADIUS * 2)
+        .height(RADIUS * 2)
+      .add(pv.Wedge)
+        .def("o", -1)
+        .data(pv.normalize(pv.range(10).map(Math.random)))
+        .outerRadius(RADIUS)
+        .angle(function(d) d * 2 * Math.PI)
+        .left(function() RADIUS
+            + Math.cos(this.startAngle() + this.angle() / 2)
+            * ((this.o() == this.index) ? 10 : 0))
+        .bottom(function() RADIUS
+            - Math.sin(this.startAngle() + this.angle() / 2)
+            * ((this.o() == this.index) ? 10 : 0))
+        .event("mouseover", function() this.o(this.index))
+      .root.render();
+  </script>
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  //google.load("visualization", "1", {packages:["corechart"]});
+  //google.setOnLoadCallback(drawChart);
+</script>
 

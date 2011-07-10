@@ -33,6 +33,9 @@
 	 * Section - DataTables variables
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
+	
+
+	
 	/*
 	 * Variable: dataTableSettings
 	 * Purpose:  Store the settings for each dataTables instance

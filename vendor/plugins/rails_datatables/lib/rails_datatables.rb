@@ -11,7 +11,7 @@ module RailsDatatables
     no_records_message = opts[:no_records_message] || nil
     auto_width = opts[:auto_width].present? ? opts[:auto_width].to_s : "true"
     row_callback = opts[:row_callback] || nil
-
+    info_callback = opts[:info_callback] || nil 
     append = opts[:append] || nil
 
     ajax_source = opts[:ajax_source] || nil
@@ -50,6 +50,9 @@ jQuery('#{table_dom_id}').dataTable({
 #{formatted_columns(columns)}
 ],
 #{"'fnRowCallback': function( nRow, aData, iDisplayIndex ) { #{row_callback} }," if row_callback}
+#{"'fnInfoCallback': function(oSettings,iStart, iEnd, iMax, iTotal, sPre) { #{info_callback} }," if info_callback}
+
+
 "fnServerData": function ( sSource, aoData, fnCallback ) {
 aoData.push( #{additional_data_string} );
 jQuery.getJSON( sSource, aoData, function (json) {

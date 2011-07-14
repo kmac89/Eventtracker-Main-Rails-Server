@@ -88,6 +88,8 @@
             - Math.sin(this.startAngle() + this.angle() / 2)
             * ((this.o() == this.index) ? 10 : 0))
       .text(function(d) d.tag)
+      .event("mouseover", function() this.o(this.index))
+      // this second mouseover function overrwrites the one above
       .event("mouseover", pv.Behavior.tipsy({gravity: "nw", fade: true}))
       .root.render();
   </script>

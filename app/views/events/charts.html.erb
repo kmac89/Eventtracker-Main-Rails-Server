@@ -1,6 +1,5 @@
+<link href="/stylesheets/protovis.tipsy.css" type="text/css" rel="stylesheet"/>
 <script type="text/javascript">
-  unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
-
   // Returns a dictionary mapping tags to aggregated times.
   function computeTagTimes(activities) {
     var tagTimes = new Object();
@@ -20,6 +19,21 @@
       tagTimes[tag] = prevValue + totalTime;
     }
     return tagTimes;
+  }
+
+  // Split a dictionary mapping tag->time into an array of (tag,totalTime)
+  // tuples.
+  function generateTuples(tagTimes) {
+    var tagTimeTuples = new Array();
+    tagTimeTuples.totalTime = 0;
+    for (var tag in tagTimes) {
+      var tagTimeTuple = new Object();
+      tagTimeTuple.tag = tag;
+      tagTimeTuple.totalTime = tagTimes[tag];
+      tagTimeTuples.totalTime += tagTimes[tag];
+      tagTimeTuples.push(tagTimeTuple);
+    }
+    return tagTimeTuples;
   }
 
   function drawChart() {
@@ -47,33 +61,34 @@
     );
   }
 
+  var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
+  var tagTimeTuples = generateTuples(computeTagTimes(unencryptedEvents));
+
 </script>
+
+<h1>My Events (in hours)</h1>
 
 <div id="chart_div">
   <script type="text/javascript+protovis">
     var RADIUS = 250;
+    var ERADIUS = RADIUS + 10;
+    // Place a pie chart here.
     new pv.Panel()
-        .width(RADIUS * 2)
-        .height(RADIUS * 2)
+        .width(ERADIUS * 2)
+        .height(ERADIUS * 2)
       .add(pv.Wedge)
         .def("o", -1)
-        .data(pv.normalize(pv.range(10).map(Math.random)))
+        .data(tagTimeTuples)
         .outerRadius(RADIUS)
-        .angle(function(d) d * 2 * Math.PI)
-        .left(function() RADIUS
+        .angle(function(d) d.totalTime / tagTimeTuples.totalTime * 2 * Math.PI)
+        .left(function() ERADIUS
             + Math.cos(this.startAngle() + this.angle() / 2)
             * ((this.o() == this.index) ? 10 : 0))
-        .bottom(function() RADIUS
+        .bottom(function() ERADIUS
             - Math.sin(this.startAngle() + this.angle() / 2)
             * ((this.o() == this.index) ? 10 : 0))
-        .event("mouseover", function() this.o(this.index))
+      .text(function(d) d.tag)
+      .event("mouseover", pv.Behavior.tipsy({gravity: "nw", fade: true}))
       .root.render();
   </script>
 </div>
-
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript">
-  //google.load("visualization", "1", {packages:["corechart"]});
-  //google.setOnLoadCallback(drawChart);
-</script>
-

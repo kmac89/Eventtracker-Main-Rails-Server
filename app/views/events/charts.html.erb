@@ -70,15 +70,17 @@
 
 <div id="chart_div">
   <script type="text/javascript+protovis">
-    var RADIUS = 250;
+    var RADIUS = 220;
     var ERADIUS = RADIUS + 10;
+    var DIAMETER = ERADIUS * 2;
+    var colors = pv.Colors.category20();
     // Place a pie chart here.
-    new pv.Panel()
-        .width(ERADIUS * 2)
-        .height(ERADIUS * 2)
-      .add(pv.Wedge)
-        .def("o", -1)
+    var root = new pv.Panel()
+        .width(DIAMETER + 160)
+        .height(DIAMETER);
+    root.add(pv.Wedge)
         .data(tagTimeTuples)
+        .def("o", -1)
         .outerRadius(RADIUS)
         .angle(function(d) d.totalTime / tagTimeTuples.totalTime * 2 * Math.PI)
         .left(function() ERADIUS
@@ -88,9 +90,20 @@
             - Math.sin(this.startAngle() + this.angle() / 2)
             * ((this.o() == this.index) ? 10 : 0))
       .text(function(d) d.tag)
+      .fillStyle(function(d) colors(d.tag))
       .event("mouseover", function() this.o(this.index))
       // this second mouseover function overrwrites the one above
-      .event("mouseover", pv.Behavior.tipsy({gravity: "nw", fade: true}))
-      .root.render();
+      .event("mouseover", pv.Behavior.tipsy({fade: true}));
+    /* A legend entry for each tag. */
+    root.add(pv.Dot)
+        .data(tagTimeTuples)
+        .left(ERADIUS * 2 + 30)
+        .top(function() this.index * 12 + 10)
+        .fillStyle(function(d) colors(d.tag))
+        .strokeStyle(null)
+        .shape("square")
+      .anchor("right").add(pv.Label)
+        .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2));
+    root.render();
   </script>
 </div>

@@ -76,6 +76,7 @@
       tagTimeTuples.push(tagTimeTuple);
     }
     var tupleObj = new Object();
+    tagTimeTuples = sortTagData(tagTimeTuples);
     tupleObj.tagTimeTuples = tagTimeTuples;
     var tupleArray = new Array();
     tupleArray.push(tupleObj);
@@ -88,9 +89,9 @@
       if (a.totalTime == b.totalTime) {
         return 0;
       } else if (a.totalTime < b.totalTime) {
-        return -1;
-      } else {
         return 1;
+      } else {
+        return -1;
       }
     }
     return tagTimeTuples.sort(sortFunction);
@@ -149,7 +150,7 @@
   function updatePieChart() {
     changeHeader();
     var filteredEvents = filterEventsByDate(unencryptedEvents);
-    return sortTagData(generateTuples(computeTagTimes(filteredEvents)));
+    return generateTuples(computeTagTimes(filteredEvents));
   }
 
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)

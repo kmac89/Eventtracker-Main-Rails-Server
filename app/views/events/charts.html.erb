@@ -64,15 +64,22 @@
   // tuples.
   function generateTuples(tagTimes) {
     var tagTimeTuples = new Array();
-    tagTimeTuples.totalTime = 0;
+    var totalTime = 0;
+    for (var tag in tagTimes) {
+      totalTime += tagTimes[tag];
+    }
     for (var tag in tagTimes) {
       var tagTimeTuple = new Object();
       tagTimeTuple.tag = tag;
       tagTimeTuple.totalTime = tagTimes[tag];
-      tagTimeTuples.totalTime += tagTimes[tag];
+      tagTimeTuple.allTuplesTotalTime = totalTime;
       tagTimeTuples.push(tagTimeTuple);
     }
-    return tagTimeTuples;
+    var tupleObj = new Object();
+    tupleObj.tagTimeTuples = tagTimeTuples;
+    var tupleArray = new Array();
+    tupleArray.push(tupleObj);
+    return tupleArray;
   }
 
   // Change the header to reflect what range of dates the pie chart is covering.
@@ -132,7 +139,6 @@
   }
 
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
-  var tagTimeTuples = updatePieChart();
 
 </script>
 
@@ -142,15 +148,16 @@
     var ERADIUS = RADIUS + 10;
     var DIAMETER = ERADIUS * 2;
     var colors = pv.Colors.category20();
-    function generateRoot(data) {
+    function generateChart(data) {
       var root = new pv.Panel()
           .width(DIAMETER + 200)
+          .data(data)
           .height(DIAMETER);
       root.add(pv.Wedge)
-          .data(data)
+          .data(function (d) d.tagTimeTuples)
           .def("o", -1)
           .outerRadius(RADIUS)
-          .angle(function(d) d.totalTime / tagTimeTuples.totalTime * 2 * Math.PI)
+          .angle(function(d) d.totalTime / d.allTuplesTotalTime * 2 * Math.PI)
           .left(function() ERADIUS
               + Math.cos(this.startAngle() + this.angle() / 2)
               * ((this.o() == this.index) ? 10 : 0))
@@ -164,7 +171,7 @@
           .event("mouseout", function (d) this.o(-1));
       /* A legend entry for each tag. */
       root.add(pv.Dot)
-          .data(tagTimeTuples)
+          .data(function (d) d.tagTimeTuples)
           .left(DIAMETER + 30)
           .top(function() this.index * 20 + 60)
           .fillStyle(function(d) colors(d.tag))
@@ -178,7 +185,7 @@
       return root;
     }
     // Place a pie chart here.
-    var root = generateRoot(tagTimeTuples);
+    var root = generateChart(updatePieChart());
   </script>
 </div>
 <div id="buttonContainer">
@@ -192,17 +199,20 @@
     $('#prevMonth').click(function(){
       if (currentMonth == 0){
         currentMonth = 11;
-	currentYear = Number(currentYear) - 1;
-      }
-      else {
+        currentYear = Number(currentYear) - 1;
+      } else {
         currentMonth = Number(currentMonth) - 1;
       }
+      root.data(updatePieChart());
+      root.render();
     });
     $('#nextMonth').click(function(){
       if (currentMonth == 11) {
         currentYear = Number(currentYear) + 1;
       }
       currentMonth= (Number(currentMonth) + 1) % 12;
+      root.data(updatePieChart());
+      root.render();
     });
   });
 </script>

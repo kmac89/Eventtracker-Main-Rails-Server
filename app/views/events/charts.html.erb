@@ -4,6 +4,9 @@
      font-size:1.9em;
      margin-bottom:.2em;
   }
+  [type="button"] {
+    font-size: 23px;
+  }
 </style>
 
 <div id="chartHeader">My Events (in hours) </div>
@@ -12,7 +15,7 @@
 <script type="text/javascript">
 
   // helper data structure for displaying dates 
-  var months = new Array(13);
+  var months = new Array(12);
   months[0]  = "January";
   months[1]  = "February";
   months[2]  = "March";
@@ -42,7 +45,7 @@
       if (tag == null || tag == 'Select a tag') {
         tag = 'Other';
       }
-      var prevValue = tagTimes['tag'];
+      var prevValue = tagTimes[tag];
       if (prevValue == null) {
         prevValue = 0;
       }
@@ -71,9 +74,13 @@
    $('#chartHeader').append(" for " + months[sessionStorage.getItem('month')] + " " + sessionStorage.getItem('year')); 
 
   }
+  var counter=0;
   function filterDateFunction(activity, index) {
     var startTime = activity['startTime'];
-    return startTime > startMonth && startTime < endMonth;
+    var resultToReturn = startTime > startMonth && startTime < endMonth; 
+    if(resultToReturn && activity['tag']=='research')
+	    counter++;
+    return resultToReturn;
   }
 
   function changeFilterData() {
@@ -86,7 +93,6 @@
     beginningMonthDate.setHours(0);
     beginningMonthDate.setMinutes(0);
     beginningMonthDate.setSeconds(0);
-    alert(beginningMonthDate.toLocaleDateString());
     startMonth = beginningMonthDate.getTime();
 
     
@@ -99,7 +105,6 @@
     endingMonthDate.setHours(0);
     endingMonthDate.setMinutes(0);
     endingMonthDate.setSeconds(0);
-    alert(endingMonthDate);
     endMonth = endingMonthDate.getTime();
   }
   changeHeader();
@@ -110,7 +115,6 @@
   var tagTimeTuples = generateTuples(computeTagTimes(filteredEventsByDate));
 
 </script>
-
 
 <div id="chart_div">
   <script type="text/javascript+protovis">
@@ -152,4 +156,8 @@
       .font("15px sans-serif");
     root.render();
   </script>
+</div>
+<div id="buttonContainer">
+	<button id="prevMonth" type="button">Previous Month</button>
+	<button type="button">Next Month</button>
 </div>

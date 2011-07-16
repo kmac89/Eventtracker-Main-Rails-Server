@@ -1,20 +1,25 @@
 <style type="text/css">
   #chartHeader {
-     font-weight: bold; 
+     font-weight: bold;
      font-size:1.9em;
-     margin-bottom:.2em;
+     margin-bottom:.5em;
   }
   [type="button"] {
     font-size: 23px;
+  }
+  #buttonContainer {
+    margin-top:.5em;
   }
 </style>
 
 <div id="chartHeader">My Events (in hours) </div>
 
+<link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
+<script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
 <link href="/stylesheets/protovis.tipsy.css" type="text/css" rel="stylesheet"/>
 <script type="text/javascript">
 
-  // helper data structure for displaying dates 
+  // helper data structure for displaying dates
   var months = new Array(12);
   months[0]  = "January";
   months[1]  = "February";
@@ -67,15 +72,15 @@
 
   // Change the header to reflect what range of dates the pie chart is covering.
   function changeHeader() {
-   $('#chartHeader').append(" for " + months[sessionStorage.getItem('month')] + " " + sessionStorage.getItem('year')); 
+   $('#chartHeader').append(" for " + months[sessionStorage.getItem('month')] + " " + sessionStorage.getItem('year'));
 
   }
-  // Returns the start time that we filter the activties by.  
+  // Returns the start time that we filter the activties by.
   // All filtered activites will have a start time greater than the value returned by this function
   function findStartFilterDate() {
-    var currentMonth = sessionStorage.getItem('month'); 
+    var currentMonth = sessionStorage.getItem('month');
     var currentYear = sessionStorage.getItem('year');
-    var beginningMonthDate = new Date(); 
+    var beginningMonthDate = new Date();
     beginningMonthDate.setFullYear(currentYear);
     beginningMonthDate.setMonth(currentMonth);
     beginningMonthDate.setDate(1);
@@ -86,10 +91,10 @@
     return startMonth;
   }
 
-  // Returns the end time that we filter the activties by.  
+  // Returns the end time that we filter the activties by.
   // All filtered activites will have a end time less than the value returned by this function
   function findEndFilterDate() {
-    var currentMonth = sessionStorage.getItem('month'); 
+    var currentMonth = sessionStorage.getItem('month');
     var currentYear = sessionStorage.getItem('year');
     var endingMonthDate = new Date();
     currentYear = currentMonth ==11 ? Number(currentYear) + Number(1) : currentYear;
@@ -108,21 +113,25 @@
     var startFilterTime = findStartFilterDate();
     var endFilterTime = findEndFilterDate();
     var startTime = activity['startTime'];
-    return startTime > startFilterTime && startTime < endFilterTime; 
+    return startTime > startFilterTime && startTime < endFilterTime;
   }
-  
+
   // Grep is the Jquery equivalent of the higher order function filter.
   // Returns a new array of events consisting of all elements that the filter
   //  function filterDateFunction returned true for
-  function filterEventsByDate(Events) {
-    var filteredEvents = $.grep(Events, filterDateFunction); 
+  function filterEventsByDate(events) {
+    var filteredEvents = $.grep(events, filterDateFunction);
     return filteredEvents;
-  } 
+  }
 
-  changeHeader();
+  function updatePieChart() {
+    changeHeader();
+    var filteredEvents = filterEventsByDate(unencryptedEvents);
+    return generateTuples(computeTagTimes(filteredEvents));
+  }
+
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
-  var filteredEvents = filterEventsByDate(unencryptedEvents);
-  var tagTimeTuples = generateTuples(computeTagTimes(filteredEvents));
+  var tagTimeTuples = updatePieChart();
 
 </script>
 
@@ -173,5 +182,18 @@
 </div>
 <div id="buttonContainer">
 	<button id="prevMonth" type="button">Previous Month</button>
-	<button type="button">Next Month</button>
+	<button id="nextMonth" type="button">Next Month</button>
 </div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('[type="button"]').button();
+    $('#prevMonth').click(function(){
+      alert("Prev month button clicked");
+    });
+    $('#nextMonth').click(function(){
+      alert("next month button clicked");
+    });
+  });
+</script>
+

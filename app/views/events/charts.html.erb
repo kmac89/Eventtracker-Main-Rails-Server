@@ -124,10 +124,14 @@
     return filteredEvents;
   }
 
-  changeHeader();
+  function updatePieChart() {
+    changeHeader();
+    var filteredEvents = filterEventsByDate(unencryptedEvents);
+    return generateTuples(computeTagTimes(filteredEvents));
+  }
+
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
-  var filteredEvents = filterEventsByDate(unencryptedEvents);
-  var tagTimeTuples = generateTuples(computeTagTimes(filteredEvents));
+  var tagTimeTuples = updatePieChart();
 
 </script>
 
@@ -187,9 +191,5 @@
       alert("next month button clicked");
     });
   });
-
-
-
-
 </script>
 

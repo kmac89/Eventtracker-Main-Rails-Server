@@ -64,11 +64,11 @@
         .bottom(function() ERADIUS
             - Math.sin(this.startAngle() + this.angle() / 2)
             * ((this.o() == this.index) ? 10 : 0))
-      .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
-      .fillStyle(function(d) colors(d.tag))
-      .event("mouseover", function() this.o(this.index))
-      // this second mouseover function overrwrites the one above
-      .event("mouseover", pv.Behavior.tipsy({fade: true}));
+        .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+        .fillStyle(function(d) colors(d.tag))
+        // this second mouseover function overrwrites the one above
+        .event("mouseover", pv.Behavior.tipsy({fade: true}))
+        .event("mouseout", function (d) this.o(-1));
     /* A legend entry for each tag. */
     root.add(pv.Dot)
         .data(tagTimeTuples)

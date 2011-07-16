@@ -69,5 +69,7 @@ pv.Behavior.tipsy = function(opts) {
        * this is necessary for dimensionless marks.
        */
       $(tip).mouseleave(cleanup).tipsy("show");
+      this.o(this.index);
+      this.render();
     };
 };

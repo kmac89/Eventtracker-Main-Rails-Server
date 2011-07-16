@@ -61,7 +61,7 @@ pv.Behavior.tipsy = function(opts) {
         t.y = this.outerRadius() * Math.sin(this.midAngle());
         t.x = this.outerRadius() * Math.cos(this.midAngle());
       }
-      tip.style.left = Math.floor(this.left() * t.k + t.x) + "px";
+      tip.style.left = Math.max(20, Math.floor(this.left() * t.k + t.x)) + "px";
       tip.style.top = Math.floor(this.top() * t.k + t.y) + "px";
 
       /*

@@ -64,7 +64,7 @@
         .bottom(function() ERADIUS
             - Math.sin(this.startAngle() + this.angle() / 2)
             * ((this.o() == this.index) ? 10 : 0))
-      .text(function(d) d.tag)
+      .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
       .fillStyle(function(d) colors(d.tag))
       .event("mouseover", function() this.o(this.index))
       // this second mouseover function overrwrites the one above
@@ -80,7 +80,7 @@
         .size(30)
       .anchor("right").add(pv.Label)
       .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
-      .font("16px sans-serif");
+      .font("15px sans-serif");
     root.render();
   </script>
 </div>

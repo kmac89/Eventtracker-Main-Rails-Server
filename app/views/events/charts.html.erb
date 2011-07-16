@@ -1,60 +1,86 @@
- <script type="text/javascript">
-	var encryptedData=<%= raw @contents %>;
-	for (var i=0; i<encryptedData.length; i++) {
-	  encryptedData[i] = encryptedData[i].replace(/[ \r\n]+/g,'')
-	}
-	var unencryptedData=encryptionHelpers.unencryptAll(encryptedData);
-	var unencryptedEvents=new Array();
-	for(var i=0; i < unencryptedData.length;i++){
-		unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
-	}
-  </script>	
-
-<html>	
-  <head>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-	
-      var tagTimes=new Array();	
-      function computeTagTimes(){
-          for(var i=0; i< unencryptedEvents.length; i++){
-		var event=unencryptedEvents[i];
-		var startTime=event['startTime'];
-		var endTime=event['endTime'];
-		var totalTime=(endTime - startTime) * 1.0 / (1000 * 60 * 60);
-		var tag=event['tag'];
-		if(tag==null || tag=='Select a tag')
-		    tag='Other';	
-		var prevValue=tagTimes['tag'];
-		if(prevValue==null)
-		     prevValue=0;
-		tagTimes[tag]=prevValue+totalTime;	
-          }
+<link href="/stylesheets/protovis.tipsy.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript">
+  // Returns a dictionary mapping tags to aggregated times.
+  function computeTagTimes(activities) {
+    var tagTimes = new Object();
+    for (var i = 0; i < activities.length; i++) {
+      var activity = activities[i];
+      var startTime = activity['startTime'];
+      var endTime = activity['endTime'];
+      var totalTime = (endTime - startTime) * 1.0 / (1000 * 60 * 60);
+      var tag = activity['tag'];
+      if (tag == null || tag == 'Select a tag') {
+        tag = 'Other';
       }
-      function drawChart() {
-        var data = new google.visualization.DataTable();
-	
-	data.addColumn('string', 'Event');
-        data.addColumn('number', 'Hours');
-	
-	computeTagTimes();
+      var prevValue = tagTimes['tag'];
+      if (prevValue == null) {
+        prevValue = 0;
+      }
+      tagTimes[tag] = prevValue + totalTime;
+    }
+    return tagTimes;
+  }
 
-	for(var tag in tagTimes){
-	   if(tag == '')
-	       data.addRow(['Other',  tagTimes[tag]]);
-	   else
-	       data.addRow([tag,  tagTimes[tag]]);	 	
-	 }
-	//chartArea:{left:0,top:0,width:"100%",height:"100%"}});
-        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, { chartArea:{width:"80%",height:"80%"}, width: 550, height: 400, title: 'My Events (in hours)', titleTextStyle: {color: "Black", fontName: "Arial", fontSize: 20}});}
-    </script>
-  </head>
+  // Split a dictionary mapping tag->time into an array of (tag,totalTime)
+  // tuples.
+  function generateTuples(tagTimes) {
+    var tagTimeTuples = new Array();
+    tagTimeTuples.totalTime = 0;
+    for (var tag in tagTimes) {
+      var tagTimeTuple = new Object();
+      tagTimeTuple.tag = tag;
+      tagTimeTuple.totalTime = tagTimes[tag];
+      tagTimeTuples.totalTime += tagTimes[tag];
+      tagTimeTuples.push(tagTimeTuple);
+    }
+    return tagTimeTuples;
+  }
 
-  <body>
-    <div id="chart_div"></div>
-  </body>
-</html>
+  var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
+  var tagTimeTuples = generateTuples(computeTagTimes(unencryptedEvents));
 
+</script>
+
+<h1>My Events (in hours)</h1>
+
+<div id="chart_div">
+  <script type="text/javascript+protovis">
+    var RADIUS = 220;
+    var ERADIUS = RADIUS + 10;
+    var DIAMETER = ERADIUS * 2;
+    var colors = pv.Colors.category20();
+    // Place a pie chart here.
+    var root = new pv.Panel()
+        .width(DIAMETER + 200)
+        .height(DIAMETER);
+    root.add(pv.Wedge)
+        .data(tagTimeTuples)
+        .def("o", -1)
+        .outerRadius(RADIUS)
+        .angle(function(d) d.totalTime / tagTimeTuples.totalTime * 2 * Math.PI)
+        .left(function() ERADIUS
+            + Math.cos(this.startAngle() + this.angle() / 2)
+            * ((this.o() == this.index) ? 10 : 0))
+        .bottom(function() ERADIUS
+            - Math.sin(this.startAngle() + this.angle() / 2)
+            * ((this.o() == this.index) ? 10 : 0))
+      .text(function(d) d.tag)
+      .fillStyle(function(d) colors(d.tag))
+      .event("mouseover", function() this.o(this.index))
+      // this second mouseover function overrwrites the one above
+      .event("mouseover", pv.Behavior.tipsy({fade: true}));
+    /* A legend entry for each tag. */
+    root.add(pv.Dot)
+        .data(tagTimeTuples)
+        .left(DIAMETER + 30)
+        .top(function() this.index * 20 + 60)
+        .fillStyle(function(d) colors(d.tag))
+        .strokeStyle(null)
+        .shape("square")
+        .size(30)
+      .anchor("right").add(pv.Label)
+      .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+      .font("16px sans-serif");
+    root.render();
+  </script>
+</div>

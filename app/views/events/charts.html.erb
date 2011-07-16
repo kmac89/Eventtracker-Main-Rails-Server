@@ -28,10 +28,6 @@
   months[9]  = "October";
   months[10] = "November";
   months[11] = "December";
-  //the start of the month represented as a time in ms
-  var startMonth;  
-  //the end of the month represented as a time in ms
-  var endMonth; 
 
   // Returns a dictionary mapping tags to aggregated times.
   function computeTagTimes(activities) {
@@ -74,18 +70,11 @@
    $('#chartHeader').append(" for " + months[sessionStorage.getItem('month')] + " " + sessionStorage.getItem('year')); 
 
   }
-  var counter=0;
-  function filterDateFunction(activity, index) {
-    var startTime = activity['startTime'];
-    var resultToReturn = startTime > startMonth && startTime < endMonth; 
-    if(resultToReturn && activity['tag']=='research')
-	    counter++;
-    return resultToReturn;
-  }
-
-  function changeFilterData() {
+  // Returns the start time that we filter the activties by.  
+  // All filtered activites will have a start time greater than the value returned by this function
+  function findStartFilterDate() {
     var currentMonth = sessionStorage.getItem('month'); 
-    var currentYear = sessionStorage.getItem('year'); 
+    var currentYear = sessionStorage.getItem('year');
     var beginningMonthDate = new Date(); 
     beginningMonthDate.setFullYear(currentYear);
     beginningMonthDate.setMonth(currentMonth);
@@ -94,8 +83,14 @@
     beginningMonthDate.setMinutes(0);
     beginningMonthDate.setSeconds(0);
     startMonth = beginningMonthDate.getTime();
+    return startMonth;
+  }
 
-    
+  // Returns the end time that we filter the activties by.  
+  // All filtered activites will have a end time less than the value returned by this function
+  function findEndFilterDate() {
+    var currentMonth = sessionStorage.getItem('month'); 
+    var currentYear = sessionStorage.getItem('year');
     var endingMonthDate = new Date();
     currentYear = currentMonth ==11 ? Number(currentYear) + Number(1) : currentYear;
     endingMonthDate.setFullYear(currentYear);
@@ -106,13 +101,28 @@
     endingMonthDate.setMinutes(0);
     endingMonthDate.setSeconds(0);
     endMonth = endingMonthDate.getTime();
+    return endMonth;
   }
+  // Function that we use to filter with
+  function filterDateFunction(activity, index) {
+    var startFilterTime = findStartFilterDate();
+    var endFilterTime = findEndFilterDate();
+    var startTime = activity['startTime'];
+    return startTime > startFilterTime && startTime < endFilterTime; 
+  }
+  
+  // Grep is the Jquery equivalent of the higher order function filter.
+  // Returns a new array of events consisting of all elements that the filter
+  //  function filterDateFunction returned true for
+  function filterEventsByDate(Events) {
+    var filteredEvents = $.grep(Events, filterDateFunction); 
+    return filteredEvents;
+  } 
+
   changeHeader();
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
-  //update the parameters that we search by
-  changeFilterData();
-  var filteredEventsByDate = $.grep(unencryptedEvents, filterDateFunction); 
-  var tagTimeTuples = generateTuples(computeTagTimes(filteredEventsByDate));
+  var filteredEvents = filterEventsByDate(unencryptedEvents);
+  var tagTimeTuples = generateTuples(computeTagTimes(filteredEvents));
 
 </script>
 

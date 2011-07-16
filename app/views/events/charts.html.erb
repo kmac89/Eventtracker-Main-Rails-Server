@@ -75,6 +75,20 @@
     return tagTimeTuples;
   }
 
+  function sortTagData(tagTimeTuples) {
+    //Compare "a" and "b" in some fashion, and return -1, 0, or 1
+    function sortFunction(a, b) {
+      if (a.totalTime == b.totalTime) {
+        return 0;
+      } else if (a.totalTime < b.totalTime) {
+        return -1;
+      } else {
+        return 1;
+      }
+    }
+    return tagTimeTuples.sort(sortFunction);
+  }
+
   // Change the header to reflect what range of dates the pie chart is covering.
   function changeHeader() {
    $('#chartTime').text(months[currentMonth] + " " + currentYear);
@@ -128,7 +142,7 @@
   function updatePieChart() {
     changeHeader();
     var filteredEvents = filterEventsByDate(unencryptedEvents);
-    return generateTuples(computeTagTimes(filteredEvents));
+    return sortTagData(generateTuples(computeTagTimes(filteredEvents)));
   }
 
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)

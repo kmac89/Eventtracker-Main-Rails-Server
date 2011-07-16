@@ -1,5 +1,35 @@
+<style type="text/css">
+  #chartHeader {
+     font-weight: bold; 
+     font-size:1.9em;
+     margin-bottom:.2em;
+  }
+</style>
+
+<div id="chartHeader">My Events (in hours) </div>
+
 <link href="/stylesheets/protovis.tipsy.css" type="text/css" rel="stylesheet"/>
 <script type="text/javascript">
+
+  // helper data structure for displaying dates 
+  var months = new Array(13);
+  months[0]  = "January";
+  months[1]  = "February";
+  months[2]  = "March";
+  months[3]  = "April";
+  months[4]  = "May";
+  months[5]  = "June";
+  months[6]  = "July";
+  months[7]  = "August";
+  months[8]  = "September";
+  months[9]  = "October";
+  months[10] = "November";
+  months[11] = "December";
+  //the start of the month represented as a time in ms
+  var startMonth;  
+  //the end of the month represented as a time in ms
+  var endMonth; 
+
   // Returns a dictionary mapping tags to aggregated times.
   function computeTagTimes(activities) {
     var tagTimes = new Object();
@@ -36,12 +66,51 @@
     return tagTimeTuples;
   }
 
+  // Change the header to reflect what range of dates the pie chart is covering.
+  function changeHeader() {
+   $('#chartHeader').append(" for " + months[sessionStorage.getItem('month')] + " " + sessionStorage.getItem('year')); 
+
+  }
+  function filterDateFunction(activity, index) {
+    var startTime = activity['startTime'];
+    return startTime > startMonth && startTime < endMonth;
+  }
+
+  function changeFilterData() {
+    var currentMonth = sessionStorage.getItem('month'); 
+    var currentYear = sessionStorage.getItem('year'); 
+    var beginningMonthDate = new Date(); 
+    beginningMonthDate.setFullYear(currentYear);
+    beginningMonthDate.setMonth(currentMonth);
+    beginningMonthDate.setDate(1);
+    beginningMonthDate.setHours(0);
+    beginningMonthDate.setMinutes(0);
+    beginningMonthDate.setSeconds(0);
+    alert(beginningMonthDate.toLocaleDateString());
+    startMonth = beginningMonthDate.getTime();
+
+    
+    var endingMonthDate = new Date();
+    currentYear = currentMonth ==11 ? Number(currentYear) + Number(1) : currentYear;
+    endingMonthDate.setFullYear(currentYear);
+    var nextMonth = (Number(currentMonth) + Number(1)) %12;
+    endingMonthDate.setMonth(nextMonth);
+    endingMonthDate.setDate(1);
+    endingMonthDate.setHours(0);
+    endingMonthDate.setMinutes(0);
+    endingMonthDate.setSeconds(0);
+    alert(endingMonthDate);
+    endMonth = endingMonthDate.getTime();
+  }
+  changeHeader();
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
-  var tagTimeTuples = generateTuples(computeTagTimes(unencryptedEvents));
+  //update the parameters that we search by
+  changeFilterData();
+  var filteredEventsByDate = $.grep(unencryptedEvents, filterDateFunction); 
+  var tagTimeTuples = generateTuples(computeTagTimes(filteredEventsByDate));
 
 </script>
 
-<h1>My Events (in hours)</h1>
 
 <div id="chart_div">
   <script type="text/javascript+protovis">

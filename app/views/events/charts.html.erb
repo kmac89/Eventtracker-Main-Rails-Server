@@ -36,31 +36,6 @@
     return tagTimeTuples;
   }
 
-  function drawChart() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Event');
-    data.addColumn('number', 'Hours');
-    var tagTimes = computeTagTimes(unencryptedEvents);
-    for(var tag in tagTimes) {
-      if(tag == '') {
-        data.addRow(['Other',  tagTimes[tag]]);
-      } else {
-        data.addRow([tag,  tagTimes[tag]]);
-      }
-    }
-    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-    chart.draw(
-      data,
-      {
-        chartArea: { width:"80%",height:"80%" },
-        width: 550,
-        height: 400,
-        title: 'My Events (in hours)',
-        titleTextStyle: { color: "Black", fontName: "Arial", fontSize: 20 }
-      }
-    );
-  }
-
   var unencryptedEvents = encryptionHelpers.unpackEncryptedEvents(<%= raw @contents %>)
   var tagTimeTuples = generateTuples(computeTagTimes(unencryptedEvents));
 
@@ -76,7 +51,7 @@
     var colors = pv.Colors.category20();
     // Place a pie chart here.
     var root = new pv.Panel()
-        .width(DIAMETER + 160)
+        .width(DIAMETER + 200)
         .height(DIAMETER);
     root.add(pv.Wedge)
         .data(tagTimeTuples)
@@ -97,13 +72,15 @@
     /* A legend entry for each tag. */
     root.add(pv.Dot)
         .data(tagTimeTuples)
-        .left(ERADIUS * 2 + 30)
-        .top(function() this.index * 12 + 10)
+        .left(DIAMETER + 30)
+        .top(function() this.index * 20 + 60)
         .fillStyle(function(d) colors(d.tag))
         .strokeStyle(null)
         .shape("square")
+        .size(30)
       .anchor("right").add(pv.Label)
-        .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2));
+      .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+      .font("16px sans-serif");
     root.render();
   </script>
 </div>

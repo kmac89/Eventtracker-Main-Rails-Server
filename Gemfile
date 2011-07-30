@@ -16,6 +16,9 @@ gem 'jquery-rails'
 # AuthLogic
 gem 'authlogic'
 
+# Heroku
+gem 'heroku'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

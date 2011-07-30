@@ -1,3 +1,4 @@
+<a class="iframe" style="display:none;" id="hidden_link" href="/login">This goes to iframe</a>
 <link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
 <link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
 <script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
@@ -17,11 +18,21 @@
 	<%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'table' %>
 	 <%= link_to "Logout", :logout, :style => "float:right;" %>
 </ul>
+
 <br /> <br />
 
 
  <script type="text/javascript">
-	
+
+$(document).ready(function(){
+        if(<%= @need_to_login %>) {
+          $("#hidden_link").fancybox({'modal':true}).trigger('click');
+		}
+	});
+
+
+
+
 $(document).ready(function(){
 	    $(".timeline").fancybox({
 	         'width' : '100%',
@@ -42,7 +53,7 @@ $(document).ready(function(){
 	         'transitionOut' : 'none',
 	         'type' : 'iframe'
 	     });
-	 
+
 	     });
 $(document).ready(function(){
 	    $(".create_event").fancybox({
@@ -54,7 +65,7 @@ $(document).ready(function(){
 	         'transitionOut' : 'none',
 	         'type' : 'iframe'
 	     });
-	 
+
 	     });
  $(document).ready(function(){
 	    $(".table").fancybox({
@@ -103,11 +114,6 @@ $(document).ready(function(){
     currentMonth = currentDate.getMonth();
   }
 $(document).ready(function() {
-
-
- 
-
-
     // page is now ready, initialize the calendar...
     $('#calendar').fullCalendar({
 	
@@ -136,29 +142,25 @@ $(document).ready(function() {
 			  var endTime=$.fullCalendar.parseDate(calEvent['end']);
 			  $("#dialog").append("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")+"<br>");
 			  $("#dialog").append("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")+"<br>");
-			  
+
 			  if(calEvent['tag']){
 				$("#dialog").append("Tag: " + calEvent['tag']+"<br>");
 			  }
 			  divMap=document.createElement("div");
 			  divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
 			  divEdit=document.createElement("div");		
-			  divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'editing' %>';			  
+			  divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'editing' %>';
 			  divMap.children[0].href=divMap.children[0].href+calEvent['id'];
 			  divEdit.children[0].href=divEdit.children[0].href+calEvent['id']+'/edit';
 			  divDelete=document.createElement("div");
-			  divDelete.innerHTML =	deleteLinkArray[calEvent['id']];			  
-			
-			  
+			  divDelete.innerHTML =	deleteLinkArray[calEvent['id']];
 			  $("#dialog").append(divEdit.innerHTML+ " ");
-			   $("#dialog").append(divDelete.innerHTML + " ");
+			  $("#dialog").append(divDelete.innerHTML + " ");
+
 			  if(calEvent['numGPSCoords'] > 0){
-			  
-			  
-				$("#dialog").append(divMap.innerHTML+"<br>");
-				
+		            $("#dialog").append(divMap.innerHTML+"<br>");
 			  }
-			  
+
 			  $("#dialog").dialog( "option", "title", calEvent['title'] );
 			  $('.ui-widget-overlay').click(function() { $("#dialog").dialog("close"); });
 

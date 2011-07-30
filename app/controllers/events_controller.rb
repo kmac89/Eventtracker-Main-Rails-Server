@@ -4,7 +4,7 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
-    @events = Event.all 
+    @events = Event.all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -58,16 +58,26 @@ class EventsController < ApplicationController
 
   # GET /:phone_number/calendar
   def calendar
-    @user = User.find_by_phone_number(params[:phone_number])
-    if !verify_user(@user)
-      return
-    end
-    @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
-    @contents = @events.collect {|event|
-     # ActiveSupport::JSON.decode(event.content)
-	event
-    }
-    @contents = @contents.to_json
+    if current_user
+	  current_phone_number = current_user.phone_number
+	end
+    @user = User.find_by_phone_number(params[:phone_number]) || User.find_by_phone_number(current_phone_number)
+    if !verify_user_calendar(@user)
+      @user = User.new
+	  @user.phone_number = "123456" #dummy phone number
+	  @events=[]
+	  @contents=[]
+	  #used for displaying the login box in the calendar view
+	  @need_to_login = true
+	else
+	  @need_to_login = false
+      @events = Event.find(:all, :conditions => {:user_id => @user.id, :deleted => false}) unless @user.nil?
+      @contents = @events.collect {|event|
+       # ActiveSupport::JSON.decode(event.content)
+	    event
+      }
+      @contents = @contents.to_json
+	end
 
 
     respond_to do |format|
@@ -75,9 +85,9 @@ class EventsController < ApplicationController
       format.xml  { render :xml => @events }
     end
   end
-  
-  
-  
+
+
+
 # GET /:phone_number/timeline
   def timeline
     @user = User.find_by_phone_number(params[:phone_number])
@@ -322,6 +332,13 @@ class EventsController < ApplicationController
   end
 
   private
+
+  def verify_user_calendar(user)
+    if !current_user || current_user.phone_number != user.phone_number
+      return false
+    end
+    return true
+  end
 
   def verify_user(user)
     if !current_user || current_user.phone_number != user.phone_number

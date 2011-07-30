@@ -35,7 +35,8 @@ class UserSessionsController < ApplicationController
 
     respond_to do |format|
       if @user_session.save
-        format.html { redirect_to("/#{current_user.phone_number}", :notice => 'Login Successful') }
+
+        format.html {redirect_to "/close_fancybox"}
         format.xml  { render :xml => @user_session, :status => :created, :location => @user_session }
       else
         format.html { render :action => "new" }

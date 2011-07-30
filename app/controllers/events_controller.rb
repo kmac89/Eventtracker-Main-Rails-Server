@@ -303,16 +303,17 @@ class EventsController < ApplicationController
 
     event_data.each do |event_datum|
       event = Event.find_or_create_by_uuid(event_datum["UUIDOfEvent"])
-      event.user_id = user.id unless user.nil?
-      event.content = event_datum["EventData"]
-      event.deleted = event_datum["Deleted"]
-      phone_event_updated_at = DateTime.parse(event_datum["UpdatedAt"])
-
-      if event.persisted?
-        event_older = phone_event_updated_at < event.updated_at
+      if received_event_outdated?(event_datum, event)
+        success = true
+      else
+        event.user_id = user.id unless user.nil?
+        event.content = event_datum["EventData"]
+        event.deleted = event_datum["Deleted"]
+        event.updated_at = DateTime.parse(event_datum["UpdatedAt"])
+        success = event.save
       end
-
-      if !(event_older or event.save)
+      
+      if !success
         render :text => event.errors.to_s, :status => 400
         return
       end
@@ -322,6 +323,16 @@ class EventsController < ApplicationController
   end
 
   private
+
+  # Returns true if the received event data is outdated, otherwise false.
+  def received_event_outdated?(received_datum, existing_event)
+    if !existing_event.persisted?
+      return false # if there was no previous event, this is new data
+    else
+      received_event_updated_at = DateTime.parse(received_datum["UpdatedAt"])
+      return received_event_updated_at < existing_event.updated_at
+    end
+  end
 
   def verify_user(user)
     if !current_user || current_user.phone_number != user.phone_number

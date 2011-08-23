@@ -1,11 +1,15 @@
+<script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
+<link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
+<script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
+<link href="/stylesheets/protovis.tipsy.css" type="text/css" rel="stylesheet"/>
 <style type="text/css">
   #chartHeader {
      font-weight: bold;
-     font-size:1.9em;
+     font-size:1.5em;
      margin-bottom:.5em;
   }
   [type="button"] {
-    font-size: 23px;
+    font-size: 1em;
   }
   #buttonContainer {
     margin-top:.5em;
@@ -15,29 +19,70 @@
 <div id="chartHeader">My Events (in hours) for
   <span id="chartTime"></span>
 </div>
+<div id="chart_div">
+  <script type="text/javascript+protovis">
+    var RADIUS = 220;
+    var ERADIUS = RADIUS + 10;
+    var DIAMETER = ERADIUS * 2;
+    var colors = pv.Colors.category20();
+    function generateChart(data) {
+      var root = new pv.Panel()
+          .width(DIAMETER + 200)
+          .data(data)
+          .height(DIAMETER);
+      root.add(pv.Wedge)
+          .data(function (d) d.tagTimeTuples)
+          .def("o", -1)
+          .outerRadius(RADIUS)
+          .angle(function(d) d.totalTime / d.allTuplesTotalTime * 2 * Math.PI)
+          .left(function() ERADIUS
+              + Math.cos(this.startAngle() + this.angle() / 2)
+              * ((this.o() == this.index) ? 10 : 0))
+          .bottom(function() ERADIUS
+              - Math.sin(this.startAngle() + this.angle() / 2)
+              * ((this.o() == this.index) ? 10 : 0))
+          .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+          .fillStyle(function(d) colors(d.tag))
+          // this second mouseover function overrwrites the one above
+          .event("mouseover", pv.Behavior.tipsy({fade: true}))
+          .event("mouseout", function (d) this.o(-1));
+      /* A legend entry for each tag. */
+      root.add(pv.Dot)
+          .data(function (d) d.tagTimeTuples)
+          .left(DIAMETER + 30)
+          .top(function() this.index * 20 + 60)
+          .fillStyle(function(d) colors(d.tag))
+          .strokeStyle(null)
+          .shape("square")
+          .size(30)
+        .anchor("right").add(pv.Label)
+        .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+        .font("15px sans-serif");
+      root.render();
+      return root;
+    }
+    // Place a pie chart here.
+    var root = generateChart(updatePieChart());
+  </script>
+</div>
+<div id="buttonContainer">
+	<button id="prevBtn" type="button"></button>
+	<button id="nextBtn" type="button"></button>
+</div>
 
-<link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
-<script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
-<link href="/stylesheets/protovis.tipsy.css" type="text/css" rel="stylesheet"/>
 <script type="text/javascript">
+  
+  // Data structure used to easily convert between the view used by the calendar
+  //   and the labels used by the next/prev buttons
+  var convertViewToDate = {'agendaDay': 'day', 'agendaWeek': 'week', 'month': 'month'}
+  
+  // invariant: User visited calendar before visiting pie chart. Make sure this is always true
 
-  var currentMonth = sessionStorage.getItem('month') || new Date().getMonth();
-  var currentYear = sessionStorage.getItem('year') || new Date().getFullYear();
-
-  // helper data structure for displaying dates
-  var months = new Array(12);
-  months[0]  = "January";
-  months[1]  = "February";
-  months[2]  = "March";
-  months[3]  = "April";
-  months[4]  = "May";
-  months[5]  = "June";
-  months[6]  = "July";
-  months[7]  = "August";
-  months[8]  = "September";
-  months[9]  = "October";
-  months[10] = "November";
-  months[11] = "December";
+  var startDate = new Date(sessionStorage.getItem('startDate'));
+  //The end Date is exclusive. 
+  var endDate = new Date(sessionStorage.getItem('endDate')).add(-1).days().set({hour: 23, minute: 59, second:59 })
+  var pieChartTitle = sessionStorage.getItem('pieChartName');
+  var calendarView = sessionStorage.getItem('view');
 
   // Returns a dictionary mapping tags to aggregated times.
   function computeTagTimes(activities) {
@@ -48,8 +93,8 @@
       var endTime = activity['endTime'];
       var totalTime = (endTime - startTime) * 1.0 / (1000 * 60 * 60);
       var tag = activity['tag'];
-      if (tag == null || tag == 'Select a tag') {
-        tag = 'Other';
+      if (tag == "" || tag == null || tag == 'Select a tag') {
+        tag = 'Unspecified';
       }
       var prevValue = tagTimes[tag];
       if (prevValue == null) {
@@ -99,44 +144,23 @@
 
   // Change the header to reflect what range of dates the pie chart is covering.
   function changeHeader() {
-   $('#chartTime').text(months[currentMonth] + " " + currentYear);
+   if (calendarView == 'month') {
+     $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM yyyy"));
+   } else if (calendarView == 'agendaWeek') {
+        // The end date is exclusive. Therefore we must subtract one day.
+        $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy") + " to " +
+        	              $.fullCalendar.formatDate(endDate, "MMM dd, yyyy"));
+   }   
+   else if (calendarView == 'agendaDay'){
+     $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy"));
+   }
 
   }
-  // Returns the start time that we filter the activties by.
-  // All filtered activites will have a start time greater than the value returned by this function
-  function findStartFilterDate() {
-    var beginningMonthDate = new Date();
-    beginningMonthDate.setFullYear(currentYear);
-    beginningMonthDate.setMonth(currentMonth);
-    beginningMonthDate.setDate(1);
-    beginningMonthDate.setHours(0);
-    beginningMonthDate.setMinutes(0);
-    beginningMonthDate.setSeconds(0);
-    startMonth = beginningMonthDate.getTime();
-    return startMonth;
-  }
 
-  // Returns the end time that we filter the activties by.
-  // All filtered activites will have a end time less than the value returned by this function
-  function findEndFilterDate() {
-    var endingMonthDate = new Date();
-    currentYear = currentMonth ==11 ? Number(currentYear) + Number(1) : currentYear;
-    endingMonthDate.setFullYear(currentYear);
-    var nextMonth = (Number(currentMonth) + Number(1)) %12;
-    endingMonthDate.setMonth(nextMonth);
-    endingMonthDate.setDate(1);
-    endingMonthDate.setHours(0);
-    endingMonthDate.setMinutes(0);
-    endingMonthDate.setSeconds(0);
-    endMonth = endingMonthDate.getTime();
-    return endMonth;
-  }
   // Function that we use to filter with
   function filterDateFunction(activity, index) {
-    var startFilterTime = findStartFilterDate();
-    var endFilterTime = findEndFilterDate();
     var startTime = activity['startTime'];
-    return startTime > startFilterTime && startTime < endFilterTime;
+    return startTime > startDate && startTime < endDate;
   }
 
   // Grep is the Jquery equivalent of the higher order function filter.
@@ -157,75 +181,40 @@
 
 </script>
 
-<div id="chart_div">
-  <script type="text/javascript+protovis">
-    var RADIUS = 220;
-    var ERADIUS = RADIUS + 10;
-    var DIAMETER = ERADIUS * 2;
-    var colors = pv.Colors.category20();
-    function generateChart(data) {
-      var root = new pv.Panel()
-          .width(DIAMETER + 200)
-          .data(data)
-          .height(DIAMETER);
-      root.add(pv.Wedge)
-          .data(function (d) d.tagTimeTuples)
-          .def("o", -1)
-          .outerRadius(RADIUS)
-          .angle(function(d) d.totalTime / d.allTuplesTotalTime * 2 * Math.PI)
-          .left(function() ERADIUS
-              + Math.cos(this.startAngle() + this.angle() / 2)
-              * ((this.o() == this.index) ? 10 : 0))
-          .bottom(function() ERADIUS
-              - Math.sin(this.startAngle() + this.angle() / 2)
-              * ((this.o() == this.index) ? 10 : 0))
-          .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
-          .fillStyle(function(d) colors(d.tag))
-          // this second mouseover function overrwrites the one above
-          .event("mouseover", pv.Behavior.tipsy({fade: true}))
-          .event("mouseout", function (d) this.o(-1));
-      /* A legend entry for each tag. */
-      root.add(pv.Dot)
-          .data(function (d) d.tagTimeTuples)
-          .left(DIAMETER + 30)
-          .top(function() this.index * 20 + 60)
-          .fillStyle(function(d) colors(d.tag))
-          .strokeStyle(null)
-          .shape("square")
-          .size(30)
-        .anchor("right").add(pv.Label)
-        .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
-        .font("15px sans-serif");
-      root.render();
-      return root;
-    }
-    // Place a pie chart here.
-    var root = generateChart(updatePieChart());
-  </script>
-</div>
-<div id="buttonContainer">
-	<button id="prevMonth" type="button">Previous Month</button>
-	<button id="nextMonth" type="button">Next Month</button>
-</div>
-
 <script type="text/javascript">
   $(document).ready(function(){
+     
+    $('#prevBtn').text('Previous ' + convertViewToDate[calendarView]);
+	$('#nextBtn').text('Next ' + convertViewToDate[calendarView]);
     $('[type="button"]').button();
-    $('#prevMonth').click(function(){
-      if (currentMonth == 0){
-        currentMonth = 11;
-        currentYear = Number(currentYear) - 1;
-      } else {
-        currentMonth = Number(currentMonth) - 1;
-      }
+	
+    $('#prevBtn').click(function(){
+      if (calendarView == 'month') {
+	    startDate = startDate.add(-1).months();
+		endDate = endDate.add(-1).months();
+	  } else if (calendarView == 'agendaWeek') {
+	    startDate = startDate.add(-1).weeks();
+		endDate = endDate.add(-1).weeks();
+	  } else {
+	     startDate = startDate.add(-1).days();
+		endDate = endDate.add(-1).days();
+	  
+	  }
       root.data(updatePieChart());
       root.render();
     });
-    $('#nextMonth').click(function(){
-      if (currentMonth == 11) {
-        currentYear = Number(currentYear) + 1;
-      }
-      currentMonth= (Number(currentMonth) + 1) % 12;
+    $('#nextBtn').click(function(){
+      if (calendarView == 'month') {
+	    startDate = startDate.add(1).months();
+		endDate = endDate.add(1).months();
+	  } else if (calendarView == 'agendaWeek') {
+	    startDate = startDate.add(1).weeks();
+		endDate = endDate.add(1).weeks();
+	  } else {
+	     startDate = startDate.add(1).days();
+		endDate = endDate.add(1).days();
+	  
+	  }
       root.data(updatePieChart());
       root.render();
     });

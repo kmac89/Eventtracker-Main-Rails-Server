@@ -15,61 +15,61 @@
     margin-top:.5em;
   }
 </style>
-
-<div id="chartHeader">My Events (in hours) for
-  <span id="chartTime"></span>
-</div>
-<div id="chart_div">
-  <script type="text/javascript+protovis">
-    var RADIUS = 220;
-    var ERADIUS = RADIUS + 10;
-    var DIAMETER = ERADIUS * 2;
-    var colors = pv.Colors.category20();
-    function generateChart(data) {
-      var root = new pv.Panel()
-          .width(DIAMETER + 200)
-          .data(data)
-          .height(DIAMETER);
-      root.add(pv.Wedge)
-          .data(function (d) d.tagTimeTuples)
-          .def("o", -1)
-          .outerRadius(RADIUS)
-          .angle(function(d) d.totalTime / d.allTuplesTotalTime * 2 * Math.PI)
-          .left(function() ERADIUS
-              + Math.cos(this.startAngle() + this.angle() / 2)
-              * ((this.o() == this.index) ? 10 : 0))
-          .bottom(function() ERADIUS
-              - Math.sin(this.startAngle() + this.angle() / 2)
-              * ((this.o() == this.index) ? 10 : 0))
+<div id="fancybox-content-holder">
+  <div id="chartHeader">My Events (in hours) for
+    <span id="chartTime"></span>
+  </div>
+  <div id="chart_div">
+    <script type="text/javascript+protovis">
+      var RADIUS = 220;
+      var ERADIUS = RADIUS + 10;
+      var DIAMETER = ERADIUS * 2;
+      var colors = pv.Colors.category20();
+      function generateChart(data) {
+        var root = new pv.Panel()
+            .width(DIAMETER + 200)
+            .data(data)
+            .height(DIAMETER);
+        root.add(pv.Wedge)
+            .data(function (d) d.tagTimeTuples)
+            .def("o", -1)
+            .outerRadius(RADIUS)
+            .angle(function(d) d.totalTime / d.allTuplesTotalTime * 2 * Math.PI)
+            .left(function() ERADIUS
+                + Math.cos(this.startAngle() + this.angle() / 2)
+                * ((this.o() == this.index) ? 10 : 0))
+            .bottom(function() ERADIUS
+                - Math.sin(this.startAngle() + this.angle() / 2)
+                * ((this.o() == this.index) ? 10 : 0))
+            .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+            .fillStyle(function(d) colors(d.tag))
+            // this second mouseover function overrwrites the one above
+            .event("mouseover", pv.Behavior.tipsy({fade: true}))
+            .event("mouseout", function (d) this.o(-1));
+        /* A legend entry for each tag. */
+        root.add(pv.Dot)
+            .data(function (d) d.tagTimeTuples)
+            .left(DIAMETER + 30)
+            .top(function() this.index * 20 + 60)
+            .fillStyle(function(d) colors(d.tag))
+            .strokeStyle(null)
+            .shape("square")
+            .size(30)
+          .anchor("right").add(pv.Label)
           .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
-          .fillStyle(function(d) colors(d.tag))
-          // this second mouseover function overrwrites the one above
-          .event("mouseover", pv.Behavior.tipsy({fade: true}))
-          .event("mouseout", function (d) this.o(-1));
-      /* A legend entry for each tag. */
-      root.add(pv.Dot)
-          .data(function (d) d.tagTimeTuples)
-          .left(DIAMETER + 30)
-          .top(function() this.index * 20 + 60)
-          .fillStyle(function(d) colors(d.tag))
-          .strokeStyle(null)
-          .shape("square")
-          .size(30)
-        .anchor("right").add(pv.Label)
-        .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
-        .font("15px sans-serif");
-      root.render();
-      return root;
-    }
-    // Place a pie chart here.
-    var root = generateChart(updatePieChart());
-  </script>
+          .font("15px sans-serif");
+        root.render();
+        return root;
+      }
+      // Place a pie chart here.
+      var root = generateChart(updatePieChart());
+    </script>
+  </div>
+  <div id="buttonContainer">
+  	<button id="prevBtn" type="button"></button>
+  	<button id="nextBtn" type="button"></button>
+  </div>
 </div>
-<div id="buttonContainer">
-	<button id="prevBtn" type="button"></button>
-	<button id="nextBtn" type="button"></button>
-</div>
-
 <script type="text/javascript">
   
   // Data structure used to easily convert between the view used by the calendar
@@ -218,6 +218,12 @@
       root.data(updatePieChart());
       root.render();
     });
+   
+  });
+  $(window).load(function() {
+    var height = $('#fancybox-content-holder').height();  
+    var width = $('svg').attr('width').baseVal.value;
+    fancyboxHelpers.resize(document,height+25,width+25);
   });
 </script>
 

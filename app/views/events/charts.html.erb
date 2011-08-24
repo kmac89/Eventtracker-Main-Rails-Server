@@ -11,8 +11,9 @@
   [type="button"] {
     font-size: 1em;
   }
-  #buttonContainer {
+  .buttonContainer {
     margin-top:.5em;
+    margin-bottom:.5em;
   }
 </style>
 <div id="fancybox-content-holder">
@@ -56,7 +57,7 @@
             .shape("square")
             .size(30)
           .anchor("right").add(pv.Label)
-          .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+          .text(function(d) d.tag + ": " + d.totalTime.toPrecision(3))
           .font("15px sans-serif");
         root.render();
         return root;
@@ -65,10 +66,14 @@
       var root = generateChart(updatePieChart());
     </script>
   </div>
-  <div id="buttonContainer">
+  <div class="buttonContainer">
   	<button id="prevBtn" type="button"></button>
   	<button id="nextBtn" type="button"></button>
   </div>
+  <span class="buttonContainer">
+    Start Date: <input type="text" id="startPicker" class="datepicker" size="7">
+    End Date: <input type="text" id="endPicker" class="datepicker" size="7">
+  </span>
 </div>
 <script type="text/javascript">
   
@@ -143,10 +148,16 @@
   }
 
   // Change the header to reflect what range of dates the pie chart is covering.
-  function changeHeader() {
-   if (calendarView == 'month') {
+  // The parameter selectDates is true if the range of dates was user selected.
+  function changeHeader(selectDates) {
+   if (selectDates == true) {
+     $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy") + " to " +
+       	                  $.fullCalendar.formatDate(endDate, "MMM dd, yyyy"));
+   } 
+   else if (calendarView == 'month') {
      $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM yyyy"));
-   } else if (calendarView == 'agendaWeek') {
+   }
+   else if (calendarView == 'agendaWeek') {
         // The end date is exclusive. Therefore we must subtract one day.
         $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy") + " to " +
         	              $.fullCalendar.formatDate(endDate, "MMM dd, yyyy"));
@@ -171,8 +182,9 @@
     return filteredEvents;
   }
 
-  function updatePieChart() {
-    changeHeader();
+  // The parameter selectRange is true if the range of dates was user selected.
+  function updatePieChart(selectRange) {
+    changeHeader(selectRange);
     var filteredEvents = filterEventsByDate(unencryptedEvents);
     return generateTuples(computeTagTimes(filteredEvents));
   }
@@ -183,6 +195,20 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
+    var selectDate = function(dateText, inst) {
+      var startDateText = $('#startPicker').val();
+      var endDateText = $('#endPicker').val();
+     
+      if (startDateText != "" && endDateText != "") {
+        startDate = Date.parse(startDateText);
+        endDate = Date.parse(endDateText);
+        $('#prevBtn' ).button( "option", "disabled", true );
+        $('#nextBtn' ).button( "option", "disabled", true );
+        root.data(updatePieChart(true));
+        root.render();
+      }
+    }
+    $('.datepicker').datepicker({onSelect: selectDate}); 
      
     $('#prevBtn').text('Previous ' + convertViewToDate[calendarView]);
 	$('#nextBtn').text('Next ' + convertViewToDate[calendarView]);

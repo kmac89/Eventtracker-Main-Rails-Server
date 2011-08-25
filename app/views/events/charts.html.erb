@@ -4,9 +4,9 @@
 <link href="/stylesheets/protovis.tipsy.css" type="text/css" rel="stylesheet"/>
 <style type="text/css">
   #chartHeader {
-     font-weight: bold;
-     font-size:1.5em;
-     margin-bottom:.5em;
+    font-weight: bold;
+    font-size:1.5em;
+    margin-bottom:.5em;
   }
   [type="button"] {
     font-size: 1em;
@@ -28,34 +28,34 @@
       var colors = pv.Colors.category20();
       function generateChart(data) {
         var root = new pv.Panel()
-            .width(DIAMETER + 200)
-            .data(data)
-            .height(DIAMETER);
+          .width(DIAMETER + 200)
+          .data(data)
+          .height(DIAMETER);
         root.add(pv.Wedge)
-            .data(function (d) d.tagTimeTuples)
-            .def("o", -1)
-            .outerRadius(RADIUS)
-            .angle(function(d) d.totalTime / d.allTuplesTotalTime * 2 * Math.PI)
-            .left(function() ERADIUS
-                + Math.cos(this.startAngle() + this.angle() / 2)
-                * ((this.o() == this.index) ? 10 : 0))
-            .bottom(function() ERADIUS
-                - Math.sin(this.startAngle() + this.angle() / 2)
-                * ((this.o() == this.index) ? 10 : 0))
-            .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
-            .fillStyle(function(d) colors(d.tag))
-            // this second mouseover function overrwrites the one above
-            .event("mouseover", pv.Behavior.tipsy({fade: true}))
-            .event("mouseout", function (d) this.o(-1));
+          .data(function (d) d.tagTimeTuples)
+          .def("o", -1)
+          .outerRadius(RADIUS)
+          .angle(function(d) d.totalTime / d.allTuplesTotalTime * 2 * Math.PI)
+          .left(function() ERADIUS
+              + Math.cos(this.startAngle() + this.angle() / 2)
+              * ((this.o() == this.index) ? 10 : 0))
+          .bottom(function() ERADIUS
+              - Math.sin(this.startAngle() + this.angle() / 2)
+              * ((this.o() == this.index) ? 10 : 0))
+          .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+          .fillStyle(function(d) colors(d.tag))
+          // this second mouseover function overrwrites the one above
+          .event("mouseover", pv.Behavior.tipsy({fade: true}))
+          .event("mouseout", function (d) this.o(-1));
         /* A legend entry for each tag. */
         root.add(pv.Dot)
-            .data(function (d) d.tagTimeTuples)
-            .left(DIAMETER + 30)
-            .top(function() this.index * 20 + 60)
-            .fillStyle(function(d) colors(d.tag))
-            .strokeStyle(null)
-            .shape("square")
-            .size(30)
+          .data(function (d) d.tagTimeTuples)
+          .left(DIAMETER + 30)
+          .top(function() this.index * 20 + 60)
+          .fillStyle(function(d) colors(d.tag))
+          .strokeStyle(null)
+          .shape("square")
+          .size(30)
           .anchor("right").add(pv.Label)
           .text(function(d) d.tag + ": " + d.totalTime.toPrecision(3))
           .font("15px sans-serif");
@@ -67,8 +67,8 @@
     </script>
   </div>
   <div class="buttonContainer">
-  	<button id="prevBtn" type="button"></button>
-  	<button id="nextBtn" type="button"></button>
+    <button id="prevBtn" type="button"></button>
+    <button id="nextBtn" type="button"></button>
   </div>
   <span class="buttonContainer">
     Start Date: <input type="text" id="startPicker" class="datepicker" size="7">
@@ -76,11 +76,11 @@
   </span>
 </div>
 <script type="text/javascript">
-  
+
   // Data structure used to easily convert between the view used by the calendar
   //   and the labels used by the next/prev buttons
   var convertViewToDate = {'agendaDay': 'day', 'agendaWeek': 'week', 'month': 'month'}
-  
+
   // invariant: User visited calendar before visiting pie chart. Make sure this is always true
 
   var startDate = new Date(sessionStorage.getItem('startDate'));
@@ -150,21 +150,21 @@
   // Change the header to reflect what range of dates the pie chart is covering.
   // The parameter selectDates is true if the range of dates was user selected.
   function changeHeader(selectDates) {
-   if (selectDates == true) {
-     $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy") + " to " +
-       	                  $.fullCalendar.formatDate(endDate, "MMM dd, yyyy"));
-   } 
-   else if (calendarView == 'month') {
-     $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM yyyy"));
-   }
-   else if (calendarView == 'agendaWeek') {
-        // The end date is exclusive. Therefore we must subtract one day.
-        $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy") + " to " +
-        	              $.fullCalendar.formatDate(endDate, "MMM dd, yyyy"));
-   }   
-   else if (calendarView == 'agendaDay'){
-     $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy"));
-   }
+    if (selectDates == true) {
+      $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy") + " to " +
+          $.fullCalendar.formatDate(endDate, "MMM dd, yyyy"));
+    } 
+    else if (calendarView == 'month') {
+      $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM yyyy"));
+    }
+    else if (calendarView == 'agendaWeek') {
+      // The end date is exclusive. Therefore we must subtract one day.
+      $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy") + " to " +
+          $.fullCalendar.formatDate(endDate, "MMM dd, yyyy"));
+    }   
+    else if (calendarView == 'agendaDay'){
+      $('#chartTime').text($.fullCalendar.formatDate(startDate, "MMM dd, yyyy"));
+    }
 
   }
 
@@ -195,61 +195,61 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-    var selectDate = function(dateText, inst) {
+      var selectDate = function(dateText, inst) {
       var startDateText = $('#startPicker').val();
       var endDateText = $('#endPicker').val();
-     
+
       if (startDateText != "" && endDateText != "") {
-        startDate = Date.parse(startDateText);
-        endDate = Date.parse(endDateText);
-        $('#prevBtn' ).button( "option", "disabled", true );
-        $('#nextBtn' ).button( "option", "disabled", true );
-        root.data(updatePieChart(true));
-        root.render();
+      startDate = Date.parse(startDateText);
+      endDate = Date.parse(endDateText);
+      $('#prevBtn' ).button( "option", "disabled", true );
+      $('#nextBtn' ).button( "option", "disabled", true );
+      root.data(updatePieChart(true));
+      root.render();
       }
-    }
-    $('.datepicker').datepicker({onSelect: selectDate}); 
-     
-    $('#prevBtn').text('Previous ' + convertViewToDate[calendarView]);
-	$('#nextBtn').text('Next ' + convertViewToDate[calendarView]);
-    $('[type="button"]').button();
-	
-    $('#prevBtn').click(function(){
-      if (calendarView == 'month') {
-	    startDate = startDate.add(-1).months();
-		endDate = endDate.add(-1).months();
-	  } else if (calendarView == 'agendaWeek') {
-	    startDate = startDate.add(-1).weeks();
-		endDate = endDate.add(-1).weeks();
-	  } else {
-	     startDate = startDate.add(-1).days();
-		endDate = endDate.add(-1).days();
-	  
-	  }
-      root.data(updatePieChart());
-      root.render();
-    });
-    $('#nextBtn').click(function(){
-      if (calendarView == 'month') {
-	    startDate = startDate.add(1).months();
-		endDate = endDate.add(1).months();
-	  } else if (calendarView == 'agendaWeek') {
-	    startDate = startDate.add(1).weeks();
-		endDate = endDate.add(1).weeks();
-	  } else {
-	     startDate = startDate.add(1).days();
-		endDate = endDate.add(1).days();
-	  
-	  }
-      root.data(updatePieChart());
-      root.render();
-    });
-   
+      }
+      $('.datepicker').datepicker({onSelect: selectDate}); 
+
+      $('#prevBtn').text('Previous ' + convertViewToDate[calendarView]);
+      $('#nextBtn').text('Next ' + convertViewToDate[calendarView]);
+      $('[type="button"]').button();
+
+      $('#prevBtn').click(function(){
+        if (calendarView == 'month') {
+        startDate = startDate.add(-1).months();
+        endDate = endDate.add(-1).months();
+        } else if (calendarView == 'agendaWeek') {
+        startDate = startDate.add(-1).weeks();
+        endDate = endDate.add(-1).weeks();
+        } else {
+        startDate = startDate.add(-1).days();
+        endDate = endDate.add(-1).days();
+
+        }
+        root.data(updatePieChart());
+        root.render();
+        });
+      $('#nextBtn').click(function(){
+          if (calendarView == 'month') {
+          startDate = startDate.add(1).months();
+          endDate = endDate.add(1).months();
+          } else if (calendarView == 'agendaWeek') {
+          startDate = startDate.add(1).weeks();
+          endDate = endDate.add(1).weeks();
+          } else {
+          startDate = startDate.add(1).days();
+          endDate = endDate.add(1).days();
+
+          }
+          root.data(updatePieChart());
+          root.render();
+          });
+
   });
-  $(window).load(function() {
+$(window).load(function() {
     var height = $('#fancybox-content-holder').height();  
     var width = $('svg').attr('width').baseVal.value;
     fancyboxHelpers.resize(document,height+25,width+25);
-  });
+    });
 </script>
 

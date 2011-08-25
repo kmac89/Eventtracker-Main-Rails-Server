@@ -6,104 +6,94 @@
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen, projection" />
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
 <script>
-	$(function() {
-		$("#toolbar a").button();
-	});
-	</script>
+  $(function() {
+    $("#toolbar a").button();
+  });
+</script>
 
 <ul id="toolbar" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-	<%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
-	<%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
-	<%= link_to 'View Timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
-	<%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'table' %>
-	 <%= link_to "Logout", :logout, :style => "float:right;" %>
+  <%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
+  <%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
+  <%= link_to 'View Timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
+  <%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'table' %>
+  <%= link_to "Logout", :logout, :style => "float:right;" %>
 </ul>
-
 <br /> <br />
+<script type="text/javascript">
 
+  $(document).ready(function(){
+    if(<%= @need_to_login %>) {
+      $("#hidden_link").fancybox({'modal':true}).trigger('click');
+    }
+  });
+  $(document).ready(function(){
+    $(".timeline").fancybox({
+      'width' : '100%',
+      'height' : '68%',
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+  });
+  $(document).ready(function(){
+    $(".pi_chart").fancybox({
+      'width' : '47%', 
+      'height' : '69%', 
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+  });
+  $(document).ready(function(){
+    $(".create_event").fancybox({
+      'width' : '35%',
+      'padding': 0,
+      'height' : '60%',
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+  });
+  $(document).ready(function(){
+    $(".table").fancybox({
+      'width' : '46%',
+      'height' : '93%',
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+  });
+  var encryptedData=<%= raw @contents %>;
+  var encryptedContent= new Array();
+  for (var i=0; i<encryptedData.length; i++) {
+    encryptedContent[i]=encryptedData[i]['event']['content'];
+  }
 
- <script type="text/javascript">
+  for (var i=0; i<encryptedData.length; i++) {
+    encryptedContent[i] = encryptedContent[i].replace(/[ \r\n]+/g,'')
+  }
+  var unencryptedData=encryptionHelpers.unencryptAll(encryptedContent);
+  var unencryptedEvents=new Array();
+  for(var i=0; i < unencryptedData.length;i++){
+    unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
+    unencryptedEvents[i]['id']=encryptedData[i]['event']['id'];
+  }
 
-$(document).ready(function(){
-        if(<%= @need_to_login %>) {
-          $("#hidden_link").fancybox({'modal':true}).trigger('click');
-		}
-	});
-
-
-
-
-$(document).ready(function(){
-	    $(".timeline").fancybox({
-	         'width' : '100%',
-	         'height' : '68%',
-	         'autoScale' : false,
-	         'transitionIn' : 'none',
-	         'transitionOut' : 'none',
-	         'type' : 'iframe'
-	     });
-	});
-
-$(document).ready(function(){
-	    $(".pi_chart").fancybox({
-	         'width' : '47%', //37
-	         'height' : '69%', //51
-	         'autoScale' : false,
-	         'transitionIn' : 'none',
-	         'transitionOut' : 'none',
-	         'type' : 'iframe'
-	     });
-
-	     });
-$(document).ready(function(){
-	    $(".create_event").fancybox({
-	         'width' : '35%',
-			 'padding': 0,
-	         'height' : '60%',
-	         'autoScale' : false,
-	         'transitionIn' : 'none',
-	         'transitionOut' : 'none',
-	         'type' : 'iframe'
-	     });
-
-	     });
- $(document).ready(function(){
-	    $(".table").fancybox({
-	         'width' : '46%',
-	         'height' : '93%',
-	         'autoScale' : false,
-	         'transitionIn' : 'none',
-	         'transitionOut' : 'none',
-	         'type' : 'iframe'
-			});
-			});
-			
-	var encryptedData=<%= raw @contents %>;
-	var encryptedContent= new Array();
-	for (var i=0; i<encryptedData.length; i++) {
-	  encryptedContent[i]=encryptedData[i]['event']['content'];
-	}
-	
-	for (var i=0; i<encryptedData.length; i++) {
-	  encryptedContent[i] = encryptedContent[i].replace(/[ \r\n]+/g,'')
-	}
-	var unencryptedData=encryptionHelpers.unencryptAll(encryptedContent);
-	var unencryptedEvents=new Array();
-	for(var i=0; i < unencryptedData.length;i++){
-		unencryptedEvents[i]=jQuery.parseJSON(unencryptedData[i]);
-		unencryptedEvents[i]['id']=encryptedData[i]['event']['id'];
-	}
-	
-	//Preparing the delete links.
-	var deleteLinkArray=new Array();
-	 <% @events.each_with_index do |event,indexOfEvent| %>
-		var index='<%= event.id %>'
-		deleteLinkArray[index]='<%= link_to 'Delete', event ,:confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %>';	
-    <% end %>
-	var divMap;
-  </script>	
+  //Preparing the delete links.
+  var deleteLinkArray=new Array();
+  <% @events.each_with_index do |event,indexOfEvent| %>
+    var index='<%= event.id %>'
+    deleteLinkArray[index]= '<%= link_to 'Delete', event ,:confirm => 'Are you sure?',
+                             :method => :delete, :phone_number => @user.phone_number %>';	
+  <% end %>
+</script>	
 
 <script type="text/javascript">
+  var divMap;
   // Get information about the calendar that was stored in session storage
   var currentYear = sessionStorage.getItem('year');
   var currentDate= new Date();
@@ -119,114 +109,113 @@ $(document).ready(function(){
     viewOfCalendar = 'month';
   }
 
-$(document).ready(function() {
+  $(document).ready(function() {
     // page is now ready, initialize the calendar...
     $('#calendar').fullCalendar({
-	
-        // put your options and callbacks here
-		header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			 year: currentYear,
-			 month: currentMonth,
-			 defaultView: viewOfCalendar,
-			 date: new Date(sessionStorage.getItem('startDate')).getDate(),
-			 height: 600,
-			 theme:true,
-			 events:[],
-			 // Triggered when the calendar loads and every time a different date-range is displayed.
-			 viewDisplay: function(view) {
-			                        
-			                                var calendarDate=$('#calendar').fullCalendar('getDate');
-											// Remember the current view that the calendar is showing.
-											sessionStorage.setItem('view', $('#calendar').fullCalendar('getView').name);
-											sessionStorage.setItem('year', calendarDate.getFullYear());
-											sessionStorage.setItem('month', calendarDate.getMonth());
-											sessionStorage.setItem('startDate', $('#calendar').fullCalendar('getView').start.toString());
-											sessionStorage.setItem('endDate', $('#calendar').fullCalendar('getView').end.toString());
-										    sessionStorage.setItem('pieChartName', $('.fc-header-title').text());
-										 },
-		eventClick: function(calEvent, jsEvent, view) {
-			  $("#dialog").dialog({ modal: true, autoOpen:false });
-			  $("#dialog").dialog('open');
-			  //clearing the div. This is done because we are reusing the same dialog so we have to clear the previous contents of the div
-			  $("#dialog").empty();
-			  var startTime=$.fullCalendar.parseDate(calEvent['start']);
-			  var endTime=$.fullCalendar.parseDate(calEvent['end']);
-			  $("#dialog").append("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")+"<br>");
-			  $("#dialog").append("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")+"<br>");
 
-			  if(calEvent['tag']){
-				$("#dialog").append("Tag: " + calEvent['tag']+"<br>");
-			  }
-			  divMap=document.createElement("div");
-			  divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
-			  divEdit=document.createElement("div");		
-			  divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'editing' %>';
-			  divMap.children[0].href=divMap.children[0].href+calEvent['id'];
-			  divEdit.children[0].href=divEdit.children[0].href+calEvent['id']+'/edit';
-			  divDelete=document.createElement("div");
-			  divDelete.innerHTML =	deleteLinkArray[calEvent['id']];
-			  $("#dialog").append(divEdit.innerHTML+ " ");
-			  $("#dialog").append(divDelete.innerHTML + " ");
+      // put your options and callbacks here
+      header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+              },
+      year: currentYear,
+      month: currentMonth,
+      defaultView: viewOfCalendar,
+      date: new Date(sessionStorage.getItem('startDate')).getDate(),
+      height: 600,
+      theme:true,
+      events:[],
+      // Triggered when the calendar loads and every time a different date-range is displayed.
+      viewDisplay: function(view) {
+        var calendarDate=$('#calendar').fullCalendar('getDate');
+        // Remember the current view that the calendar is showing.
+        sessionStorage.setItem('view', $('#calendar').fullCalendar('getView').name);
+        sessionStorage.setItem('year', calendarDate.getFullYear());
+        sessionStorage.setItem('month', calendarDate.getMonth());
+        sessionStorage.setItem('startDate', $('#calendar').fullCalendar('getView').start.toString());
+        sessionStorage.setItem('endDate', $('#calendar').fullCalendar('getView').end.toString());
+        sessionStorage.setItem('pieChartName', $('.fc-header-title').text());
+      },
+      eventClick: function(calEvent, jsEvent, view) {
+        $("#dialog").dialog({ modal: true, autoOpen:false });
+        $("#dialog").dialog('open');
+        //Cclearing the div. This is done because we are reusing 
+        //  the same dialog so we have to clear the previous contents of the div
+        $("#dialog").empty();
+        var startTime=$.fullCalendar.parseDate(calEvent['start']);
+        var endTime=$.fullCalendar.parseDate(calEvent['end']);
+        $("#dialog").append("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")+"<br>");
+        $("#dialog").append("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")+"<br>");
 
-			  if(calEvent['numGPSCoords'] > 0){
-		            $("#dialog").append(divMap.innerHTML+"<br>");
-			  }
+        if(calEvent['tag']){
+          $("#dialog").append("Tag: " + calEvent['tag']+"<br>");
+        }
+        divMap=document.createElement("div");
+        divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
+        divEdit=document.createElement("div");		
+        divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'editing' %>';
+        divMap.children[0].href=divMap.children[0].href+calEvent['id'];
+        divEdit.children[0].href=divEdit.children[0].href+calEvent['id']+'/edit';
+        divDelete=document.createElement("div");
+        divDelete.innerHTML =	deleteLinkArray[calEvent['id']];
+        $("#dialog").append(divEdit.innerHTML+ " ");
+        $("#dialog").append(divDelete.innerHTML + " ");
 
-			  $("#dialog").dialog( "option", "title", calEvent['title'] );
-			  $('.ui-widget-overlay').click(function() { $("#dialog").dialog("close"); });
+        if(calEvent['numGPSCoords'] > 0){
+          $("#dialog").append(divMap.innerHTML+"<br>");
+        }
 
-		
+        $("#dialog").dialog( "option", "title", calEvent['title'] );
+        $('.ui-widget-overlay').click(function() { $("#dialog").dialog("close"); });
+
+
         // change the border color just for fun
         $(this).css('border-color', 'red');
-		$(".mapping").fancybox({
-				 'width' : '70%',
-				 'height' : '100%',
-				 'autoScale' : false,
-				 'transitionIn' : 'none',
-				 'transitionOut' : 'none',
-				 'type' : 'iframe'
-			  });
-		$('#editing').fancybox({
-				'width' : '35%' ,
-			    'padding': 0,
-				'height': '60%',
-				'autoScale' : false,
-				'transitionIn' : 'none',
-				'transitionOut' : 'none',
-				'type' : 'iframe' ,
-				'onClosed' : function() {
-					location.reload(true);
-				}
-			 });
-		
-    }
-			
+        $(".mapping").fancybox({
+          'width' : '70%',
+          'height' : '100%',
+          'autoScale' : false,
+          'transitionIn' : 'none',
+          'transitionOut' : 'none',
+          'type' : 'iframe'
+        });
+        $('#editing').fancybox({
+          'width' : '35%' ,
+          'padding': 0,
+          'height': '60%',
+          'autoScale' : false,
+          'transitionIn' : 'none',
+          'transitionOut' : 'none',
+          'type' : 'iframe' ,
+          'onClosed' : function() {
+            location.reload(true);
+          }
+        });
+      }
+
     })
-	var events1=initializeEvents();
-	$('#calendar').fullCalendar( 'addEventSource', events1 )
-});
+    var events1=initializeEvents();
+    $('#calendar').fullCalendar( 'addEventSource', events1 )
+  });
 
-function initializeEvents(){
-	var events=new Array();
-	for(var i=0; i < unencryptedEvents.length; i++){
-		var event=unencryptedEvents[i];
-		var eventDict={};
-		eventDict['title']=event['name'];
+  function initializeEvents(){
+    var events=new Array();
+    for(var i=0; i < unencryptedEvents.length; i++){
+      var event=unencryptedEvents[i];
+      var eventDict={};
+      eventDict['title']=event['name'];
 
-		eventDict['start']= $.fullCalendar.formatDate(new Date(event['startTime']), "yyyy-MM-dd HH:mm:ss");
-		eventDict['end']= $.fullCalendar.formatDate(new Date(event['endTime']), "yyyy-MM-dd HH:mm:ss");
-		eventDict['tag']=event['tag'];
-		eventDict['id']=event['id'];
-		eventDict['numGPSCoords']=event['gpsCoordinates'].length
-		eventDict['allDay']=false // will make the time show
-		events[i]=eventDict;
-	}
-	return events;
-}
+      eventDict['start']= $.fullCalendar.formatDate(new Date(event['startTime']), "yyyy-MM-dd HH:mm:ss");
+      eventDict['end']= $.fullCalendar.formatDate(new Date(event['endTime']), "yyyy-MM-dd HH:mm:ss");
+      eventDict['tag']=event['tag'];
+      eventDict['id']=event['id'];
+      eventDict['numGPSCoords']=event['gpsCoordinates'].length
+      eventDict['allDay']=false // will make the time show
+      events[i]=eventDict;
+    }
+    return events;
+  }
 
 </script>
 </head>

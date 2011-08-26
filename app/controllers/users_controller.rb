@@ -103,4 +103,15 @@ class UsersController < ApplicationController
     #end
   end
 
+  def check_phone_number
+    @user = User.find_by_phone_number(params[:phone_number])
+
+    if @user.nil?
+      # No account exists with this phone number
+      render :text => 'false', :status => 201
+    else
+      # account exists with this phone number
+      render :text => 'true', :status => 201
+    end
+  end
 end

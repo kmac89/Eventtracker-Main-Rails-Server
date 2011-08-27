@@ -14,6 +14,7 @@ MainRailsServer::Application.routes.draw do
   scope "users" do
     match "init"    =>  "users#init"
     match "check_phone_number"    =>  "users#check_phone_number"
+    match "verify_password"    =>  "users#verify_password"
     match "phone/:phone_number" =>  "users#show"
   end
 

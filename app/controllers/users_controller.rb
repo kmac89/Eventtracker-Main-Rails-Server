@@ -119,10 +119,12 @@ class UsersController < ApplicationController
     @user = User.find_by_phone_number(params[:phone_number])
     if @user.valid_password? params[:password]
       # account exists with this phone number and passwords match
-      render :text => 'verified', :status => 201 
+      response = {'uuid' => @user.uuid, 'status' => 'verified'}
+      render :json => response, :status => 201 
     else
       # passwords dont match
-      render :text => 'unverified', :status => 201
+      response = {'status' => 'unverified'}
+      render :json => response , :status => 201
     end
   end
 end

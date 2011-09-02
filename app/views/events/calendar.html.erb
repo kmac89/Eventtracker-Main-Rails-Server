@@ -109,6 +109,12 @@
     viewOfCalendar = 'month';
   }
 
+  var startDate = sessionStorage.getItem('startDate');
+  var currentDay = currentDate.getDate();
+  if (startDate != null) {
+    currentDay = new Date(startDate).getDate();
+  }
+
   $(document).ready(function() {
     // page is now ready, initialize the calendar...
     $('#calendar').fullCalendar({
@@ -120,9 +126,9 @@
                 right: 'month,agendaWeek,agendaDay'
               },
       year: currentYear,
-      month: currentMonth,
+      month: currentMonth, 
       defaultView: viewOfCalendar,
-      date: new Date(sessionStorage.getItem('startDate')).getDate(),
+      date: currentDay,
       height: 600,
       theme:true,
       events:[],

@@ -615,4 +615,9 @@ table.fc-border-separate {
 	_overflow: hidden;
 	}
 	
-	
+.containsGPSData {
+  padding-left: 20px;
+  background-image: url(maps_16.png);
+  background-repeat: no-repeat;
+}
+

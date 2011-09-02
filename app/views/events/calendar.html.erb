@@ -153,7 +153,7 @@
       eventClick: function(calEvent, jsEvent, view) {
         $("#dialog").dialog({ modal: true, autoOpen:false });
         $("#dialog").dialog('open');
-        //Cclearing the div. This is done because we are reusing 
+        //Clearing the div. This is done because we are reusing 
         //  the same dialog so we have to clear the previous contents of the div
         $("#dialog").empty();
         var startTime=$.fullCalendar.parseDate(calEvent['start']);
@@ -224,6 +224,12 @@
       eventDict['tag']=event['tag'];
       eventDict['id']=event['id'];
       eventDict['numGPSCoords']=event['gpsCoordinates'].length
+      if (eventDict["numGPSCoords"] > 0 ) {
+        // attach a special css class
+        // This css class will show a map icon to indiciate that
+        //   this event contains an associated map.
+        eventDict["className"] = "containsGPSData";
+      }
       eventDict['allDay']=false // will make the time show
       events[i]=eventDict;
     }

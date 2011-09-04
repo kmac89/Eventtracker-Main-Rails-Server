@@ -8,6 +8,7 @@
 <script>
   $(function() {
     $("#toolbar a").button();
+    $('[type="button"]').button();
   });
 </script>
 
@@ -16,15 +17,21 @@
   <%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
   <%= link_to 'View Timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
   <%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'table' %>
-  <%= link_to "Logout", :logout, :style => "float:right;" %>
+  <button id="logout" type="button" style = "float:right;"> Logout </button>
 </ul>
 <br /> <br />
 <script type="text/javascript">
 
   $(document).ready(function(){
+
     if(<%= @need_to_login %>) {
       $("#hidden_link").fancybox({'modal':true}).trigger('click');
     }
+
+    $('#logout').click(function(){
+      sessionStorage.clear();
+      document.location.href='logout';
+    });
   });
   $(document).ready(function(){
     $(".timeline").fancybox({
@@ -109,6 +116,12 @@
     viewOfCalendar = 'month';
   }
 
+  var startDate = sessionStorage.getItem('startDate');
+  var currentDay = currentDate.getDate();
+  if (startDate != null) {
+    currentDay = new Date(startDate).getDate();
+  }
+
   $(document).ready(function() {
     // page is now ready, initialize the calendar...
     $('#calendar').fullCalendar({
@@ -120,9 +133,9 @@
                 right: 'month,agendaWeek,agendaDay'
               },
       year: currentYear,
-      month: currentMonth,
+      month: currentMonth, 
       defaultView: viewOfCalendar,
-      date: new Date(sessionStorage.getItem('startDate')).getDate(),
+      date: currentDay,
       height: 600,
       theme:true,
       events:[],
@@ -140,7 +153,7 @@
       eventClick: function(calEvent, jsEvent, view) {
         $("#dialog").dialog({ modal: true, autoOpen:false });
         $("#dialog").dialog('open');
-        //Cclearing the div. This is done because we are reusing 
+        //Clearing the div. This is done because we are reusing 
         //  the same dialog so we have to clear the previous contents of the div
         $("#dialog").empty();
         var startTime=$.fullCalendar.parseDate(calEvent['start']);
@@ -211,6 +224,12 @@
       eventDict['tag']=event['tag'];
       eventDict['id']=event['id'];
       eventDict['numGPSCoords']=event['gpsCoordinates'].length
+      if (eventDict["numGPSCoords"] > 0 ) {
+        // attach a special css class
+        // This css class will show a map icon to indiciate that
+        //   this event contains an associated map.
+        eventDict["className"] = "containsGPSData";
+      }
       eventDict['allDay']=false // will make the time show
       events[i]=eventDict;
     }

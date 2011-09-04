@@ -112,6 +112,7 @@ class EventsController < ApplicationController
     if params['PollTime']
       previous_poll_time = DateTime.parse(params['PollTime'])
       puts previous_poll_time
+      # TODO fix this bad code/ordering
     end
     user = User.find_by_uuid(params['uuid'])
     if previous_poll_time then

@@ -3,12 +3,11 @@
 * A javascript file containing helper methods relating to fancybox
 */
 var fancyboxHelpers={
-  resize:function(document, docHeight, docWidth) {
-    var hasVScroll = $("body").height() > $(window).height();
-    var hasHScroll = $("body").width() > $(window).width();
-
+  resize:function(mDocument, docHeight, docWidth) {
+    var hasVScroll = $(document).height() > $(window).height();
+    var hasHScroll = $(document).width() > $(window).width();
     if (hasVScroll || hasHScroll) {
-      var pageHeight = (typeof(docHeight) == 'undefined')  ? fancyboxHelpers.getDocHeight(document) : docHeight;
+      var pageHeight = (typeof(docHeight) == 'undefined')  ? fancyboxHelpers.getDocHeight(mDocument) : docHeight;
       var pageWidth = (typeof(docWidth) == 'undefined')  ? fancyboxHelpers.getDocWidth(document) : docWidth;
       var outer = window.parent.document.getElementById('fancybox-wrap');
       var inner = window.parent.document.getElementById('fancybox-content');
@@ -25,7 +24,7 @@ var fancyboxHelpers={
       docHt = docScrollHeight = doc.body.scrollHeight;
     else
       docHt = docOffsetHeight = doc.body.offsetHeight;
-    return docHt;
+    return Math.max(docHt, $(doc).height());
   },
   getDocWidth:function(doc) {
     var docWt = 0, docScrollWidth, docOffsetWidth;
@@ -35,7 +34,7 @@ var fancyboxHelpers={
       docWt = docOffsetWidth = doc.body.offsetWidth;
     if (docScrollWidth && docOffsetWidth) 
       docHt = Math.max(docScrollWidth, docOffsetWidth);
-    return docWt;
+    return Math.max(docWt, $(doc).width());
   }
 }
 

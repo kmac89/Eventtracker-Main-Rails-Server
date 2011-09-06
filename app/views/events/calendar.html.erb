@@ -25,7 +25,10 @@
   $(document).ready(function(){
 
     if(<%= @need_to_login %>) {
-      $("#hidden_link").fancybox({'modal':true}).trigger('click');
+    $("#hidden_link").fancybox({'modal':true,
+                                'width': '30%',
+                                'height': '40%'
+                              }).trigger('click');
     }
 
     $('#logout').click(function(){

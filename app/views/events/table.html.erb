@@ -17,7 +17,7 @@ $.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
 </script>
 
 <% columns = [{:type => 'html', :class => "first"}, {:type => 'html'}, {:type => 'html'}, {:type => 'date'}, {:type => 'date'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :class => 'last'} ] %>
-<%= raw datatable(columns, {:info_callback => "if(numOfEvents != 0){  var totalHours= computeHours($('#events').dataTable().fnGetFilteredData(oSettings)); $('#displayTime').text('Total hours for '  + iTotal +' activities : ' + totalHours); } numOfEvents= iTotal; return sPre;", :per_page => "16", :persist_state => "false", :jquery_ui => "true", :sort_by => "[3, 'desc']", :processing => image_tag("spinner.gif")}) %>
+<%= raw datatable(columns, {:info_callback => "if(numOfEvents != 0){  var totalHours= computeHours($('#events').dataTable().fnGetFilteredData(oSettings)); $('#displayTime').text('Total hours for '  + iTotal +' activities : ' + totalHours); } numOfEvents= iTotal; return sPre;", :per_page => "16", :persist_state => "false", :jquery_ui => "true",:auto_width => 'false', :sort_by => "[3, 'desc']", :processing => image_tag("spinner.gif")}) %>
 
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 <link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
@@ -25,8 +25,7 @@ $.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
 <script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
 
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-
-<table id='events' class='datatable'>
+<table id='events' class='datatable' width="100%">
   <thead>
     <tr>
       <th>Events Name</th>

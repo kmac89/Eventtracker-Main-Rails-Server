@@ -75,4 +75,17 @@
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();
   } 	
+
+// Resize the fancybox to make room for the datepicker
+$('#startTime').click(function() {
+  fancyboxHelpers.resize(document);
+})
+// Resize the fancybox to make room for the datepicker
+$('#endTime').click(function() {
+  fancyboxHelpers.resize(document);
+})
+// Resize the window in case the default sizes provided were too small.
+$(window).load(function() {
+  fancyboxHelpers.resize(document);
+});
 </script>

@@ -147,13 +147,12 @@ class EventsController < ApplicationController
   # GET /events/1.xml
   def show
     @event = Event.find(params[:id])
-
-    @content = ActiveSupport::JSON.decode(@event.content)
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @event }
+    @user = User.find(@event.user_id)
+    if !verify_user(@user)
+      return
     end
+    @contents = @event.content.to_json
+    @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'notes' => 'Notes', 'startTime' => 'Start Time'}
   end
 
   # GET /events/new

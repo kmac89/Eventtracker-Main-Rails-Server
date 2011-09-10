@@ -11,9 +11,9 @@ var fancyboxHelpers={
       var pageWidth = (typeof(docWidth) == 'undefined')  ? fancyboxHelpers.getDocWidth(document) : docWidth;
       var outer = window.parent.document.getElementById('fancybox-wrap');
       var inner = window.parent.document.getElementById('fancybox-content');
-      outer.style.height= pageHeight+30 +"px";
+      outer.style.height= pageHeight+35 +"px";
       outer.style.width= pageWidth +20+"px";
-      inner.style.height= pageHeight+25 +"px";
+      inner.style.height= pageHeight+30 +"px";
       inner.style.width= pageWidth +2+"px";
       parent.$.fancybox.center();
     }

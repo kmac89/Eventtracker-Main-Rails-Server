@@ -1,13 +1,29 @@
+<STYLE TYPE="text/css">
+  .inputfield  {
+    width: 350px;
+    font-size:100%}
+  }
+</STYLE>
+<table>
 <% @edit_fields.each do |field, name| %>
-  <div>
-    <%= label :content, name %>
-    <%= text_field :content, field, :id => field, :value => "" %>
-  </div>
+  <% if name == 'Notes'%>
+      <td><%= label :content, name %> </td>
+      <td><%= text_area :content, field, :id => field, :rows => "2",
+        :class => 'inputfield'%> </td>
+  <% else %>
+    <tr>
+      <td><%= label :content, name %> </td>
+      <td><%= text_field :content, field, :id => field, :value => "",
+          :class => 'inputfield' %></td>
+    </tr>
+  <% end %> 
 <% end %>
-  <div>
-    <%= label :content, 'End time' %>
-    <%= text_field :content, 'endTime', :id => 'endTime', :value => "" %>
-  </div>
+  <tr>
+    <td><%= label :content, 'End time' %> </td>
+    <td><%= text_field :content, 'endTime', :id => 'endTime', :value => "",
+            :class => 'inputfield'%></td>
+  </tr>
+</table>
 
 <%= form_for(@event) do |f| %>
   <% if @event.errors.any? %>

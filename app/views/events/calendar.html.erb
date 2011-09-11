@@ -162,9 +162,10 @@
         var endTime=$.fullCalendar.parseDate(calEvent['end']);
         $("#dialog").append("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")+"<br>");
         $("#dialog").append("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")+"<br>");
-
+        var divTag = document.createElement("div");
         if(calEvent['tag']){
-          $("#dialog").append("Tag: " + calEvent['tag']+"<br>");
+          $(divTag).text("Tag: " + calEvent['tag']);
+          $('#dialog').append(divTag);
         }
         divMap=document.createElement("div");
         divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
@@ -181,9 +182,9 @@
           $("#dialog").append(divMap.innerHTML+"<br>");
         }
 
-        $("#dialog").dialog( "option", "title", calEvent['title'] );
+        $("#dialog").dialog( "option", "title", "" );
         $('.ui-widget-overlay').click(function() { $("#dialog").dialog("close"); });
-
+        $("#ui-dialog-title-dialog").text(calEvent['title']);
 
         // change the border color just for fun
         $(this).css('border-color', 'red');

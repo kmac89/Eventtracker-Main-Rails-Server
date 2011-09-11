@@ -20,8 +20,8 @@
   $('#startTime').attr('disabled', true);
   $('#startTime').unbind();
   $('#endTime').unbind();
-  // Change the text color to black since the text in disabled input fields by default 
+  // Change the text color to the default since the text in disabled input fields by default 
   //  have a light grey color.
-  $('input').css('color', 'black');
-  $('#notes').css('color', 'black');
+  $('input').css('color', $('label').css('color'));
+  $('#notes').css('color', $('label').css('color'));
 </script>

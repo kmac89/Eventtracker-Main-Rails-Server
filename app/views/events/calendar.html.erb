@@ -160,8 +160,8 @@
         $("#dialog").empty();
         var startTime=$.fullCalendar.parseDate(calEvent['start']);
         var endTime=$.fullCalendar.parseDate(calEvent['end']);
-        $("#dialog").append("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")+"<br>");
-        $("#dialog").append("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")+"<br>");
+        $("#dialog").appendText("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")).append("<br>");
+        $("#dialog").appendText("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")).append("<br>");
         var divTag = document.createElement("div");
         if(calEvent['tag']){
           $(divTag).text("Tag: " + calEvent['tag']);

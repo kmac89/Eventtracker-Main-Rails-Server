@@ -43,7 +43,7 @@ $.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
     <% @events.each_with_index do |event,indexOfEvent| %>
       <tr class='event_row'>
 		<td id='name'></td>
-		<td id='notes'></td>
+		<td id='notes'><%= link_to '', event, :class => 'editingEvent' %></td>
 		<td id='tag'></td>
 		<td id='startTimeR'></td>
 		<td id='endTimeR'></td>
@@ -86,13 +86,23 @@ $.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
 
     for (var i=0; i<row_elements.length; i++) {
       var param_name = row_elements[i];
-      $(this).find('#' + param_name).html(event_data[param_name]);
+      var data = event_data[param_name]
+      if (param_name == 'notes') {
+        if (typeof(data) != 'undefined' && data.length > 15) {
+          data = data.substr(0,15) + "..."
+          $(this).find('#' + param_name + ' a').text(data);
+        } else {
+          $(this).find('#' + param_name).text(data);
+        }
+      }else{
+        $(this).find('#' + param_name).text(data);
+      }
     }
 
     var startTime = new Date(event_data['startTime']);
     var endTime = new Date(event_data['endTime']);
     $(this).find('#startTimeR').text(dateHelpers.formatDateTime(event_data['startTime']));
-    $(this).find('#endTimeR').html(dateHelpers.formatDateTime(event_data['endTime']));
+    $(this).find('#endTimeR').text(dateHelpers.formatDateTime(event_data['endTime']));
 	
 	$(document).ready(function(){
 	    $(".editingEvent").fancybox({

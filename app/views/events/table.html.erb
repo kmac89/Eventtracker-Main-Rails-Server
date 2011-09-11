@@ -42,13 +42,13 @@ $.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
  
     <% @events.each_with_index do |event,indexOfEvent| %>
       <tr class='event_row'>
-		<td id='name'></td>
-		<td id='notes'><%= link_to '', event, :class => 'editingEvent' %></td>
-		<td id='tag'></td>
+		<td id='name'><%= link_to '', event, :class => 'eventData' %></td>
+		<td id='notes'><%= link_to '', event, :class => 'eventData' %></td>
+		<td id='tag'><%= link_to '', event, :class => 'eventData' %></td>
 		<td id='startTimeR'></td>
 		<td id='endTimeR'></td>
 		<td><%= link_to 'Map', "/#{@user.phone_number}/map/#{event.id}", :onclick=>"checkForGPSData(#{indexOfEvent});", :id => 'map_link', :class => 'mapping' %></td>
-		<td><%= link_to 'Edit', edit_event_path(event), :class => 'editingEvent' %></td>
+		<td><%= link_to 'Edit', edit_event_path(event), :class => 'eventData' %></td>
 		<td><%= link_to 'Delete', event, :confirm => 'Are you sure?', :method => :delete, :phone_number => @user.phone_number %></td>
       </tr>
 	
@@ -86,14 +86,10 @@ $.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
 
     for (var i=0; i<row_elements.length; i++) {
       var param_name = row_elements[i];
-      var data = event_data[param_name]
-      if (param_name == 'notes') {
-        if (typeof(data) != 'undefined' && data.length > 15) {
-          data = data.substr(0,15) + "..."
-          $(this).find('#' + param_name + ' a').text(data);
-        } else {
-          $(this).find('#' + param_name).text(data);
-        }
+      var data = event_data[param_name];
+      if (typeof(data) != 'undefined' && data.length > 15) {
+        data = data.substr(0,15) + "..."
+        $(this).find('#' + param_name + ' a').text(data);
       }else{
         $(this).find('#' + param_name).text(data);
       }
@@ -105,10 +101,10 @@ $.fn.dataTableExt.oApi.fnGetFilteredData = function ( oSettings ) {
     $(this).find('#endTimeR').text(dateHelpers.formatDateTime(event_data['endTime']));
 	
 	$(document).ready(function(){
-	    $(".editingEvent").fancybox({
-	         'width' : '63%',
-			 'padding': 0,
-	         'height' : '85%',
+	    $(".eventData").fancybox({
+			     'padding': 0,
+	         'width' : '45%',
+	         'height' : '65%',
 	         'autoScale' : false,
 	         'transitionIn' : 'none',
 	         'transitionOut' : 'none',

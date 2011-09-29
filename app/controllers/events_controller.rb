@@ -117,7 +117,7 @@ class EventsController < ApplicationController
     if previous_poll_time then
       events = Event.find( :all, :conditions => ["updated_at > ? AND user_id = ?", previous_poll_time, user.id] )
     else
-      events = Event.where(:user_id => user.id)
+      events = Event.find(:all, :conditions => {:user_id => user.id, :deleted => false}) 
     end
     events_to_send = events.collect do |event|
 	   event_data = {}

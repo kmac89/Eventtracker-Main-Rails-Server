@@ -89,8 +89,13 @@ class UsersController < ApplicationController
   end
   
   def init
-    # todo authenticate
     @user = User.find_or_create_by_phone_number(params[:phone_number])
+    # Mark all events as deleted. This is done in case the user had an account with 
+    # a given phone number and then decided to create another account with the same number
+    @user.events.each do |event|  
+      event.deleted = true
+      event.save
+    end  
     @user.uuid = params[:uuid]
     @user.password = params[:password]
 
@@ -103,6 +108,7 @@ class UsersController < ApplicationController
     #end
   end
 
+  # Checks to see if an account already exists with this phone number
   def check_phone_number
     @user = User.find_by_phone_number(params[:phone_number])
 

@@ -78,7 +78,20 @@ This partial view is used to both show events and create events
     var passwd = localStorage.pwd;
     var startTimeString = $('#startTime').attr('value');
     var endTimeString = $('#endTime').attr('value');
-
+    if (startTimeString == "" && endTimeString == ""){
+      alert("Please enter a start time and end time");
+      return;
+    }else if (startTimeString == ""){
+      alert("Please enter a start time");
+      return;
+    }else if (endTimeString == "") {
+      alert("Please enter an end time");
+      return;
+    }
+    if (new Date(startTimeString) > new Date(endTimeString)) {
+      alert("Start time must be before end time");
+      return;
+    }
     var content = {};
     content['startTime'] = Date.parse(startTimeString);
     content['endTime'] = Date.parse(endTimeString);

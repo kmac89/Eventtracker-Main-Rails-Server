@@ -187,6 +187,9 @@ class EventsController < ApplicationController
     end
 
     user = User.find(@event.user_id)
+    if !verify_user(user)
+      return
+    end
     respond_to do |format|
       if @event.save
 #        format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully created.') }

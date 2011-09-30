@@ -1,5 +1,7 @@
 MainRailsServer::Application.routes.draw do
 
+  resources :feedback, :only => [:new, :create]
+
   match "close_fancybox" =>  "home#close_fancybox"
 
   scope "events" do

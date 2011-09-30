@@ -1,3 +1,8 @@
+<!-- 
+This is a hack used to get the fancybox to close and then reload the parent page.
+It was necessary because other efforts to get the parent page to reload failed due
+due to timing issues.
+-->
 <script>
   parent.location.reload(true);
   parent.$.fancybox.close();

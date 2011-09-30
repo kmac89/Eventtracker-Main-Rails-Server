@@ -1,10 +1,8 @@
 MainRailsServer::Application.routes.draw do
 
-  match "test"      => "home#test"
   match "close_fancybox" =>  "home#close_fancybox"
 
   scope "events" do
-    match "upload"  =>  "events#upload"
     match "upload_bulk"  =>  "events#upload_bulk"
     match "delete"  =>  "events#delete"
     match "poll"    =>  "events#poll"
@@ -18,7 +16,7 @@ MainRailsServer::Application.routes.draw do
     match "phone/:phone_number" =>  "users#show"
   end
 
-  resources :users, :user_sessions
+  resources :user_sessions
   match 'login' => 'user_sessions#new', :as => :login
   match 'logout' => 'user_sessions#destroy', :as => :logout
 
@@ -30,8 +28,6 @@ MainRailsServer::Application.routes.draw do
 	match ":phone_number/timeline"     => "events#timeline"
 	match ":phone_number/table"     => "events#table"
   end
-
-  get "users/index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

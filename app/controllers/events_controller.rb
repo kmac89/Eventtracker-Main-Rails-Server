@@ -1,18 +1,7 @@
 class EventsController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
-  # GET /events
-  # GET /events.xml
-  def index
-    @events = Event.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @events }
-    end
-  end
-
-  # GET /:phone_number
+  # GET /:phone_number/table
   def table
     phone_number = params[:phone_number]
     @user = User.find_by_phone_number(phone_number)
@@ -48,15 +37,13 @@ class EventsController < ApplicationController
 	event.content
     }
     @contents = @contents.to_json
-
-
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @events }
     end
   end
 
-  # GET /:phone_number/calendar
+  # The root of the site is routed to this action
   def calendar
     if current_user
 	  current_phone_number = current_user.phone_number
@@ -155,8 +142,8 @@ class EventsController < ApplicationController
     @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'notes' => 'Notes', 'startTime' => 'Start Time'}
   end
 
-  # GET /events/new
-  # GET /events/new.xml
+  # GET /:phone_number/new
+  # This is called when a new event is being created
   def new
     @event = Event.new
     @user = User.find_by_phone_number(params[:phone_number])
@@ -173,6 +160,7 @@ class EventsController < ApplicationController
   end
 
   # GET /events/1/edit
+  # Called when an event is being edited
   def edit
     @event = Event.find(params[:id])
     @user = User.find(@event.user_id)
@@ -185,6 +173,7 @@ class EventsController < ApplicationController
 
   # POST /events
   # POST /events.xml
+  # This method is called when the form for creating an event is submitted
   def create
     if params[:event]
       raise Exception
@@ -198,9 +187,6 @@ class EventsController < ApplicationController
     end
 
     user = User.find(@event.user_id)
-    @edit_fields = {'name' => 'Name', 'startTime' => 'Start Time', 'endTime' => 'End Time', 'notes' => 'Notes'}
-
-
     respond_to do |format|
       if @event.save
 #        format.html { redirect_to("/#{user.phone_number}", :notice => 'Event was successfully created.') }
@@ -214,8 +200,8 @@ class EventsController < ApplicationController
     end
   end
 
-  # PUT /events/1
-  # PUT /events/1.xml
+  # POST /events/1
+  # This method is called when the form for creating an event is submitted
   def update
     event = Event.find(params[:id])
     event.content = params['content']['b']
@@ -256,7 +242,7 @@ class EventsController < ApplicationController
   end
 
   # DELETE /events/delete
-  # user from phone for non-html response
+  # Called from the phone when the user has deleted an event
   def delete
     uuid = params[:UUIDOfEvent]
     user_uuid = params[:uuid]
@@ -281,28 +267,6 @@ class EventsController < ApplicationController
       render :text => 'OK', :status => 200
     end
   end
-
-  # POST /events/upload
-  def upload
-    @event = Event.find_or_create_by_uuid(params[:UUIDOfEvent])
-    user = User.find_by_uuid(params[:uuid])
-    @event.user_id = user.id unless user.nil?
-    @event.content = params[:EventData]
-    @event.deleted = params[:Deleted]
-    phone_event_updated_at = DateTime.parse(params[:UpdatedAt])
-
-    if @event.persisted?
-      event_older = phone_event_updated_at < @event.updated_at
-    end
-
-    if event_older or @event.save
-      render :text => 'OK', :status => 200
-    else
-      puts @event.errors
-      render :text => @event.errors.to_s, :status => 400
-    end
-  end
-
 
   # POST /events/upload_bulk
   def upload_bulk

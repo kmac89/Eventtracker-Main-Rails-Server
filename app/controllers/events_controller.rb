@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  skip_before_filter :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token, :only => [:poll,:upload_bulk, :delete]
 
   # GET /:phone_number/table
   def table

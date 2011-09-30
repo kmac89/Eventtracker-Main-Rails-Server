@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_filter :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token, :only => [:init,:check_phone_number, 
+                                                           :verify_password]
   
   def init
     @user = User.find_or_create_by_phone_number(params[:phone_number])

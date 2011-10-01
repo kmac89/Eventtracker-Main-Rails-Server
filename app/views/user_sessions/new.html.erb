@@ -2,4 +2,13 @@
 
 <%= render 'form' %>
 </br>
+<%= link_to 'About Us', '/about_us' %>
+</br>
 No Account? <%= link_to 'Get the EventTracker App', '/Android-Activity-Tracker.apk' %>.
+<script type="text/javascript">
+  if ('<%= @width %>' != "") {
+    var width = parseInt('<%= @width %>');
+    var height = parseInt('<%= @height %>');
+    fancyboxHelpers.forceSize(document,height -30, width);
+  }
+</script>

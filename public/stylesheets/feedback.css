@@ -15,6 +15,7 @@ a#feedback_link {
   height: 96px;
   overflow: hidden;
   background: #C00 url(/images/feedback/feedback_tab.png);
+  opacity: .4;
   _position: absolute;
   /*_background-image: url(/images/feedback/feedback_tab.png);*/
 }	
@@ -40,6 +41,14 @@ a#feedback_link.right {
   background-image: url(/images/feedback/feedback_tab.png);
   _background-image: url(/images/feedback/feedback_tab.png);
 }
+a#feedback_link.bottom_right {
+  width: 96px;
+  height: 26px;
+  right: 0;
+  bottom: 0;
+  background-image: url(/images/feedback/feedback_tab_h.png);
+  _background-image: url(/images/feedback/feedback_tab_h.png);
+}
 
 a#feedback_link.top {
   right: 10%;
@@ -51,7 +60,7 @@ a#feedback_link.top {
 }
 
 a#feedback_link.bottom {
-  right: 10%;
+  right: 0%;
   bottom: 0;
   width: 96px;
   height: 26px;

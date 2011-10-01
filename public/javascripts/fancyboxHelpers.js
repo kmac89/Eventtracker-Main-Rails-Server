@@ -3,6 +3,17 @@
 * A javascript file containing helper methods relating to fancybox
 */
 var fancyboxHelpers={
+  forceSize:function(mDocument, docHeight, docWidth) {
+      var pageHeight = docHeight;
+      var pageWidth =  docWidth;
+      var outer = window.parent.document.getElementById('fancybox-wrap');
+      var inner = window.parent.document.getElementById('fancybox-content');
+      outer.style.height= pageHeight+35 +"px";
+      outer.style.width= pageWidth +20+"px";
+      inner.style.height= pageHeight+30 +"px";
+      inner.style.width= pageWidth +2+"px";
+      parent.$.fancybox.center();
+  },
   resize:function(mDocument, docHeight, docWidth) {
     var hasVScroll = $(document).height() > $(window).height();
     var hasHScroll = $(document).width() > $(window).width();

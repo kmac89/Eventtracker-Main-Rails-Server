@@ -3,6 +3,7 @@ MainRailsServer::Application.routes.draw do
   resources :feedback, :only => [:new, :create]
 
   match "close_fancybox" =>  "home#close_fancybox"
+  match "about_us" =>  "home#about_us"
 
   scope "events" do
     match "upload_bulk"  =>  "events#upload_bulk"
@@ -19,6 +20,7 @@ MainRailsServer::Application.routes.draw do
   end
 
   resources :user_sessions
+  match 'login/:width/:height' => 'user_sessions#new', :as => :login
   match 'login' => 'user_sessions#new', :as => :login
   match 'logout' => 'user_sessions#destroy', :as => :logout
 

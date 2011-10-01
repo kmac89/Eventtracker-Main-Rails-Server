@@ -1,5 +1,7 @@
 <!-- This hidden link is used by fancybox in order to display a login box if 
      the user needs to login -->
+<%= feedback_includes %>
+<%= feedback_tab(:position => 'bottom_right') %>
 <a class="iframe" style="display:none;" id="hidden_link" href="/login"></a>
 <link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
 <link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
@@ -7,7 +9,6 @@
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen, projection" />
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
- <%= feedback_includes %>
 <ul id="toolbar" class="ui-helper-reset ui-helper-clearfix ui-widget-header
                         ui-corner-all">
   <%= link_to 'Create a new Event', "/#{@user.phone_number}/new",                                                         :class => 'create_event' %>
@@ -19,7 +20,6 @@
 <br /> <br />
 <div id='calendar'></div>
 <div id="dialog" title="Dialog Title"></div>
-<%= feedback_tab(:position => 'left') %>
 
 <script type="text/javascript">
   $(document).ready(function(){

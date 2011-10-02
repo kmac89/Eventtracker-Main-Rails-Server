@@ -67,19 +67,18 @@
         Timeline.DefaultEventSource.Event.prototype.fillInfoBubble = function(elmt, theme, labeller) {
             //oldFillInfoBubble.call(this, elmt, theme, labeller);
 			testing=elmt;
-            eventObject = this;
-            var div = document.createElement("div");
-            div.innerHTML = "<b>"+eventObject._text+"</b><hr>";
+      eventObject = this;
+      var div = document.createElement("div");
+      $(div).appendText(eventObject._text).append("</b><hr>");
 			var div2 = document.createElement("div");
-			div2.innerHTML = "Start Time: " + dateHelpers.formatDateTime(eventObject._start);
+      $(div2).text("Start Time: " + dateHelpers.formatDateTime(eventObject._start));
 			var div3 = document.createElement("div");
-			div3.innerHTML = "End Time: " + dateHelpers.formatDateTime(eventObject._end);
+      $(div3).text("End Time: " + dateHelpers.formatDateTime(eventObject._end));
 			var div4 = document.createElement("div");
-			div4.innerHTML = "Tag: " + eventObject._description;
+      $(div4).text("Tag: " + eventObject._description);
 			var div5 = document.createElement("div");
-			div5.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
-			
-			
+      div5.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 
+                       'mapLink' ,:class => 'mapping'%>';
 			$(div5).find('a').fancybox({
 	         'width' : '70%',
 	         'height' : '100%',
@@ -90,7 +89,7 @@
 			});
 			
 			
-            elmt.appendChild(div);
+      elmt.appendChild(div);
 			elmt.appendChild(div2);
 			elmt.appendChild(div3);
 			

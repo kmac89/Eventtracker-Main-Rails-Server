@@ -1,13 +1,32 @@
+<!--
+This partial view is used to both show events and create events
+-->
+<STYLE TYPE="text/css">
+  .inputfield  {
+    width: 350px;
+    font-size:100%}
+  }
+</STYLE>
+<table>
 <% @edit_fields.each do |field, name| %>
-  <div>
-    <%= label :content, name %>
-    <%= text_field :content, field, :id => field, :value => "" %>
-  </div>
+  <% if name == 'Notes'%>
+      <td><%= label :content, name %> </td>
+      <td><%= text_area :content, field, :id => field, :rows => "2",
+        :class => 'inputfield'%> </td>
+  <% else %>
+    <tr>
+      <td><%= label :content, name %> </td>
+      <td><%= text_field :content, field, :id => field, :value => "",
+          :class => 'inputfield' %></td>
+    </tr>
+  <% end %> 
 <% end %>
-  <div>
-    <%= label :content, 'End time' %>
-    <%= text_field :content, 'endTime', :id => 'endTime', :value => "" %>
-  </div>
+  <tr>
+    <td><%= label :content, 'End time' %> </td>
+    <td><%= text_field :content, 'endTime', :id => 'endTime', :value => "",
+            :class => 'inputfield'%></td>
+  </tr>
+</table>
 
 <%= form_for(@event) do |f| %>
   <% if @event.errors.any? %>
@@ -59,7 +78,20 @@
     var passwd = localStorage.pwd;
     var startTimeString = $('#startTime').attr('value');
     var endTimeString = $('#endTime').attr('value');
-
+    if (startTimeString == "" && endTimeString == ""){
+      alert("Please enter a start time and end time");
+      return;
+    }else if (startTimeString == ""){
+      alert("Please enter a start time");
+      return;
+    }else if (endTimeString == "") {
+      alert("Please enter an end time");
+      return;
+    }
+    if (new Date(startTimeString) > new Date(endTimeString)) {
+      alert("Start time must be before end time");
+      return;
+    }
     var content = {};
     content['startTime'] = Date.parse(startTimeString);
     content['endTime'] = Date.parse(endTimeString);
@@ -75,4 +107,17 @@
     $('#encrypted_content').attr('value', encrypted_content);
     document.forms[0].submit();
   } 	
+
+// Resize the fancybox to make room for the datepicker
+$('#startTime').click(function() {
+  fancyboxHelpers.resize(document);
+})
+// Resize the fancybox to make room for the datepicker
+$('#endTime').click(function() {
+  fancyboxHelpers.resize(document);
+})
+// Resize the window in case the default sizes provided were too small.
+$(window).load(function() {
+  fancyboxHelpers.resize(document);
+});
 </script>

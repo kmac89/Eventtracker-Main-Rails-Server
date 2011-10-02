@@ -1,10 +1,11 @@
 MainRailsServer::Application.routes.draw do
 
-  match "test"      => "home#test"
+  resources :feedback, :only => [:new, :create]
+
   match "close_fancybox" =>  "home#close_fancybox"
+  match "about_us" =>  "home#about_us"
 
   scope "events" do
-    match "upload"  =>  "events#upload"
     match "upload_bulk"  =>  "events#upload_bulk"
     match "delete"  =>  "events#delete"
     match "poll"    =>  "events#poll"
@@ -18,7 +19,8 @@ MainRailsServer::Application.routes.draw do
     match "phone/:phone_number" =>  "users#show"
   end
 
-  resources :users, :user_sessions
+  resources :user_sessions
+  match 'login/:width/:height' => 'user_sessions#new', :as => :login
   match 'login' => 'user_sessions#new', :as => :login
   match 'logout' => 'user_sessions#destroy', :as => :logout
 
@@ -31,7 +33,7 @@ MainRailsServer::Application.routes.draw do
 	match ":phone_number/table"     => "events#table"
   end
 
-  get "users/index"
+  root :to => "events#calendar"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -82,7 +84,6 @@ MainRailsServer::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => "events#calendar"
 
   # See how all your routes lay out with "rake routes"
 

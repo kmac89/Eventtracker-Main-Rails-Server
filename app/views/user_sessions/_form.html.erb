@@ -43,9 +43,14 @@
 <br/>
 
 <script type="text/javascript">
-  $('#password').keypress(function() {
-    if(event.keyCode==13) {
+  $('#password').keypress(function(e) {
+      var code = (e.keyCode ? e.keyCode : e.which);
+      if (code==13) {
       storePassAndSubmit();
     }
+  });
+
+  $(window).load(function() {
+    fancyboxHelpers.resize(document);
   });
 </script>

@@ -1,3 +1,7 @@
+<!-- This hidden link is used by fancybox in order to display a login box if 
+     the user needs to login -->
+<%= feedback_includes %>
+<%= feedback_tab(:position => 'bottom_right') %>
 <a class="iframe" style="display:none;" id="hidden_link" href="/login"></a>
 <link rel='stylesheet' type='text/css' href='/fullcalendar/fullcalendar.css' />
 <link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
@@ -5,75 +9,37 @@
 <script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 <link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen, projection" />
 <script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-<script>
-  $(function() {
-    $("#toolbar a").button();
-    $('[type="button"]').button();
-  });
-</script>
-
-<ul id="toolbar" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-  <%= link_to 'Create a new Event', "/#{@user.phone_number}/new", :class => 'create_event' %>
-  <%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts", :class => 'pi_chart' %>
-  <%= link_to 'View Timeline', "/#{@user.phone_number}/timeline", :class => 'timeline' %>
+<ul id="toolbar" class="ui-helper-reset ui-helper-clearfix ui-widget-header
+                        ui-corner-all">
+  <%= link_to 'Create a new Event', "/#{@user.phone_number}/new",                                                         :class => 'create_event' %>
+  <%= link_to 'View Pie Chart', "/#{@user.phone_number}/charts",                                                       :class => 'pi_chart' %>
+  <%= link_to 'View Timeline', "/#{@user.phone_number}/timeline",                                                    :class => 'timeline' %>
   <%= link_to 'View Table', "/#{@user.phone_number}/table", :class => 'table' %>
   <button id="logout" type="button" style = "float:right;"> Logout </button>
 </ul>
 <br /> <br />
+<div id='calendar'></div>
+<div id="dialog" title="Dialog Title"></div>
+
 <script type="text/javascript">
-
   $(document).ready(function(){
-
+    // Initialize the fancy jquery-ui button themes
+    $("#toolbar a").button();
+    $('[type="button"]').button();
+    // If the user needs to login, display the login box on top of the calendar
     if(<%= @need_to_login %>) {
-      $("#hidden_link").fancybox({'modal':true}).trigger('click');
+    $("#hidden_link").fancybox({'modal':true,
+                                'width': '30%',
+                                'height': '40%'
+                              }).trigger('click');
     }
-
     $('#logout').click(function(){
       sessionStorage.clear();
       document.location.href='logout';
     });
   });
-  $(document).ready(function(){
-    $(".timeline").fancybox({
-      'width' : '100%',
-      'height' : '68%',
-      'autoScale' : false,
-      'transitionIn' : 'none',
-      'transitionOut' : 'none',
-      'type' : 'iframe'
-    });
-  });
-  $(document).ready(function(){
-    $(".pi_chart").fancybox({
-      'width' : '47%', 
-      'height' : '69%', 
-      'autoScale' : false,
-      'transitionIn' : 'none',
-      'transitionOut' : 'none',
-      'type' : 'iframe'
-    });
-  });
-  $(document).ready(function(){
-    $(".create_event").fancybox({
-      'width' : '35%',
-      'padding': 0,
-      'height' : '60%',
-      'autoScale' : false,
-      'transitionIn' : 'none',
-      'transitionOut' : 'none',
-      'type' : 'iframe'
-    });
-  });
-  $(document).ready(function(){
-    $(".table").fancybox({
-      'width' : '46%',
-      'height' : '93%',
-      'autoScale' : false,
-      'transitionIn' : 'none',
-      'transitionOut' : 'none',
-      'type' : 'iframe'
-    });
-  });
+  initFancyboxes();
+  // Decrypt data clientside in order to populate calendar
   var encryptedData=<%= raw @contents %>;
   var encryptedContent= new Array();
   for (var i=0; i<encryptedData.length; i++) {
@@ -97,11 +63,14 @@
     deleteLinkArray[index]= '<%= link_to 'Delete', event ,:confirm => 'Are you sure?',
                              :method => :delete, :phone_number => @user.phone_number %>';	
   <% end %>
-</script>	
 
-<script type="text/javascript">
   var divMap;
-  // Get information about the calendar that was stored in session storage
+
+  // Gets information about the calendar that was stored in session storage
+  // The Session storage is used in order to remember what view the calendar is showing.
+  // This information is used by the pie chart 
+  // For instance, if the calendar is currently on a week in January, the pie chart should show
+  //   data only from that same week.
   var currentYear = sessionStorage.getItem('year');
   var currentDate= new Date();
   if (currentYear == null) {
@@ -123,7 +92,7 @@
   }
 
   $(document).ready(function() {
-    // page is now ready, initialize the calendar...
+  // page is now ready, initialize the calendar
     $('#calendar').fullCalendar({
 
       // put your options and callbacks here
@@ -151,6 +120,8 @@
         sessionStorage.setItem('pieChartName', $('.fc-header-title').text());
       },
       eventClick: function(calEvent, jsEvent, view) {
+        // The following code initializes and constructs a dialog containing the data of the event 
+        //   that the user has just selected.
         $("#dialog").dialog({ modal: true, autoOpen:false });
         $("#dialog").dialog('open');
         //Clearing the div. This is done because we are reusing 
@@ -158,11 +129,12 @@
         $("#dialog").empty();
         var startTime=$.fullCalendar.parseDate(calEvent['start']);
         var endTime=$.fullCalendar.parseDate(calEvent['end']);
-        $("#dialog").append("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")+"<br>");
-        $("#dialog").append("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")+"<br>");
-
+        $("#dialog").appendText("Start Time: " + $.fullCalendar.formatDate(startTime, "hh:mmtt")).append("<br>");
+        $("#dialog").appendText("End Time: " + $.fullCalendar.formatDate(endTime, "hh:mmtt")).append("<br>");
+        var divTag = document.createElement("div");
         if(calEvent['tag']){
-          $("#dialog").append("Tag: " + calEvent['tag']+"<br>");
+          $(divTag).text("Tag: " + calEvent['tag']);
+          $('#dialog').append(divTag);
         }
         divMap=document.createElement("div");
         divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
@@ -179,12 +151,11 @@
           $("#dialog").append(divMap.innerHTML+"<br>");
         }
 
-        $("#dialog").dialog( "option", "title", calEvent['title'] );
+        $("#dialog").dialog( "option", "title", "" );
         $('.ui-widget-overlay').click(function() { $("#dialog").dialog("close"); });
+        $("#ui-dialog-title-dialog").text(calEvent['title']);
 
-
-        // change the border color just for fun
-        $(this).css('border-color', 'red');
+        // Initialize fancyboxes for both the map link and the edit link
         $(".mapping").fancybox({
           'width' : '70%',
           'height' : '100%',
@@ -200,10 +171,7 @@
           'autoScale' : false,
           'transitionIn' : 'none',
           'transitionOut' : 'none',
-          'type' : 'iframe' ,
-          'onClosed' : function() {
-            location.reload(true);
-          }
+          'type' : 'iframe' 
         });
       }
 
@@ -212,6 +180,44 @@
     $('#calendar').fullCalendar( 'addEventSource', events1 )
   });
 
+  function initFancyboxes() {
+
+    $(".timeline").fancybox({
+      'width' : '100%',
+      'height' : '68%',
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+    $(".pi_chart").fancybox({
+      'width' : '47%', 
+      'height' : '72%', 
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+    $(".create_event").fancybox({
+      'width' : '35%',
+      'height' : '44%',
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+    $(".table").fancybox({
+      'width' : '75%',
+      'height' : '100%',
+      'autoScale' : false,
+      'transitionIn' : 'none',
+      'transitionOut' : 'none',
+      'type' : 'iframe'
+    });
+  } 
+
+  // After the data has been unencrypted, this method is used in order to turn the unencryptedEvents 
+  //   array into another data structure that the calendar can better understand
   function initializeEvents(){
     var events=new Array();
     for(var i=0; i < unencryptedEvents.length; i++){
@@ -235,8 +241,4 @@
     }
     return events;
   }
-
 </script>
-</head>
-<div id='calendar'></div>
-<div id="dialog" title="Dialog Title"></div>

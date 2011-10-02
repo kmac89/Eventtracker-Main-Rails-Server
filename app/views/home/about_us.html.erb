@@ -1,0 +1,24 @@
+<h1> About Us </h1>
+<p> We are UC Berkeley undergrads.  </p>
+<table border="0" width="100%">
+  <tr style="padding:50px">
+    <td style=padding:20px;"><%= image_tag "kyle.jpg" %></td>
+    <td style="width:100%"></td>
+    <td style="padding:20px;"><%= image_tag "alex.jpg" %></td>
+  </tr>
+  <tr style="padding:50px">
+    <td style="padding:20px;"> This is Kyle.</td>
+    <td style="width:100%"></td>
+    <td style="padding:20px"> This is Alex.</td>
+  </tr>
+</table>
+<a href="" id= "back">Back</a>
+<script type="text/javascript">
+      var width = $(window).width();
+      var height = $(window).height();
+      $("a").attr("href", "/login/" + width + "/" + height);
+      $(window).load(function() {
+        fancyboxHelpers.resize(document);
+      });
+
+</script>

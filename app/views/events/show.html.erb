@@ -1,18 +1,27 @@
-<p id="notice"><%= notice %></p>
+<link type="text/css" rel="stylesheet" href="/jquery-ui-1.8.13/css/redmond/jquery-ui-1.8.13.custom.css"/>
+<script src="/jquery-ui-1.8.13/js/jquery-ui-1.8.13.custom.min.js" type="text/javascript" charset="utf-8"> </script>
+<script type='text/javascript' src='/fullcalendar/fullcalendar.js'></script>
 
-<p>
-  <b>Uuid:</b>
-  <%= @event.uuid %>
-</p>
+<ul id="toolbar" class="ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+  <p style="text-align:center"><big>Event Description</big></p>
+</ul>
+<br />
+<%= render 'form' %>
+<br />
+<br />
 
-<p>
-  <b>Content:</b>
-  <%= @event.content %>
-</p>
+<script type="text/javascript">
+  // Setting the input fields to read only in order to avoid confusion
 
-<p>
-  <%= link_to 'Show User', user_path(@event.user) %>
-</p>
-
-<%= link_to 'Edit', edit_event_path(@event) %> |
-<%= link_to 'Back', events_path %>
+  $('#name').attr('disabled', true);
+  $('#notes').attr('disabled', true);
+  $('#tag').attr('disabled', true);
+  $('#endTime').attr('disabled', true);
+  $('#startTime').attr('disabled', true);
+  $('#startTime').unbind();
+  $('#endTime').unbind();
+  // Change the text color to the default since the text in disabled input fields by default 
+  //  have a light grey color.
+  $('input').css('color', $('label').css('color'));
+  $('#notes').css('color', $('label').css('color'));
+</script>

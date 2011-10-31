@@ -5,8 +5,6 @@
   var unencryptedEvent=jQuery.parseJSON(unencryptedData);
   var gpsCoords=unencryptedEvent['gpsCoordinates'];
 </script>	
-
-
 <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
@@ -44,78 +42,65 @@
 		mapmarkers[mapmarkers.length-1].setIcon("/images/red_flag.png");
 	
 	  }
-
-	
   }
-  function initializeGPSData(){
-	
-	for(var i=0; i < gpsCoords.length; i++){
-	     var gpsCoord=gpsCoords[i];	
-	     var latlng = new google.maps.LatLng(gpsCoord['latitude'], gpsCoord['longitude'] );
-	     var timeOfGPSData=formatDateTime(gpsCoord['time']);
-             var marker =createMarker(latlng,timeOfGPSData);	
-             mapmarkers.push(marker);
-	     marker.setMap(map);	
-	}
-	
-}
 
- function createMarker(latlong, time)
- {
-	
-	var marker=new google.maps.Marker({
-			position: latlong, 
-			title: time
-		});
-	  var tooltip = new google.maps.InfoWindow({
-		   content: marker.title
-       }); 
-	   tooltips.push(tooltip);
-	  google.maps.event.addListener(marker, 'click', function() {
-		if(previous != null){
-			previous.close();
-		}
-		tooltip.open(map, marker);
-		previous=tooltip;
+  function initializeGPSData() {
+    for(var i=0; i < gpsCoords.length; i++){
+       var gpsCoord=gpsCoords[i];	
+       var latlng = new google.maps.LatLng(gpsCoord['latitude'], gpsCoord['longitude'] );
+       var timeOfGPSData=formatDateTime(gpsCoord['time']);
+       var marker =createMarker(latlng,timeOfGPSData);	
+       mapmarkers.push(marker);
+       marker.setMap(map);	
+    }
+  }
+
+  function createMarker(latlong, time) {
+    var marker=new google.maps.Marker({
+   			position: latlong, 
+   			title: time
+   	});
+    var tooltip = new google.maps.InfoWindow({content: marker.title}); 
+    tooltips.push(tooltip);
+    google.maps.event.addListener(marker, 'click', function() {
+      if(previous != null){
+   			previous.close();
+   	 }
+   	 tooltip.open(map, marker);
+   	 previous=tooltip;
     });	
- 
-	return marker;
- 
+ 	  return marker;
  }
 
 
-  function autoZoomCenter()
-  {
-  mapbounds = new google.maps.LatLngBounds();
-  for(var i=0; i<mapmarkers.length; i++){ 
-     mapbounds.extend(mapmarkers[i].position ); 
-  } 
-
-	map.fitBounds(mapbounds);
-  
+  function autoZoomCenter() {
+    mapbounds = new google.maps.LatLngBounds();
+    for(var i=0; i<mapmarkers.length; i++){ 
+       mapbounds.extend(mapmarkers[i].position ); 
+    } 
+    map.fitBounds(mapbounds);
   }
-  function formatDateTime(time)
-{
-	var dateTime=new Date(time);
-	var am_pm = '';
-	var hour = dateTime.getHours();
-	var min = dateTime.getMinutes();
-	var month = dateTime.getMonth() + 1;
-	var day = dateTime.getDate();
-	day = (day < 10) ? '0' + day : day;
-	month = (month < 10) ? '0' + month : month;
-	am_pm = (hour < 12) ? "AM" : "PM";
-	hour = (hour == 0) ? 12 : (hour > 12) ? hour - 12 : hour;
-	hour = (hour < 10) ? '0' + hour : hour;
-	min = (min < 10) ? '0' + min : min;
-	return dateTime = month + '/' + day + '/' + dateTime.getFullYear() + ' ' + hour + ':' + min + ' ' + am_pm;
-}
+
+  function formatDateTime(time) {
+    var dateTime=new Date(time);
+    var am_pm = '';
+    var hour = dateTime.getHours();
+    var min = dateTime.getMinutes();
+    var month = dateTime.getMonth() + 1;
+    var day = dateTime.getDate();
+    day = (day < 10) ? '0' + day : day;
+    month = (month < 10) ? '0' + month : month;
+    am_pm = (hour < 12) ? "AM" : "PM";
+    hour = (hour == 0) ? 12 : (hour > 12) ? hour - 12 : hour;
+    hour = (hour < 10) ? '0' + hour : hour;
+    min = (min < 10) ? '0' + min : min;
+    return dateTime = month + '/' + day + '/' + dateTime.getFullYear() + ' ' + hour + ':' + min + ' ' + am_pm;
+  }
 
 
 </script>
 </head>
 <body onload="initialize()">
   <div id="map_canvas" style="width:100%; height:100%; border: 1px solid rgb(0, 0, 0)" ></div>
-
 </body>
 </html>

@@ -203,17 +203,17 @@
 <script type="text/javascript">
   $(document).ready(function(){
       var selectDate = function(dateText, inst) {
-      var startDateText = $('#startPicker').val();
-      var endDateText = $('#endPicker').val();
+        var startDateText = $('#startPicker').val();
+        var endDateText = $('#endPicker').val();
 
-      if (startDateText != "" && endDateText != "") {
-      startDate = Date.parse(startDateText);
-      endDate = Date.parse(endDateText);
-      $('#prevBtn' ).button( "option", "disabled", true );
-      $('#nextBtn' ).button( "option", "disabled", true );
-      root.data(updatePieChart(true));
-      root.render();
-      }
+        if (startDateText != "" && endDateText != "") {
+          startDate = Date.parse(startDateText);
+          endDate = Date.parse(endDateText);
+          $('#prevBtn' ).button( "option", "disabled", true );
+          $('#nextBtn' ).button( "option", "disabled", true );
+          root.data(updatePieChart(true));
+          root.render();
+        }
       }
       $('.datepicker').datepicker({onSelect: selectDate}); 
 

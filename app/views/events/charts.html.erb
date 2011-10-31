@@ -224,7 +224,10 @@
       $('#prevBtn').click(function(){
         if (calendarView == 'month') {
         startDate = startDate.add(-1).months();
+        startDate.moveToFirstDayOfMonth();
         endDate = endDate.add(-1).months();
+        endDate.moveToLastDayOfMonth();
+
         } else if (calendarView == 'agendaWeek') {
         startDate = startDate.add(-1).weeks();
         endDate = endDate.add(-1).weeks();
@@ -239,7 +242,9 @@
       $('#nextBtn').click(function(){
           if (calendarView == 'month') {
           startDate = startDate.add(1).months();
+          startDate.moveToFirstDayOfMonth();
           endDate = endDate.add(1).months();
+          endDate.moveToLastDayOfMonth();
           } else if (calendarView == 'agendaWeek') {
           startDate = startDate.add(1).weeks();
           endDate = endDate.add(1).weeks();

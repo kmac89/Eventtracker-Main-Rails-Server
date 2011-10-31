@@ -18,7 +18,7 @@
   }
 </style>
 <div id="fancybox-content-holder">
-  <div id="chartHeader">My Events (in hours) for
+  <div id="chartHeader">My Events for
     <span id="chartTime"></span>
   </div>
   <div id="chart_div">
@@ -60,6 +60,11 @@
           .anchor("right").add(pv.Label)
           .text(function(d) d.tag + ": " + d.totalTime.toPrecision(3))
           .font("15px sans-serif");
+        root.add(pv.Label)
+          .left(DIAMETER + 10)
+          .top(40)
+          .font("bold 15px sans-serif")
+          .text("Time spent (in hours)");
         root.render();
         return root;
       }

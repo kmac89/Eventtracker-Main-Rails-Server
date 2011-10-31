@@ -43,7 +43,7 @@
           .bottom(function() ERADIUS
               - Math.sin(this.startAngle() + this.angle() / 2)
               * ((this.o() == this.index) ? 10 : 0))
-          .text(function(d) d.tag + ": " + d.totalTime.toPrecision(2))
+          .text(function(d) d.tag + ": " + d.totalTime.toPrecision(3))
           .fillStyle(function(d) colors(d.tag))
           // this second mouseover function overrwrites the one above
           .event("mouseover", pv.Behavior.tipsy({fade: true}))

@@ -251,7 +251,7 @@
         root.render();
         var height = $('#fancybox-content-holder').height();  
         var width = $('svg').attr('width').baseVal.value;
-        fancyboxHelpers.resize(document,height,width);
+        fancyboxHelpers.resize(document,height - 65,width-22);
         });
       $('#nextBtn').click(function(){
           if (calendarView == 'month') {
@@ -271,7 +271,7 @@
           root.render();
           var height = $('#fancybox-content-holder').height();  
           var width = $('svg').attr('width').baseVal.value;
-          fancyboxHelpers.resize(document,height,width);
+          fancyboxHelpers.resize(document,height -65,width -22);
           });
 
   });

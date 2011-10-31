@@ -51,7 +51,7 @@
         /* A legend entry for each tag. */
         root.add(pv.Dot)
           .data(function (d) d.tagTimeTuples)
-          .left(DIAMETER + 30)
+          .left(DIAMETER + 40)
           .top(function() this.index * 20 + 60)
           .fillStyle(function(d) colors(d.tag))
           .strokeStyle(null)
@@ -61,7 +61,7 @@
           .text(function(d) d.tag + ": " + d.totalTime.toPrecision(3))
           .font("15px sans-serif");
         root.add(pv.Label)
-          .left(DIAMETER + 10)
+          .left(DIAMETER)
           .top(40)
           .font("bold 15px sans-serif")
           .text("Time spent (in hours)");

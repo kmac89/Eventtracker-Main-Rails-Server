@@ -29,8 +29,8 @@
     // If the user needs to login, display the login box on top of the calendar
     if(<%= @need_to_login %>) {
     $("#hidden_link").fancybox({'modal':true,
-                                'width': '30%',
-                                'height': '40%'
+                                'width': 350,
+                                'height': 250
                               }).trigger('click');
     }
     $('#logout').click(function(){
@@ -191,8 +191,8 @@
       'type' : 'iframe'
     });
     $(".pi_chart").fancybox({
-      'width' : '47%', 
-      'height' : '72%', 
+      'width' : 650, 
+      'height' : 550, 
       'autoScale' : false,
       'transitionIn' : 'none',
       'transitionOut' : 'none',

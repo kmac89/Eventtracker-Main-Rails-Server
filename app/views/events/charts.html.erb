@@ -32,6 +32,12 @@
           .width(DIAMETER + 200)
           .data(data)
           .height(DIAMETER);
+        root.add(pv.Label)
+          .left(RADIUS)
+          .top(RADIUS)
+          .textAlign("center")
+          .font("bold 15px sans-serif")
+          .text("No data for this month.");
         root.add(pv.Wedge)
           .data(function (d) d.tagTimeTuples)
           .def("o", -1)
@@ -203,17 +209,17 @@
 <script type="text/javascript">
   $(document).ready(function(){
       var selectDate = function(dateText, inst) {
-        var startDateText = $('#startPicker').val();
-        var endDateText = $('#endPicker').val();
+      var startDateText = $('#startPicker').val();
+      var endDateText = $('#endPicker').val();
 
-        if (startDateText != "" && endDateText != "") {
-          startDate = Date.parse(startDateText);
-          endDate = Date.parse(endDateText);
-          $('#prevBtn' ).button( "option", "disabled", true );
-          $('#nextBtn' ).button( "option", "disabled", true );
-          root.data(updatePieChart(true));
-          root.render();
-        }
+      if (startDateText != "" && endDateText != "") {
+        startDate = Date.parse(startDateText);
+        endDate = Date.parse(endDateText);
+        $('#prevBtn' ).button( "option", "disabled", true );
+        $('#nextBtn' ).button( "option", "disabled", true );
+        root.data(updatePieChart(true));
+        root.render();
+      }
       }
       $('.datepicker').datepicker({onSelect: selectDate}); 
 

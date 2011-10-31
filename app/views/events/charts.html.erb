@@ -251,7 +251,7 @@
         root.render();
         var height = $('#fancybox-content-holder').height();  
         var width = $('svg').attr('width').baseVal.value;
-        fancyboxHelpers.resize(document,height+25,width+25);
+        fancyboxHelpers.resize(document,height,width);
         });
       $('#nextBtn').click(function(){
           if (calendarView == 'month') {
@@ -271,14 +271,14 @@
           root.render();
           var height = $('#fancybox-content-holder').height();  
           var width = $('svg').attr('width').baseVal.value;
-          fancyboxHelpers.resize(document,height+25,width+25);
+          fancyboxHelpers.resize(document,height,width);
           });
 
   });
 $(window).load(function() {
     var height = $('#fancybox-content-holder').height();  
     var width = $('svg').attr('width').baseVal.value;
-    fancyboxHelpers.resize(document,height+25,width+25);
+    fancyboxHelpers.resize(document,height,width);
 });
 </script>
 

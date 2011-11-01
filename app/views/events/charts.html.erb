@@ -192,6 +192,11 @@
   //  function filterDateFunction returned true for
   function filterEventsByDate(events) {
     var filteredEvents = $.grep(events, filterDateFunction);
+    if (filteredEvents.length == 0) {
+      $('text').filter(function(index){return $(this).text() == "No data for this month."}).show()
+    } else {
+      $('text').filter(function(index){return $(this).text() == "No data for this month."}).hide();
+    }
     return filteredEvents;
   }
 
@@ -199,11 +204,6 @@
   function updatePieChart(selectRange) {
     changeHeader(selectRange);
     var filteredEvents = filterEventsByDate(unencryptedEvents);
-    if (filteredEvents.length == 0) {
-      $('text').filter(function(index){return $(this).text() == "No data for this month."}).show()
-    } else {
-      $('text').filter(function(index){return $(this).text() == "No data for this month."}).hide();
-    }
     return generateTuples(computeTagTimes(filteredEvents));
   }
 

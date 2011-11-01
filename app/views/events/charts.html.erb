@@ -276,7 +276,7 @@ $(window).load(function() {
     var height = $('#fancybox-content-holder').height();  
     var width = $('svg').attr('width').baseVal.value;
     fancyboxHelpers.resize(document,height+20,width+20);
-    if (dataAvailable) {
+    if (!dataAvailable) {
       $('text').filter(function(index){return $(this).text() == "No data for this month."}).show()
     } else {
       $('text').filter(function(index){return $(this).text() == "No data for this month."}).hide();

@@ -1,7 +1,7 @@
 class FeedbackMailer < ActionMailer::Base
-  default :from => "eventtracker.feedback@gmail.com"
+  default :from => "timenova.feedback@gmail.com"
   def feedback(feedback)
     @feedback = feedback
-    mail(:to => 'kmac89@berkeley.edu', :subject => "[Feedback for Eventtracker]")
+    mail(:to => 'time-nova@googlegroups.com', :subject => "[Feedback for Time Nova]")
   end
 end

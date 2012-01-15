@@ -4,6 +4,7 @@ MainRailsServer::Application.routes.draw do
 
   match "close_fancybox" =>  "home#close_fancybox"
   match "about_us" =>  "home#about_us"
+  match "csp_report" =>  "home#csp_report"
 
   scope "events" do
     match "upload_bulk"  =>  "events#upload_bulk"

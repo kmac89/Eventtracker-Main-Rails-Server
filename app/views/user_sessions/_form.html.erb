@@ -23,35 +23,11 @@
   </div>
 <% end %>
 
-<script type="text/javascript">
-  function storePassAndSubmit() {
-    var pw = $('#password').attr('value');
-    var b64_password = b64_md5(pw);
-	  localStorage.setItem('pwd', b64_password);
-    // Hash the password again and send it to the web server to compare
-    $('#user_session_password').attr('value', b64_md5(b64_password));
-    $('#new_user_session').submit();
-  }
-</script>
-
 <div class="field">
   <%= label :password, 'Password' %>
   <br />
   <%= password_field :content, 'password', :id => 'password', :value => "" %>
 </div>
 
-<button type="button" onClick="storePassAndSubmit();">Log in</button>
+<button id = "login_button" type="button">Log in</button>
 <br/>
-
-<script type="text/javascript">
-  $('#password').keypress(function(e) {
-      var code = (e.keyCode ? e.keyCode : e.which);
-      if (code==13) {
-      storePassAndSubmit();
-    }
-  });
-
-  $(window).load(function() {
-    fancyboxHelpers.resize(document);
-  });
-</script>

@@ -18,6 +18,6 @@ class ApplicationController < ActionController::Base
 
   # Sets the content security policy by modifying the http headers
   def set_csp
-    response.headers['X-Content-Security-Policy'] = "default-src 'self';"
+    response.headers['X-Content-Security-Policy'] = "default-src 'self'; report-uri http://127.0.0.1:3000/csp_report"
   end
 end

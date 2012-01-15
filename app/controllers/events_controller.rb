@@ -45,6 +45,7 @@ class EventsController < ApplicationController
 
   # The root of the site is routed to this action
   def calendar
+    @test = "This is a test"
     if current_user
 	  current_phone_number = current_user.phone_number
 	end
@@ -68,6 +69,7 @@ class EventsController < ApplicationController
 
 
     respond_to do |format|
+      format.json { render :json => {:contents => @events.as_json, :need_to_login => @need_to_login }}
       format.html # index.html.erb
       format.xml  { render :xml => @events }
     end
@@ -105,7 +107,7 @@ class EventsController < ApplicationController
     if previous_poll_time then
       events = Event.find( :all, :conditions => ["updated_at > ? AND user_id = ?", previous_poll_time, user.id] )
     else
-      events = Event.find(:all, :conditions => {:user_id => user.id, :deleted => false}) 
+      events = Event.find(:all, :conditions => {:user_id => user.id, :deleted => false})
     end
     events_to_send = events.collect do |event|
 	   event_data = {}
@@ -238,7 +240,7 @@ class EventsController < ApplicationController
     end
     event.deleted = true
     event.save
-	
+
     respond_to do |format|
       format.html { redirect_to(:back) }
       format.xml  { head :ok }
@@ -289,7 +291,7 @@ class EventsController < ApplicationController
         event.updated_at = DateTime.parse(event_datum["UpdatedAt"])
         success = event.save
       end
-      
+
       if !success
         render :text => event.errors.to_s, :status => 400
         return

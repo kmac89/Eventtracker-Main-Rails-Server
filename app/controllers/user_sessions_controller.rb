@@ -9,9 +9,6 @@ class UserSessionsController < ApplicationController
     else
       @user_session = UserSession.new
     end
-    @width = params[:width]
-    @height = params[:height]
-
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @user_session }

@@ -27,6 +27,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
+      format.json { render :json => {:contents => @events.as_json}}
       format.xml  { render :xml => @events }
     end
   end
@@ -51,7 +52,6 @@ class EventsController < ApplicationController
 
   # The root of the site is routed to this action
   def calendar
-    @test = "This is a test"
     if current_user
 	  current_phone_number = current_user.phone_number
 	end

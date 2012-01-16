@@ -5,6 +5,7 @@ var unencryptedEvents;
 $.getJSON('.json', function(data) {
   need_to_login = data['need_to_login'];
   encryptedData = data['contents'];
+  phoneNumber = data['phone_number'];
   $('.feedback_link').feedback({tabPosition: 'bottom_right'});
   $("#toolbar a").button();
   $('[type="button"]').button();
@@ -21,7 +22,7 @@ $.getJSON('.json', function(data) {
   });
   initFancyboxes();
   unencryptedEvents = unencryptData();
-  initCalendar();
+  initCalendar(unencryptedEvents, phoneNumber);
 });
 
 function unencryptData() {
@@ -41,12 +42,19 @@ function unencryptData() {
   }
   return unencryptedEvents;
 }
+var linkArray;
 
-function initCalendar () {
+function initCalendar (events, phoneNumber) {
 
   //Preparing the delete links.
   // TODO fix this somehow
-  var deleteLinkArray=new Array();
+  linkArray=new Array();
+  for (var i=0; i < events.length; i++) {
+    linkArray[events[i]['id']] = new Array();
+    linkArray[events[i]['id']]['delete'] = '<a href="/events/' + events[i]['id'] + '" data-confirm="Are you sure?" data-method="delete" phone_number=' + phoneNumber + ' rel="nofollow">Delete</a>';
+    linkArray[events[i]['id']]['edit'] = '<a href="/events/' + events[i]['id'] + '/edit" class="editingEvent" id="editing">Edit</a>';
+    linkArray[events[i]['id']]['map'] = '<a href="/' + phoneNumber + '/map/'+ events[i]['id'] +'" class="mapping" id="mapLink">Map</a>';
+  }
   //<% @events.each_with_index do |event,indexOfEvent| %>
     //var index='<%= event.id %>'
     //deleteLinkArray[index]= '<%= link_to 'Delete', event ,:confirm => 'Are you sure?',
@@ -124,15 +132,13 @@ function initCalendar () {
           $(divTag).text("Tag: " + calEvent['tag']);
           $('#dialog').append(divTag);
         }
-        //TODO fix this
         divMap=document.createElement("div");
-        //divMap.innerHTML = '<%= link_to 'Map', "/#{@user.phone_number}/map/", :id => 'mapLink' ,:class => 'mapping'%>';
+        divMap.innerHTML = linkArray[calEvent['id']]['map'];
         divEdit=document.createElement("div");
-        //divEdit.innerHTML = '<%= link_to 'Edit', "/events/", :class=>'editingEvent', :id =>'editing' %>';
-        //divMap.children[0].href=divMap.children[0].href+calEvent['id'];
-        //divEdit.children[0].href=divEdit.children[0].href+calEvent['id']+'/edit';
+        divEdit.innerHTML = linkArray[calEvent['id']]['edit'];
+
         divDelete=document.createElement("div");
-        //divDelete.innerHTML =	deleteLinkArray[calEvent['id']];
+        divDelete.innerHTML = linkArray[calEvent['id']]['delete'];
         $("#dialog").append(divEdit.innerHTML+ " ");
         $("#dialog").append(divDelete.innerHTML + " ");
 

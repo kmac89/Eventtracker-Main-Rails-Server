@@ -75,7 +75,7 @@ class EventsController < ApplicationController
 
 
     respond_to do |format|
-      format.json { render :json => {:contents => @events.as_json, :need_to_login => @need_to_login }}
+      format.json { render :json => {:phone_number => @user.phone_number, :contents => @events.as_json, :need_to_login => @need_to_login }}
       format.html # index.html.erb
       format.xml  { render :xml => @events }
     end
@@ -169,6 +169,7 @@ class EventsController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
+      format.json { render :json => {:contents => nil}}
       format.xml  { render :xml => @event }
     end
   end

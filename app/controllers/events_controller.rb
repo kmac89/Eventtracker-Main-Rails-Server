@@ -149,6 +149,11 @@ class EventsController < ApplicationController
     end
     @contents = @event.content.to_json
     @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'notes' => 'Notes', 'startTime' => 'Start Time'}
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render :json => {:contents => @event.as_json}}
+      format.xml  { render :xml => @event }
+    end
   end
 
   # GET /:phone_number/new
@@ -171,6 +176,7 @@ class EventsController < ApplicationController
   # GET /events/1/edit
   # Called when an event is being edited
   def edit
+    logger.debug "edit"
     @event = Event.find(params[:id])
     @user = User.find(@event.user_id)
     if !verify_user(@user)
@@ -178,6 +184,11 @@ class EventsController < ApplicationController
     end
     @contents = @event.content.to_json
     @edit_fields = {'name' => 'Name', 'tag' => 'Category', 'notes' => 'Notes', 'startTime' => 'Start Time'}
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render :json => {:contents => @event.as_json}}
+      format.xml  { render :xml => @event }
+    end
   end
 
   # POST /events

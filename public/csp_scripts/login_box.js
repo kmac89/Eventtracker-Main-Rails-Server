@@ -1,4 +1,5 @@
 $('#login_button').live("click", storePassAndSubmit);
+$('#get_app').live("click", getApp);
 var width = $.cookie('login_width');
 var height = $.cookie('login_height');
 
@@ -27,4 +28,6 @@ function storePassAndSubmit() {
   $('#new_user_session').submit();
 }
 
-
+function getApp() {
+  parent.document.location.href="https://market.android.com";
+}

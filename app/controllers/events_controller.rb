@@ -98,6 +98,7 @@ class EventsController < ApplicationController
 
 
     respond_to do |format|
+      format.json { render :json => {:phone_number => @user.phone_number, :contents => @events.as_json}}
       format.html # index.html.erb
       format.xml  { render :xml => @events }
     end

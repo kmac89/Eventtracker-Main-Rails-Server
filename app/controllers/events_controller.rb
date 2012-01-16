@@ -1,6 +1,12 @@
 class EventsController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:poll,:upload_bulk, :delete]
+  skip_before_filter :set_csp, :only => :charts
+  before_filter :set_local_csp, :only => :charts
 
+  # Sets the content security policy by modifying the http headers
+  def set_local_csp
+    response.headers['X-Content-Security-Policy'] = "default-src 'self'; script-src 'self' https://www.google.com; options inline-script eval-script; report-uri http://127.0.0.1:3000/csp_report"
+  end
   # GET /:phone_number/table
   def table
     phone_number = params[:phone_number]

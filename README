@@ -1,11 +1,11 @@
 Libraries/technologies used:
 
     Web framework is Rails 3.0.3.
-    The calendar is provided by the the jQuery plugin FullCalendar (http://arshaw.com/fullcalendar/).
-    Authentication is provided the rails plugin AuthLogic (https://github.com/binarylogic/authlogic).
+    The calendar is provided by the jQuery plugin FullCalendar (http://arshaw.com/fullcalendar/).
+    Authentication is provided by the rails plugin AuthLogic (https://github.com/binarylogic/authlogic).
     Timeline used (http://code.google.com/p/simile-widgets/wiki/Timeline)
     The pie chart was done using protovis.
-    The table uses the the DataTables jQuery plugin(http://datatables.net/) along with a rails plugin which serves as a wrapper (https://github.com/phronos/rails_datatables)
+    The table uses the DataTables jQuery plugin(http://datatables.net/) along with a rails plugin which serves as a wrapper (https://github.com/phronos/rails_datatables)
     The feedback was implemented via modifying the following rails plugin (https://github.com/jsboulanger/feedback). It was modified in order to make it compatible with rails 3.
     jQuery UI ThemeRoller is used for css
 
